@@ -71,8 +71,8 @@ export function CoachNotes({ notes }: { notes: Note[] }) {
         <span className="material-symbols-outlined text-secondary text-[20px]">neurology</span>
         <span className="font-headline-md text-body-lg font-semibold text-on-surface">Coach notes</span>
       </div>
-      {notes.map((n) => (
-        <div key={n.title} className="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container-low">
+      {notes.map((n, i) => (
+        <div key={`${n.title}-${i}`} className="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container-low">
           <span className="material-symbols-outlined text-primary text-[20px] mt-0.5">{n.icon}</span>
           <div className="flex flex-col">
             <span className="font-body-sm text-body-sm font-semibold text-on-surface">{n.title}</span>

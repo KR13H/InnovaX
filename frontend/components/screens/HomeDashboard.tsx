@@ -113,8 +113,8 @@ export default function HomeDashboard() {
           </section>
           {/* CENTERPIECE: DIGITAL ATHLETE AVATAR CARD WITH STATE SWITCHER */}
           <section className="flex flex-col bg-surface-container-low rounded-xl overflow-hidden shadow-xl">
-            {/* POPULATED STATE CONTAINER */}
-            <div className={demo ? "flex flex-col" : "hidden flex-col"} id="avatar-populated-view">
+            {/* POPULATED STATE CONTAINER (tap to open My Avatar) */}
+            <div onClick={() => router.push("/avatar")} className={`cursor-pointer ${demo ? "flex flex-col" : "hidden flex-col"}`} id="avatar-populated-view">
               {/* 3D Ghost Canvas Simulation */}
               <div className="relative w-full h-80 bg-surface-container-lowest overflow-hidden flex items-center justify-center">
                 {/* Background Neon Telemetry Field */}
