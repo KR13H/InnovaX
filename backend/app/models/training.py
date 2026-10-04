@@ -3,8 +3,10 @@ from datetime import date, datetime
 from sqlalchemy import (
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
     func,
@@ -95,4 +97,41 @@ class Workout(Base):
         String(50),
         default="planned",
         nullable=False,
+    )
+
+    priority_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    source_metric: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    current_value: Mapped[
+        dict | list | str | float | int | None
+    ] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+
+    severity: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
+    warmup: Mapped[dict | None] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+
+    drills: Mapped[list | None] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+
+    cooldown: Mapped[dict | None] = mapped_column(
+        JSON,
+        nullable=True,
     )
