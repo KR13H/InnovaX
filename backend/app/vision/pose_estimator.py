@@ -1,5 +1,5 @@
+import numpy as np
 from rtmlib import Wholebody
-from ultralytics import YOLO
 
 
 class PoseEstimator:
@@ -14,28 +14,12 @@ class PoseEstimator:
     def process_frame(self, frame):
         keypoints, scores = self.model(frame)
 
-        return keypoints, scores
-        # Pretrained YOLO pose model.
-        # Downloads the weights automatically the first time.
-        self.model = YOLO("yolo11n-pose.pt")
+        keypoints = np.asarray(keypoints)
 
-    def process_frame(self, frame):
-        """
-        Detect human pose keypoints in one frame.
-        """
-        results = self.model(
-            frame,
-            verbose=False,
-        )
+        if keypoints.ndim == 3 and keypoints.shape[0] == 1:
+            keypoints = keypoints[0]
 
-        return results[0]
-
-    def draw_pose(self, frame, results):
-        """
-        Draw the detected skeleton and bounding box.
-        """
-        return results.plot()
+        return keypoints
 
     def close(self):
-        # Kept so our video-processing interface stays consistent.
         pass
