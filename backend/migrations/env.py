@@ -31,6 +31,7 @@ from app.models.achievement import (
     AthleteAchievement,
 )
 from app.models.xp import XPEvent
+from app.models.shadow_test import ShadowTest
 from app.models.movement import MovementBaseline
 from app.models.risk_signal import RiskSignal
 from app.models.sport_transfer import SportTransfer

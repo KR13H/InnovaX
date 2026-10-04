@@ -16,6 +16,7 @@ from app.api.risk_signals import router as risk_signals_router
 from app.api.sport_transfer import router as sport_transfer_router
 from app.api.highlights import router as highlights_router
 from app.api.challenges import router as challenges_router
+from app.api.shadow_tests import router as shadow_tests_router
 from app.api.coach_dashboard import router as coach_dashboard_router
 
 
@@ -30,6 +31,7 @@ app.include_router(athlete_router)
 app.include_router(sports_router)
 app.include_router(sessions_router)
 app.include_router(progress_router)
+app.include_router(shadow_tests_router)
 app.include_router(shadow_router)
 app.include_router(recovery_router)
 app.include_router(training_router)

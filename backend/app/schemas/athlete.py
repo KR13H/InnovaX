@@ -15,6 +15,7 @@ class AthleteProfileUpdate(BaseModel):
     height_cm: float | None = Field(default=None, ge=50, le=250)
     weight_kg: float | None = Field(default=None, ge=20, le=300)
     experience_level: str | None = None
+    goals: dict[str, list[str]] | None = None
 
 
 class AthleteProfileResponse(BaseModel):
@@ -28,6 +29,7 @@ class AthleteProfileResponse(BaseModel):
     athlete_score: float | None
     level: int
     xp: int
+    goals: dict | list | None = None
 
     model_config = {
         "from_attributes": True

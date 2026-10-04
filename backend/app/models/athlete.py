@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, func
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
@@ -43,6 +43,13 @@ class AthleteProfile(Base):
 
     experience_level: Mapped[str | None] = mapped_column(
         String(50),
+        nullable=True,
+    )
+
+    # Training goals per sport: {"cricket": ["pace", "accuracy"], ...}. The column predates the
+    # model (older rows may hold a plain list of goal names).
+    goals: Mapped[dict | list | None] = mapped_column(
+        JSON,
         nullable=True,
     )
 
