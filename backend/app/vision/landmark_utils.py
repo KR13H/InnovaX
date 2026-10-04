@@ -29,3 +29,27 @@ def landmark_angle(landmarks, indices, width, height, min_visibility=0.6):
         points.append((landmark.x * width, landmark.y * height))
 
     return joint_angle(*points)
+
+def get_landmark(landmarks, index):
+    landmark = landmarks[index]
+    return {
+        "x": landmark.x,
+        "y": landmark.y,
+        "z": landmark.z,
+        "visibility": landmark.visibility,
+    }
+
+
+def calculate_angle(a, b, c):
+    if min(
+        a.get("visibility", 1.0),
+        b.get("visibility", 1.0),
+        c.get("visibility", 1.0),
+    ) < 0.5:
+        return None
+
+    return joint_angle(
+        (a["x"], a["y"]),
+        (b["x"], b["y"]),
+        (c["x"], c["y"]),
+    )

@@ -22,7 +22,7 @@ class BasketballAnalyzer(BaseAnalyzer):
         }
 
     def analyze_frame(self, landmarks):
-        if not landmarks:
+        if landmarks is None:
             return None
 
         shot_landmarks = map_mediapipe_to_shot7m2(landmarks)
