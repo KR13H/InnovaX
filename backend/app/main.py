@@ -17,9 +17,7 @@ from app.api.sport_transfer import router as sport_transfer_router
 from app.api.highlights import router as highlights_router
 from app.api.challenges import router as challenges_router
 from app.api.coach_dashboard import router as coach_dashboard_router
-from app.api.movement import router as movement_router
-from app.api.risk_signals import router as risk_signals_router
-from app.api.sport_transfer import router as sport_transfer_router
+
 
 app = FastAPI(
     title="ShadowAthlete API",
@@ -44,9 +42,7 @@ app.include_router(sport_transfer_router)
 app.include_router(highlights_router)
 app.include_router(challenges_router)
 app.include_router(coach_dashboard_router)
-app.include_router(movement_router)
-app.include_router(risk_signals_router)
-app.include_router(sport_transfer_router)
+
 
 
 @app.get("/")

@@ -1,0 +1,10 @@
+opencv-contrib-python
+numpy
+scipy
+pandas
+matplotlib
+torch
+torchvision
+ultralytics
+rtmlib
+onnxruntime
