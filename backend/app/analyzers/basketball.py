@@ -3,6 +3,7 @@ import numpy as np
 
 from app.analyzers.base import BaseAnalyzer
 from app.vision.shot7m2_mapping import map_mediapipe_to_shot7m2
+from app.vision.landmark_utils import get_landmark, calculate_angle
 
 
 class BasketballAnalyzer(BaseAnalyzer):
@@ -33,11 +34,36 @@ class BasketballAnalyzer(BaseAnalyzer):
 
         prediction = self.model.predict(features)[0]
 
+        left_knee = calculate_angle(
+            get_landmark(landmarks, 23),
+            get_landmark(landmarks, 25),
+            get_landmark(landmarks, 27),
+        )
+
+        right_knee = calculate_angle(
+            get_landmark(landmarks, 24),
+            get_landmark(landmarks, 26),
+            get_landmark(landmarks, 28),
+        )
+
+        left_elbow = calculate_angle(
+            get_landmark(landmarks, 11),
+            get_landmark(landmarks, 13),
+            get_landmark(landmarks, 15),
+        )
+
+        right_elbow = calculate_angle(
+            get_landmark(landmarks, 12),
+            get_landmark(landmarks, 14),
+            get_landmark(landmarks, 16),
+        )
+
         return {
-            "action": self.actions.get(
-                prediction,
-                "Unknown"
-            )
+            "action": self.actions.get(prediction, "Unknown"),
+            "left_knee_angle": left_knee,
+            "right_knee_angle": right_knee,
+            "left_elbow_angle": left_elbow,
+            "right_elbow_angle": right_elbow,
         }
 
     def analyze_session(self, frame_results):
@@ -62,10 +88,22 @@ class BasketballAnalyzer(BaseAnalyzer):
             key=counts.get
         )
 
+        def average(key):
+            values = [
+                result[key]
+                for result in frame_results
+                if result.get(key) is not None
+            ]
+            return round(sum(values) / len(values), 1) if values else None
+
         return self.build_result(
             sport="basketball",
             metrics={
                 "dominant_action": dominant_action,
                 "action_counts": counts,
+                "avg_left_knee_angle": average("left_knee_angle"),
+                "avg_right_knee_angle": average("right_knee_angle"),
+                "avg_left_elbow_angle": average("left_elbow_angle"),
+                "avg_right_elbow_angle": average("right_elbow_angle"),
             }
         )
