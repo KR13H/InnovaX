@@ -12,16 +12,18 @@ python-multipart
 python-dotenv
 httpx
 
+# Computer vision / sport analysis
 opencv-python
 opencv-contrib-python
+mediapipe==0.10.21
 numpy
 scipy
 pandas
 matplotlib
-
 torch
 torchvision
-ultralytics
-
+ultralytics==8.4.172
 rtmlib
 onnxruntime
+joblib
+scikit-learn==1.6.1
