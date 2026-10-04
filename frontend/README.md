@@ -31,11 +31,25 @@ API calls go to `/api/*`, which Next proxies to FastAPI at `http://localhost:800
 
 ## Backend wiring
 
-- `POST /auth/signup`, `POST /auth/login`, `GET /auth/me` — sign up / log in; JWT kept in `localStorage`.
-- `POST|PATCH /athlete/profile`, `GET /athlete/profile` — onboarding details; names/stats on Home, Profile, Settings.
-- `GET /sports`, `POST /athlete/sports` — onboarding sport selection.
-- `POST /sessions` + `POST /sessions/{id}/upload` — capture/upload flow. The upload endpoint currently
-  returns 501 on the backend; the app says so and continues to the analysis screen.
+Signed out, every screen shows the Stitch demo athlete (Alex Carter). Signed in, screens use live
+data and show "—" (or an empty state) where the backend has nothing yet — never invented numbers.
+
+| Screen | Endpoints |
+| --- | --- |
+| Sign up / log in | `POST /auth/signup`, `POST /auth/login`, `GET /auth/me` |
+| Onboarding | `POST·PATCH /athlete/profile`, `GET /sports`, `POST /athlete/sports` |
+| Home | `GET /athlete/dashboard` (name, level, XP, score, attributes), `GET /sessions` |
+| My Avatar | `GET /athlete/dashboard` attributes → radar (current / peak / target) |
+| Sessions | `GET /sessions`, `GET /sessions/{id}/recap` |
+| Session detail (`/sessions/[id]`) | `GET /sessions/{id}`, `/recap`, `/explanation`, `/video` (clip playback), analyze endpoints for un-analyzed clips |
+| Sports hub | `GET /sessions` (latest per sport) |
+| Tennis | latest tennis `recap` → stroke split, elbow/knee angles, pose detection |
+| Profile / Settings | `GET /athlete/dashboard`, `GET /records`, `GET /auth/me` |
+| Capture → analysis | `POST /sessions`, `POST /sessions/{id}/upload`, then `analyze-tennis` / `analyze` (cricket) / `analyze-running` |
+
+Not wired because the backend returns 501 for them: `/athlete/xp`, `/athlete/level`,
+`/athlete/versions`, `/athlete/archetype`, `/athlete/heatmap`, `/sports/{slug}/stats|history`,
+`/progress/*`, `/shadow/*`. Basketball has no video analyzer endpoint.
 
 ## How the screens were made
 

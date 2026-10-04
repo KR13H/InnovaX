@@ -2,7 +2,13 @@ from rtmlib import Wholebody
 from ultralytics import YOLO
 
 
+# Two pose backends live here. A merge had folded them into one class, which broke both
+# the cricket analyzer (expects rtmlib output) and the running analyzer (expects YOLO output).
+
+
 class PoseEstimator:
+    """RTMLib whole-body pose. process_frame returns (keypoints, scores). Used by cricket."""
+
     def __init__(self):
         self.model = Wholebody(
             mode="balanced",
@@ -15,6 +21,12 @@ class PoseEstimator:
         keypoints, scores = self.model(frame)
 
         return keypoints, scores
+
+
+class YoloPoseEstimator:
+    """YOLO pose. process_frame returns an Ultralytics result with .keypoints. Used by running."""
+
+    def __init__(self):
         # Pretrained YOLO pose model.
         # Downloads the weights automatically the first time.
         self.model = YOLO("yolo11n-pose.pt")

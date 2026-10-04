@@ -2,7 +2,20 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { api } from "@/lib/api";
+import { type Recap, type Session, parseSummary, relativeDay, useApi } from "@/lib/data";
+import { useAthleteProfile } from "@/lib/useAthlete";
+
+type TennisSummary = {
+  sampled_frames?: number;
+  pose_detection_percent?: number;
+  pose_frame_percentages?: Record<"forehand" | "backhand" | "serve" | "ready_position" | "unknown", number>;
+  mean_joint_angles_degrees?: Record<"left_elbow" | "right_elbow" | "left_knee" | "right_knee", number | null>;
+};
+
+const deg = (n: number | null | undefined) => (n == null ? "—" : `${Math.round(n)}°`);
+const pct = (n: number | null | undefined, digits = 0) => (n == null ? "—" : `${n.toFixed(digits)}%`);
 import { stageClip } from "@/lib/clip";
 
 import BottomNav from "@/components/BottomNav";
@@ -13,6 +26,24 @@ export default function TennisDetails() {
   const router = useRouter();
   const cameraInput = useRef<HTMLInputElement>(null);
   const uploadInput = useRef<HTMLInputElement>(null);
+  const { data: sessions } = useApi<Session[]>("/sessions");
+  const profile = useAthleteProfile();
+  const [latest, setLatest] = useState<TennisSummary | null>(null);
+  const live = sessions !== null;
+
+  // Most recent tennis session that has an analysis (checks the newest few).
+  useEffect(() => {
+    const tennis = (sessions ?? []).filter((s) => s.sport_id === 1).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 5);
+    (async () => {
+      for (const s of tennis) {
+        const recap = await api<Recap>(`/sessions/${s.id}/recap`).catch(() => null);
+        const summary = parseSummary<TennisSummary>(recap?.analysis);
+        if (summary) return setLatest(summary);
+      }
+    })();
+  }, [sessions]);
+  const strokes = latest?.pose_frame_percentages;
+  const share = (k: "forehand" | "backhand" | "serve" | "ready_position", demo: number) => (live ? strokes?.[k] ?? 0 : demo);
 
   // Hand the picked clip to the review screen, which uploads it for tennis analysis.
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -52,11 +83,13 @@ export default function TennisDetails() {
             <div className="flex items-center justify-between">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-caps text-label-caps">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                {" "}PRIMARY DISCIPLINE • LEVEL 27
+                {" "}PRIMARY DISCIPLINE • LEVEL {profile?.level ?? 27}
               </div>
-              <span className="font-label-badge text-label-badge text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
-                Demo Data
-              </span>
+              {!live && (
+                <span className="font-label-badge text-label-badge text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
+                  Demo Data
+                </span>
+              )}
             </div>
             <h1 className="font-headline-xl-mobile text-headline-xl-mobile font-semibold text-on-surface tracking-tight">
               Tennis Biomechanics
@@ -120,7 +153,7 @@ export default function TennisDetails() {
                       Elbow Flexion
                     </span>
                     <span className="font-headline-md text-body-md font-semibold text-on-surface">
-                      142°{" "}
+                      {live ? deg(latest?.mean_joint_angles_degrees?.right_elbow) : "142°"}{" "}
                       <span className="text-primary text-[11px] font-normal">
                         Optimal
                       </span>
@@ -134,7 +167,7 @@ export default function TennisDetails() {
                       Load Knee Flex
                     </span>
                     <span className="font-headline-md text-body-md font-semibold text-on-surface">
-                      128°{" "}
+                      {live ? deg(latest?.mean_joint_angles_degrees?.right_knee) : "128°"}{" "}
                       <span className="text-secondary text-[11px] font-normal">
                         Target 130°
                       </span>
@@ -150,12 +183,12 @@ export default function TennisDetails() {
                   verified
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface font-medium">
-                  97.2% Model Fidelity
+                  {live ? `${pct(latest?.pose_detection_percent, 1)} Pose Detection` : "97.2% Model Fidelity"}
                 </span>
               </div>
               <div className="flex items-center gap-1 text-on-surface-variant font-label-caps text-label-caps">
                 <span>
-                  99.1% FRAMES TRACKED
+                  {live ? `${latest?.sampled_frames ?? 0} FRAMES SAMPLED` : "99.1% FRAMES TRACKED"}
                 </span>
               </div>
             </div>
@@ -172,15 +205,15 @@ export default function TennisDetails() {
                 </h2>
               </div>
               <span className="font-label-caps text-label-caps text-on-surface-variant">
-                LAST 240 SHOTS
+                {live ? (latest ? "LATEST SESSION" : "NO ANALYSIS YET") : "LAST 240 SHOTS"}
               </span>
             </div>
             {/* Multi-segmented Kinetic Bar */}
             <div className="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden flex gap-0.5">
-              <div className="h-full bg-primary" style={{ width: "54%" }} title="Forehand: 54%"></div>
-              <div className="h-full bg-secondary-container" style={{ width: "28%" }} title="Backhand: 28%"></div>
-              <div className="h-full bg-tertiary" style={{ width: "12%" }} title="Serve: 12%"></div>
-              <div className="h-full bg-surface-bright" style={{ width: "6%" }} title="Ready: 6%"></div>
+              <div className="h-full bg-primary" style={{ width: `${share("forehand", 54)}%` }} title={`Forehand: ${Math.round(share("forehand", 54))}%`}></div>
+              <div className="h-full bg-secondary-container" style={{ width: `${share("backhand", 28)}%` }} title={`Backhand: ${Math.round(share("backhand", 28))}%`}></div>
+              <div className="h-full bg-tertiary" style={{ width: `${share("serve", 12)}%` }} title={`Serve: ${Math.round(share("serve", 12))}%`}></div>
+              <div className="h-full bg-surface-bright" style={{ width: `${share("ready_position", 6)}%` }} title={`Ready: ${Math.round(share("ready_position", 6))}%`}></div>
             </div>
             {/* Stroke breakdown legend */}
             <div className="grid grid-cols-4 gap-1 pt-1">
@@ -192,7 +225,7 @@ export default function TennisDetails() {
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md font-bold text-on-surface">
-                  54%
+                  {Math.round(share("forehand", 54))}%
                 </span>
               </div>
               <div className="flex flex-col">
@@ -203,7 +236,7 @@ export default function TennisDetails() {
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md font-bold text-on-surface">
-                  28%
+                  {Math.round(share("backhand", 28))}%
                 </span>
               </div>
               <div className="flex flex-col">
@@ -214,7 +247,7 @@ export default function TennisDetails() {
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md font-bold text-on-surface">
-                  12%
+                  {Math.round(share("serve", 12))}%
                 </span>
               </div>
               <div className="flex flex-col">
@@ -225,12 +258,13 @@ export default function TennisDetails() {
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md font-bold text-on-surface">
-                  6%
+                  {Math.round(share("ready_position", 6))}%
                 </span>
               </div>
             </div>
           </div>
-          {/* Personal Bests & Kinetic Chain Performance */}
+          {/* Personal Bests & Kinetic Chain Performance */}  {/* Benchmarks need /sports/tennis/stats, which the backend does not implement yet. */}
+          {!live && (
           <div className="flex flex-col gap-space-xs">
             <div className="flex items-center justify-between">
               <h2 className="font-headline-md text-body-lg font-semibold text-on-surface">
@@ -312,6 +346,7 @@ export default function TennisDetails() {
               </div>
             </div>
           </div>
+          )}
           {/* Hardware Sensors Telemetry State (Truthful UX) */}
           <div className="flex items-center justify-between p-3.5 bg-surface-container-low rounded-xl">
             <div className="flex items-center gap-3">
@@ -346,6 +381,40 @@ export default function TennisDetails() {
                 </span>
               </Link>
             </div>
+            {live ? (
+              <>
+            {(sessions ?? [])
+              .filter((x) => x.sport_id === 1)
+              .sort((a, b) => b.created_at.localeCompare(a.created_at))
+              .slice(0, 3)
+              .map((x) => (
+                <div key={x.id} onClick={() => router.push(`/sessions/${x.id}`)} className="cursor-pointer flex items-center justify-between p-3.5 bg-surface-container rounded-xl active:bg-surface-container-high transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary flex-shrink-0">
+                      <span className="material-symbols-outlined">sports_tennis</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-body-md text-body-md font-semibold text-on-surface">
+                        Tennis Session #{x.id}
+                      </span>
+                      <div className="flex items-center gap-2 text-on-surface-variant font-body-sm text-[12px]">
+                        <span>{relativeDay(x.recorded_at ?? x.created_at)}</span>
+                        <span>•</span>
+                        <span className="text-primary font-medium capitalize">{x.status}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+                </div>
+              ))}
+            {(sessions ?? []).every((x) => x.sport_id !== 1) && (
+              <p className="font-body-sm text-body-sm text-on-surface-variant p-3.5 bg-surface-container rounded-xl">
+                No tennis sessions yet — record or upload a clip above.
+              </p>
+            )}
+              </>
+            ) : (
+              <>
             {/* Session Card 1 */}
             <div className="flex items-center justify-between p-3.5 bg-surface-container rounded-xl active:bg-surface-container-high transition-colors">
               <div className="flex items-center gap-3">
@@ -432,6 +501,8 @@ export default function TennisDetails() {
                 </span>
               </div>
             </div>
+              </>
+            )}
           </div>
           {/* Hidden native file input for camera/gallery triggers */}
           <input accept="video/*" capture="environment" className="hidden" id="camera-capture-input" type="file" ref={cameraInput} onChange={onFile} />

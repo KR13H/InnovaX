@@ -1,10 +1,17 @@
+from pathlib import Path
+
+import torch
 from ultralytics import YOLO
+
+# Apple-GPU (Metal) inference is ~3-4x faster than CPU here with identical detections.
+DEVICE = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
+DEFAULT_MODEL = Path(__file__).resolve().parents[2] / "weights" / "cricket_ball_best.pt"
 
 
 class CricketBallDetector:
     def __init__(
         self,
-        model_path="weights/cricket_ball_best.pt",
+        model_path=DEFAULT_MODEL,
         confidence_threshold=0.25,
     ):
         self.model = YOLO(model_path)
@@ -15,6 +22,7 @@ class CricketBallDetector:
             frame,
             conf=self.confidence_threshold,
             verbose=False,
+            device=DEVICE,
         )
 
         detections = []

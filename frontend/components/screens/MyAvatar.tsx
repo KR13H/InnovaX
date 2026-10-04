@@ -3,6 +3,17 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/lib/useToast";
+import { type Dashboard, type Session, attributeScore, fmt, relativeDay, useApi } from "@/lib/data";
+
+// Radar axes clockwise from the top, matching the Stitch labels.
+const AXES = ["speed", "power", "endurance", "agility", "coordination", "balance", "mobility", "reaction", "technique", "recovery"];
+const RADAR_R = 110; // radius of the 100% ring in the 320×320 viewBox
+
+function radarXY(i: number, value: number) {
+  const angle = (-90 + i * 36) * (Math.PI / 180);
+  const r = (Math.max(0, Math.min(100, value)) / 100) * RADAR_R;
+  return [Math.round(160 + r * Math.cos(angle)), Math.round(160 + r * Math.sin(angle))] as const;
+}
 
 type Mode = "current" | "peak" | "target";
 const MODE_OFF = "avatar-mode-btn flex flex-col items-center justify-center py-2 px-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all";
@@ -32,6 +43,29 @@ export default function MyAvatar() {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("current");
   const [toast, toastVisible, showToast] = useToast("Avatar calibration telemetry active");
+  const { data: dash } = useApi<Dashboard>("/athlete/dashboard");
+  const live = !!dash;
+  const field = mode === "current" ? "current_score" : mode === "peak" ? "peak_score" : "target_score";
+  const values = AXES.map((a) => attributeScore(dash?.attributes, a, field) ?? 0);
+  const livePoints = values.map((v, i) => radarXY(i, v).join(",")).join(" ");
+  const current = AXES.map((a) => attributeScore(dash?.attributes, a));
+  const known = current.filter((v): v is number => v != null);
+  const aggregate = known.length ? known.reduce((s, v) => s + v, 0) / known.length : null;
+  const axisLabel = (i: number, demo: number) => (live ? fmt(current[i]) : demo);
+  const { data: sessions } = useApi<Session[]>("/sessions");
+  const sessCount = (sportId: number, demo: number) => (live ? (sessions ?? []).filter((s) => s.sport_id === sportId).length : demo);
+  const lastSession = [...(sessions ?? [])].sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+  // Highlight cards: live current vs target for an attribute, or the Stitch demo numbers.
+  const hl = (name: string, demoCur: number, demoTarget: number) => {
+    const cur = live ? attributeScore(dash?.attributes, name) : demoCur;
+    const target = live ? attributeScore(dash?.attributes, name, "target_score") : demoTarget;
+    const delta = cur != null && target != null ? Math.round(cur - target) : null;
+    return { cur, target, delta, curW: `${cur ?? 0}%`, targetW: `${target ?? 0}%` };
+  };
+  const reaction = hl("reaction", 93, 88);
+  const technique = hl("technique", 86, 92);
+  const speed = hl("speed", 82, 86);
+  const deltaText = (d: number | null, demo: string) => (live ? (d == null ? "No target set" : `${d >= 0 ? "+" : ""}${d} pts vs target`) : demo);
 
   function switchMode(next: Mode) {
     setMode(next);
@@ -137,7 +171,7 @@ export default function MyAvatar() {
                   <div>
                     <div className="flex items-center gap-1.5">
                       <span className="font-headline-md text-[18px] leading-tight font-bold text-on-surface">
-                        Twin Lv. 27
+                        Twin Lv. {dash?.athlete.level ?? 27}
                       </span>
                       <span className="px-1.5 py-0.2 rounded bg-primary/20 text-primary text-[10px] font-mono font-bold tracking-tight">
                         SYNCD
@@ -236,7 +270,7 @@ export default function MyAvatar() {
                   </span>
                 </div>
                 <span className="text-[11px] font-mono text-outline">
-                  CALIBRATED 2h AGO
+                  {live ? (lastSession ? `CALIBRATED ${relativeDay(lastSession.created_at).toUpperCase()}` : "NOT CALIBRATED") : "CALIBRATED 2h AGO"}
                 </span>
               </div>
             </div>
@@ -320,8 +354,15 @@ export default function MyAvatar() {
                   <polygon fill="#00eefc" fillOpacity="0.08" points="160,61 221,79 261,129 259,191 222,245 160,254 98,245 59,191 59,129 98,79" stroke="#00eefc" strokeDasharray="4,2" strokeWidth="1.5"></polygon>
                   {/* Current Athlete Polygon (Lime Fill & Accent Nodes) */}
                   {/* Attributes: Speed(82), Power(76), Endurance(88), Agility(85), Coordination(91), Balance(79), Mobility(84), Reaction(93), Technique(86), Recovery(80) */}
-                  <polygon fill="url(#radarRadial)" id="athlete-polygon" points={MODES[mode].points} stroke="#4be277" strokeWidth="2.5"></polygon>
+                  <polygon fill="url(#radarRadial)" id="athlete-polygon" points={live ? livePoints : MODES[mode].points} stroke="#4be277" strokeWidth="2.5"></polygon>
                   {/* Data Node Markers */}
+                  {live ? (
+                    values.map((v, i) => {
+                      const [cx, cy] = radarXY(i, v);
+                      return <circle key={AXES[i]} cx={cx} cy={cy} fill="#4be277" r="3.5"></circle>;
+                    })
+                  ) : (
+                    <>
                   <circle cx="160" cy="70" fill="#4be277" r="3.5"></circle>
                   <circle cx="212" cy="85" fill="#4be277" r="3.5"></circle>
                   <circle cx="254" cy="130" fill="#4be277" r="3.5"></circle>
@@ -332,36 +373,38 @@ export default function MyAvatar() {
                   <circle cx="64" cy="188" fill="#4be277" r="3.5"></circle>
                   <circle cx="64" cy="133" fill="#4be277" r="3.5"></circle>
                   <circle cx="105" cy="85" fill="#4be277" r="3.5"></circle>
+                    </>
+                  )}
                   {/* Category Labels around perimeter */}
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="700" textAnchor="middle" x="160" y="42">
-                    SPD 82
+                    SPD {axisLabel(0, 82)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="start" x="238" y="65">
-                    PWR 76
+                    PWR {axisLabel(1, 76)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="start" x="275" y="128">
-                    END 88
+                    END {axisLabel(2, 88)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="start" x="275" y="198">
-                    AGL 85
+                    AGL {axisLabel(3, 85)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="start" x="238" y="260">
-                    CRD 91
+                    CRD {axisLabel(4, 91)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="middle" x="160" y="286">
-                    BAL 79
+                    BAL {axisLabel(5, 79)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="end" x="82" y="260">
-                    MOB 84
+                    MOB {axisLabel(6, 84)}
                   </text>
                   <text fill="#4be277" fontFamily="Space Grotesk" fontSize="10" fontWeight="700" textAnchor="end" x="45" y="198">
-                    RCT 93
+                    RCT {axisLabel(7, 93)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="end" x="45" y="128">
-                    TEC 86
+                    TEC {axisLabel(8, 86)}
                   </text>
                   <text fill="#dfe2eb" fontFamily="Space Grotesk" fontSize="10" fontWeight="600" textAnchor="end" x="82" y="65">
-                    REC 80
+                    REC {axisLabel(9, 80)}
                   </text>
                 </svg>
               </div>
@@ -377,7 +420,7 @@ export default function MyAvatar() {
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="font-metric-large text-[22px] leading-none font-bold text-on-surface">
-                    84.4
+                    {live ? fmt(aggregate, 1) : "84.4"}
                   </span>
                   <span className="font-mono text-[11px] text-primary">
                     / 100
@@ -409,7 +452,7 @@ export default function MyAvatar() {
                     </span>
                   </div>
                   <span className="font-mono text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                    14 sess
+                    {sessCount(1, 14)} sess
                   </span>
                 </div>
                 <div className="space-y-1">
@@ -439,7 +482,7 @@ export default function MyAvatar() {
                     </span>
                   </div>
                   <span className="font-mono text-[10px] text-secondary bg-secondary/10 px-1.5 py-0.5 rounded">
-                    6 sess
+                    {sessCount(2, 6)} sess
                   </span>
                 </div>
                 <div className="space-y-1">
@@ -469,7 +512,7 @@ export default function MyAvatar() {
                     </span>
                   </div>
                   <span className="font-mono text-[10px] text-tertiary bg-tertiary/10 px-1.5 py-0.5 rounded">
-                    4 sess
+                    {sessCount(3, 4)} sess
                   </span>
                 </div>
                 <div className="space-y-1">
@@ -499,7 +542,7 @@ export default function MyAvatar() {
                     </span>
                   </div>
                   <span className="font-mono text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                    8 sess
+                    {sessCount(4, 8)} sess
                   </span>
                 </div>
                 <div className="space-y-1">
@@ -550,7 +593,7 @@ export default function MyAvatar() {
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="font-metric-large text-[22px] leading-tight font-bold text-primary">
-                    93
+                    {fmt(reaction.cur)}
                     <span className="text-xs text-on-surface-variant">
                       /100
                     </span>
@@ -564,14 +607,14 @@ export default function MyAvatar() {
               <div className="relative w-full h-2 rounded bg-surface-container-highest overflow-hidden">
                 <div className="absolute left-0 top-0 h-full bg-secondary-container/50 rounded" style={{ width: "88%" }}></div>
                 {" "}
-                <div className="absolute left-0 top-0 h-full bg-primary rounded shadow-[0_0_8px_#4be277]" style={{ width: "93%" }}></div>
+                <div className="absolute left-0 top-0 h-full bg-primary rounded shadow-[0_0_8px_#4be277]" style={{ width: reaction.curW }}></div>
               </div>
               <div className="flex justify-between items-center text-[11px] font-mono text-on-surface-variant pt-0.5">
                 <span>
-                  Benchmark: 88 (Twin Target)
+                  Benchmark: {fmt(reaction.target)} (Twin Target)
                 </span>
                 <span className="text-primary font-semibold">
-                  +5 pts vs target
+                  {deltaText(reaction.delta, "+5 pts vs target")}
                 </span>
               </div>
             </div>
@@ -596,7 +639,7 @@ export default function MyAvatar() {
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="font-metric-large text-[22px] leading-tight font-bold text-on-surface">
-                    86
+                    {fmt(technique.cur)}
                     <span className="text-xs text-on-surface-variant">
                       /100
                     </span>
@@ -608,16 +651,16 @@ export default function MyAvatar() {
               </div>
               {/* Split-rail Attribute Progress Track */}
               <div className="relative w-full h-2 rounded bg-surface-container-highest overflow-hidden">
-                <div className="absolute left-0 top-0 h-full bg-secondary-container/60 rounded" style={{ width: "92%" }}></div>
+                <div className="absolute left-0 top-0 h-full bg-secondary-container/60 rounded" style={{ width: technique.targetW }}></div>
                 {" "}
-                <div className="absolute left-0 top-0 h-full bg-primary rounded" style={{ width: "86%" }}></div>
+                <div className="absolute left-0 top-0 h-full bg-primary rounded" style={{ width: technique.curW }}></div>
               </div>
               <div className="flex justify-between items-center text-[11px] font-mono text-on-surface-variant pt-0.5">
                 <span>
-                  Optimal Target: 92
+                  Optimal Target: {fmt(technique.target)}
                 </span>
                 <span className="text-tertiary font-semibold">
-                  -6 pts delta
+                  {deltaText(technique.delta, "-6 pts delta")}
                 </span>
               </div>
             </div>
@@ -642,7 +685,7 @@ export default function MyAvatar() {
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="font-metric-large text-[22px] leading-tight font-bold text-on-surface">
-                    82
+                    {fmt(speed.cur)}
                     <span className="text-xs text-on-surface-variant">
                       /100
                     </span>
@@ -654,13 +697,13 @@ export default function MyAvatar() {
               </div>
               {/* Split-rail Attribute Progress Track */}
               <div className="relative w-full h-2 rounded bg-surface-container-highest overflow-hidden">
-                <div className="absolute left-0 top-0 h-full bg-secondary-container/60 rounded" style={{ width: "86%" }}></div>
+                <div className="absolute left-0 top-0 h-full bg-secondary-container/60 rounded" style={{ width: speed.targetW }}></div>
                 {" "}
-                <div className="absolute left-0 top-0 h-full bg-primary rounded" style={{ width: "82%" }}></div>
+                <div className="absolute left-0 top-0 h-full bg-primary rounded" style={{ width: speed.curW }}></div>
               </div>
               <div className="flex justify-between items-center text-[11px] font-mono text-on-surface-variant pt-0.5">
                 <span>
-                  P90 Standard: 86
+                  {live ? `Target: ${fmt(speed.target)}` : "P90 Standard: 86"}
                 </span>
                 <span className="text-on-surface-variant">
                   Demo Data Tagged

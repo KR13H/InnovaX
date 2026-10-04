@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from scipy.signal import find_peaks
 
-from app.vision.pose_estimator import PoseEstimator
+from app.vision.pose_estimator import YoloPoseEstimator
 
 
 # ============================================================
@@ -775,7 +775,7 @@ def analyze_running_video(video_path):
             f"{video_path}"
         )
 
-    pose_estimator = PoseEstimator()
+    pose_estimator = YoloPoseEstimator()
 
     frame_rows = []
 

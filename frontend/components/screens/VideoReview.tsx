@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { type Sport, type StagedClip, getStagedClip, sportFromQuery } from "@/lib/clip";
 import { submitClip } from "@/lib/upload";
+import PoseVideo from "@/components/PoseVideo";
 
 const SPORT_TAG: Record<Sport, string> = {
   tennis: "TENNIS • FOREHAND DRILL",
@@ -30,10 +31,18 @@ export default function VideoReview() {
   const [status, setStatus] = useState<"idle" | "uploading" | "done">("idle");
   const [note, setNote] = useState<string | null>(null);
 
+  const [clipMeta, setClipMeta] = useState<{ duration: number; width: number; height: number } | null>(null);
+
   useEffect(() => {
     const staged = getStagedClip();
     setClip(staged);
     setSport(staged?.sport ?? sportFromQuery());
+    if (!staged) return;
+    // Read the real clip's length and resolution for the stats row.
+    const probe = document.createElement("video");
+    probe.preload = "metadata";
+    probe.onloadedmetadata = () => setClipMeta({ duration: probe.duration, width: probe.videoWidth, height: probe.videoHeight });
+    probe.src = staged.url;
   }, []);
 
   function togglePlay() {
@@ -54,7 +63,9 @@ export default function VideoReview() {
     const result = clip ? await submitClip(clip, sport) : { ok: false as const, reason: "Demo clip — record or upload a video to save it" };
     setNote(result.ok ? null : result.reason);
     setStatus("done");
-    setTimeout(() => router.push("/onboarding/analyzing"), result.ok ? 900 : 2200);
+    // With a stored session the analysis screen runs the real analyzer; otherwise it plays the demo.
+    const next = result.ok ? `/onboarding/analyzing?session=${result.sessionId}&sport=${sport}` : "/onboarding/analyzing";
+    setTimeout(() => router.push(next), result.ok ? 900 : 2200);
   }
 
   const shownPct = progress ?? 33.3;
@@ -98,16 +109,17 @@ export default function VideoReview() {
       </header>
       <main className="flex flex-col relative w-full pt-16 pb-safe bg-surface flex-1">
         <div className="flex flex-col w-full px-margin-mobile pb-space-xl gap-space-md">
+          {/* Real clip: play it with live pose tracking. Otherwise the Stitch demo preview. */}
+          {clip ? (
+            <PoseVideo src={clip.url} maxHeight="56vh" autoPlay />
+          ) : (
+            <>
           {/* Interactive Video Telemetry Preview Frame */}
           <section className="relative w-full rounded-xl overflow-hidden bg-surface-container-lowest shadow-xl flex flex-col group select-none">
             {/* Video Canvas Container */}
             <div className="relative w-full aspect-[4/5] bg-surface-container-low overflow-hidden flex items-center justify-center" id="videoContainer">
               {/* Video Poster Placeholder */}
-              {clip ? (
-                <video ref={videoRef} src={clip.url} className="absolute inset-0 w-full h-full object-cover opacity-90" playsInline muted={muted} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || DEMO_DURATION)} onTimeUpdate={(e) => setProgress((e.currentTarget.currentTime / (e.currentTarget.duration || 1)) * 100)}></video>
-              ) : (
-                <img className="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-500 ease-out" data-alt="Athletic tennis player completing dynamic forehand baseline swing on modern hardcourt, captured in dramatic low-key cinematic lighting with subtle cyan motion lines tracing racket trajectory, professional sports biomechanics recording" id="previewPoster" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9OOI6puYekRPE7UkyqgzJN7WMZZAICrBP4y4KrOqfuZmxBfBB-W5RWYbtmKMHqTqv2fI9DRv5LtexqJrsgdoWzcq8Rm22RxT1mB5PbNcTc2rsWKIFO-uhVglLwzb8ldE0ZIpxGTPTlyMIhrTZw2OQnZRlGDyx00cwqJyoTK6Y0phvwV7TeUilMDn582zt7wzI06miHzA1E4rRC_Qe3y7r2XMChuyfVh5k0X407puytpb1_ZB5yzY1" />
-              )}
+              <img className="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-500 ease-out" data-alt="Athletic tennis player completing dynamic forehand baseline swing on modern hardcourt, captured in dramatic low-key cinematic lighting with subtle cyan motion lines tracing racket trajectory, professional sports biomechanics recording" id="previewPoster" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9OOI6puYekRPE7UkyqgzJN7WMZZAICrBP4y4KrOqfuZmxBfBB-W5RWYbtmKMHqTqv2fI9DRv5LtexqJrsgdoWzcq8Rm22RxT1mB5PbNcTc2rsWKIFO-uhVglLwzb8ldE0ZIpxGTPTlyMIhrTZw2OQnZRlGDyx00cwqJyoTK6Y0phvwV7TeUilMDn582zt7wzI06miHzA1E4rRC_Qe3y7r2XMChuyfVh5k0X407puytpb1_ZB5yzY1" />
               {/* Digital Twin Skeletal Ghost Track Overlay */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-80" fill="none" viewBox="0 0 320 400">
                 {/* Racket path trajectory ghosting */}
@@ -172,6 +184,8 @@ export default function VideoReview() {
               </div>
             </div>
           </section>
+            </>
+          )}
           {/* Session Details Card */}
           <section className="w-full bg-surface-container rounded-xl p-space-md shadow-md flex flex-col gap-space-md">
             {/* Sport Tag & Category Switcher */}
@@ -212,7 +226,7 @@ export default function VideoReview() {
                   DURATION
                 </span>
                 <span className="font-headline-md text-headline-md text-on-surface font-bold">
-                  14.2s
+                  {clipMeta ? `${clipMeta.duration.toFixed(1)}s` : "14.2s"}
                 </span>
               </div>
               <div className="flex flex-col items-center justify-center p-1 text-center bg-surface-container-high/40 rounded">
@@ -220,9 +234,9 @@ export default function VideoReview() {
                   RESOLUTION
                 </span>
                 <span className="font-headline-md text-headline-md text-secondary font-bold">
-                  1080p
+                  {clipMeta ? `${Math.min(clipMeta.width, clipMeta.height)}p` : "1080p"}
                   <span className="font-body-sm text-body-sm font-normal text-on-surface-variant">
-                    /60
+                    {clipMeta ? (clipMeta.height > clipMeta.width ? "/9:16" : "/16:9") : "/60"}
                   </span>
                 </span>
               </div>
@@ -231,7 +245,7 @@ export default function VideoReview() {
                   CLIP SIZE
                 </span>
                 <span className="font-headline-md text-headline-md text-on-surface font-bold">
-                  34 MB
+                  {clip ? `${(clip.blob.size / 1e6).toFixed(1)} MB` : "34 MB"}
                 </span>
               </div>
             </div>

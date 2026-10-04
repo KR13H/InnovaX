@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth } from "@/lib/api";
-import { DEMO_NAME, useAccountEmail, useAthleteName } from "@/lib/useAthlete";
+import { useAccountEmail, useAthleteName } from "@/lib/useAthlete";
 
 const UNIT_ON = "unit-toggle flex items-center justify-center gap-1.5 py-2 rounded-full font-label-caps text-label-caps uppercase tracking-wider transition-all bg-primary text-on-primary shadow-sm";
 const UNIT_OFF = "unit-toggle flex items-center justify-center gap-1.5 py-2 rounded-full font-label-caps text-label-caps uppercase tracking-wider transition-all text-on-surface-variant hover:text-on-surface";
@@ -119,10 +119,10 @@ export default function Settings() {
                   </div>
                   <div className="flex flex-col min-w-0">
                     <span className="font-headline-md text-headline-md text-on-surface truncate">
-                      {name || DEMO_NAME}
+                      {name}
                     </span>
                     <span className="font-body-sm text-body-sm text-on-surface-variant truncate">
-                      {email ?? "alex.carter@kinetics.io"}
+                      {email}
                     </span>
                   </div>
                 </div>

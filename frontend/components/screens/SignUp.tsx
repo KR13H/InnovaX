@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ApiError, auth } from "@/lib/api";
+import { ApiError, api, auth } from "@/lib/api";
 import { saveDraft } from "@/lib/onboarding";
 
 const REQ_ON = "flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-low text-primary transition-colors";
@@ -14,10 +14,10 @@ const BAR_OFF = "h-full rounded-full bg-surface-variant transition-all duration-
 // Generated from design/stitch/sign_up_shadowathlete/code.html by scripts/stitch-to-jsx.mjs.
 export default function SignUp() {
   const router = useRouter();
-  const [name, setName] = useState("Alex Carter");
-  const [email, setEmail] = useState("alex.carter@kinetics.mesh");
-  const [password, setPassword] = useState("Str0ng!Vector99");
-  const [confirm, setConfirm] = useState("Str0ng!Vector99");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [conflictEmail, setConflictEmail] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,17 +37,21 @@ export default function SignUp() {
         ? { text: "INTERMEDIATE RESOLUTION", color: "text-tertiary" }
         : { text: "VULNERABLE TELEMETRY", color: "text-error" };
   const matches = confirm.length > 0 && confirm === password;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (!matches) return setError("Passwords do not match.");
     if (!req.len) return setError("Password needs at least 8 characters.");
+    if (!name.trim()) return setError("Please enter your name.");
     setSubmitting(true);
     try {
-      await auth.signup(email, password);
-      await auth.login(email, password);
-      saveDraft({ name });
+      await auth.signup(email.trim(), password);
+      await auth.login(email.trim(), password);
+      // Create the athlete profile now so the name is stored even if onboarding is skipped.
+      await api("/athlete/profile", { method: "POST", body: JSON.stringify({ name: name.trim() }) }).catch(() => {});
+      saveDraft({ name: name.trim() });
       router.push("/onboarding/details");
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) setConflictEmail(email);
@@ -170,7 +174,7 @@ export default function SignUp() {
                 <label className="font-label-caps text-label-caps tracking-widest text-on-surface-variant uppercase" htmlFor="email-field">
                   Email Address
                 </label>
-                <span className="inline-flex items-center gap-1 font-label-caps text-label-caps text-primary tracking-wider uppercase" id="email-sync-status">
+                <span className={`inline-flex items-center gap-1 font-label-caps text-label-caps text-primary tracking-wider uppercase ${emailOk ? "" : "invisible"}`} id="email-sync-status">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                   {" "}Telemetry Link OK
                 </span>
@@ -180,7 +184,7 @@ export default function SignUp() {
                   alternate_email
                 </span>
                 <input className="w-full bg-transparent font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none" id="email-field" placeholder="alex@example.com" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <div className="flex items-center gap-1 shrink-0 ml-space-xs">
+                <div className={`flex items-center gap-1 shrink-0 ml-space-xs ${emailOk ? "" : "invisible"}`}>
                   <span className="material-symbols-outlined text-primary text-[20px]" title="Valid Email Mesh Node">
                     check_circle
                   </span>
@@ -259,7 +263,7 @@ export default function SignUp() {
                 <label className="font-label-caps text-label-caps tracking-widest text-on-surface-variant uppercase" htmlFor="confirm-password-field">
                   Confirm Password
                 </label>
-                <span className={`font-label-caps text-label-caps ${matches ? "text-primary" : "text-error"} uppercase`}>
+                <span className={`font-label-caps text-label-caps ${matches ? "text-primary" : "text-error"} uppercase ${confirm ? "" : "invisible"}`}>
                   {matches ? "TWIN MATCH CONFIRMED" : "KEYS DO NOT MATCH"}
                 </span>
               </div>

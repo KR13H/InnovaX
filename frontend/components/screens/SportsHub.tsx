@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAthleteName } from "@/lib/useAthlete";
+import { useAthleteName, useAthleteProfile } from "@/lib/useAthlete";
+import LiveMetricTiles from "@/components/LiveMetricTiles";
+import { type Session, SPORT_BY_ID, SPORT_NAME, relativeDay, useApi } from "@/lib/data";
 
 import BottomNav from "@/components/BottomNav";
 
@@ -11,6 +13,19 @@ import Link from "next/link";
 export default function SportsHub() {
   const router = useRouter();
   const name = useAthleteName();
+  const profile = useAthleteProfile();
+  const { data: sessions } = useApi<Session[]>("/sessions");
+  const live = sessions !== null;
+  const latest = (sport: string) =>
+    (sessions ?? []).filter((x) => SPORT_BY_ID[x.sport_id] === sport).sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+  const latestTitle = (sport: string) => {
+    const l = latest(sport);
+    return l ? `${SPORT_NAME[SPORT_BY_ID[l.sport_id]]} Session #${l.id}` : "No sessions yet";
+  };
+  const latestWhen = (sport: string) => {
+    const l = latest(sport);
+    return l ? relativeDay(l.recorded_at ?? l.created_at) : "Record one";
+  };
   return (
     <div className="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container">
       <header className="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.5)] pt-safe">
@@ -88,7 +103,7 @@ export default function SportsHub() {
                   <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md">
                     <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
                     <span className="font-label-caps text-label-caps text-primary uppercase">
-                      Primary Discipline • Level 27
+                      Primary Discipline • Level {profile?.level ?? 27}
                     </span>
                   </div>
                   {" "}
@@ -108,7 +123,7 @@ export default function SportsHub() {
                         Kinetic Index
                       </span>
                       <span className="font-metric-large text-metric-large text-primary leading-none">
-                        814
+                        {live ? "—" : 814}
                       </span>
                     </div>
                   </div>
@@ -121,14 +136,17 @@ export default function SportsHub() {
                         bolt
                       </span>
                       <span className="truncate text-on-surface">
-                        Morning Baseline Forehand
+                        {live ? latestTitle("tennis") : "Morning Baseline Forehand"}
                       </span>
                     </div>
                     <span className="shrink-0 font-label-caps text-label-caps uppercase text-outline">
-                      Yesterday
+                      {live ? latestWhen("tennis") : "Yesterday"}
                     </span>
                   </div>
                   {/* Live Metrics Grid */}
+                  {live ? (
+                    <LiveMetricTiles sport="tennis" sessions={sessions ?? []} />
+                  ) : (
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase truncate">
@@ -164,6 +182,7 @@ export default function SportsHub() {
                       </span>
                     </div>
                   </div>
+                  )}
                   {/* Video Capture Triggers */}
                   <div className="grid grid-cols-2 gap-space-xs pt-1">
                     <button className="min-h-[44px] px-3 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-headline-md text-body-md flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-transform" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=tennis"); }}>
@@ -215,7 +234,7 @@ export default function SportsHub() {
                         Index
                       </span>
                       <span className="font-metric-large text-metric-large text-secondary-fixed-dim leading-none">
-                        775
+                        {live ? "—" : 775}
                       </span>
                     </div>
                   </div>
@@ -227,13 +246,16 @@ export default function SportsHub() {
                         speed
                       </span>
                       <span className="truncate text-on-surface">
-                        Pace Nets Run-up
+                        {live ? latestTitle("cricket") : "Pace Nets Run-up"}
                       </span>
                     </div>
                     <span className="shrink-0 font-label-caps text-label-caps uppercase text-outline">
-                      3 days ago
+                      {live ? latestWhen("cricket") : "3 days ago"}
                     </span>
                   </div>
+                  {live ? (
+                    <LiveMetricTiles sport="cricket" sessions={sessions ?? []} />
+                  ) : (
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase truncate">
@@ -272,6 +294,7 @@ export default function SportsHub() {
                       </span>
                     </div>
                   </div>
+                  )}
                   <div className="grid grid-cols-2 gap-space-xs pt-1">
                     <button className="min-h-[44px] px-3 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-headline-md text-body-md flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-transform" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=cricket"); }}>
                       <span className="material-symbols-outlined text-[18px]">
@@ -322,7 +345,7 @@ export default function SportsHub() {
                         Index
                       </span>
                       <span className="font-metric-large text-metric-large text-on-surface leading-none">
-                        740
+                        {live ? "—" : 740}
                       </span>
                     </div>
                   </div>
@@ -334,13 +357,16 @@ export default function SportsHub() {
                         sports_score
                       </span>
                       <span className="truncate text-on-surface">
-                        Jump Shot Free Throw Arc
+                        {live ? latestTitle("basketball") : "Jump Shot Free Throw Arc"}
                       </span>
                     </div>
                     <span className="shrink-0 font-label-caps text-label-caps uppercase text-outline">
-                      5 days ago
+                      {live ? latestWhen("basketball") : "5 days ago"}
                     </span>
                   </div>
+                  {live ? (
+                    <LiveMetricTiles sport="basketball" sessions={sessions ?? []} />
+                  ) : (
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase truncate">
@@ -379,6 +405,7 @@ export default function SportsHub() {
                       </span>
                     </div>
                   </div>
+                  )}
                   <div className="grid grid-cols-2 gap-space-xs pt-1">
                     <button className="min-h-[44px] px-3 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-headline-md text-body-md flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-transform" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=basketball"); }}>
                       <span className="material-symbols-outlined text-[18px]">
@@ -429,7 +456,7 @@ export default function SportsHub() {
                         Index
                       </span>
                       <span className="font-metric-large text-metric-large text-primary leading-none">
-                        805
+                        {live ? "—" : 805}
                       </span>
                     </div>
                   </div>
@@ -441,13 +468,16 @@ export default function SportsHub() {
                         sprint
                       </span>
                       <span className="truncate text-on-surface">
-                        5K Tempo Stride
+                        {live ? latestTitle("running") : "5K Tempo Stride"}
                       </span>
                     </div>
                     <span className="shrink-0 font-label-caps text-label-caps uppercase text-outline">
-                      Last week
+                      {live ? latestWhen("running") : "Last week"}
                     </span>
                   </div>
+                  {live ? (
+                    <LiveMetricTiles sport="running" sessions={sessions ?? []} />
+                  ) : (
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase truncate">
@@ -486,6 +516,7 @@ export default function SportsHub() {
                       </span>
                     </div>
                   </div>
+                  )}
                   <div className="grid grid-cols-2 gap-space-xs pt-1">
                     <button className="min-h-[44px] px-3 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-headline-md text-body-md flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-transform" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=running"); }}>
                       <span className="material-symbols-outlined text-[18px]">

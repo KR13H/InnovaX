@@ -39,28 +39,58 @@
   display: none;
 }
 
-/* Phone frame: on wide screens the app renders in a centered phone-width column.
-   The transform makes `position: fixed` headers/nav bars pin to the frame, not the window. */
+/* Phone frame. On phones the page scrolls normally, so `position: fixed` headers and tab bars
+   pin to the viewport. On wider screens the app renders in a centered 430px column: the frame is
+   transformed (so fixed bars pin to it) and an inner container scrolls instead of the frame itself. */
 .app-frame {
   position: relative;
   width: 100%;
   max-width: 430px;
-  height: 100dvh;
   margin: 0 auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-  transform: translateZ(0);
   background-color: #10141a;
-  scrollbar-width: none;
 }
-.app-frame > * {
+.app-scroll > * {
   min-height: 100dvh;
+}
+body {
+  overflow-x: hidden;
 }
 @media (min-width: 640px) {
   body {
     background-color: #05070a;
   }
   .app-frame {
+    height: 100dvh;
+    overflow: hidden;
+    transform: translateZ(0);
     box-shadow: 0 0 0 1px #1c2026, 0 24px 80px rgba(0, 0, 0, 0.6);
+  }
+  .app-scroll {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .app-scroll > * {
+    min-height: 100%;
+  }
+}
+
+/* Screen entrance: a short fade on every navigation (see app/template.tsx). */
+/* Opacity only: a transform here would re-anchor the screens' fixed headers and tab bars. */
+@keyframes screen-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.screen-enter {
+  animation: screen-in 220ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen-enter {
+    animation: none;
   }
 }

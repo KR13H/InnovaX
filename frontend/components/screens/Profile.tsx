@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth } from "@/lib/api";
-import { DEMO_NAME, useAccountEmail, useAthleteProfile } from "@/lib/useAthlete";
+import { useAccountEmail, useAthleteName, useAthleteProfile, useCurrentUser } from "@/lib/useAthlete";
 import { useToast } from "@/lib/useToast";
+import { type Dashboard, type PersonalRecord, type Session, SPORT_BY_ID, SPORT_NAME, fmt, useApi } from "@/lib/data";
+import { readDraft } from "@/lib/onboarding";
 
 const SWITCH_ON = "w-12 h-6 rounded-full bg-primary flex items-center p-0.5 transition-colors cursor-pointer";
 const SWITCH_OFF = "w-12 h-6 rounded-full bg-surface-container-highest flex items-center p-0.5 transition-colors cursor-pointer";
@@ -19,7 +21,18 @@ export default function Profile() {
   const router = useRouter();
   const profile = useAthleteProfile();
   const email = useAccountEmail();
-  const name = profile?.name || DEMO_NAME;
+  const name = useAthleteName();
+  const signedIn = useCurrentUser().status === "signed-in";
+  // Signed in: real values or "—"; signed out: the Stitch demo athlete.
+  const stat = (v: number | null | undefined, demo: number) => (signedIn ? (v != null ? Math.round(v) : "—") : demo);
+  const { data: dash } = useApi<Dashboard>("/athlete/dashboard");
+  const { data: records } = useApi<PersonalRecord[]>("/records");
+  const live = !!dash;
+  const { data: sessions } = useApi<Session[]>("/sessions");
+  const count = (sportId: number) => (sessions ?? []).filter((s) => s.sport_id === sportId).length;
+  // Weekly goal: sessions in the last 7 days vs. the target picked in onboarding (default 5).
+  const weekTarget = readDraft().sessions_per_week ?? 5;
+  const thisWeek = (sessions ?? []).filter((s) => Date.now() - new Date(s.created_at).getTime() < 7 * 86_400_000).length;
   const [ghostTrail, setGhostTrail] = useState(true);
   const [alerts, setAlerts] = useState(true);
   const [toast, toastVisible, showToast] = useToast("Settings updated successfully", 2600);
@@ -102,14 +115,14 @@ export default function Profile() {
                       <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                         verified
                       </span>
-                      {" "}Semi-Pro
+                      {" "}{signedIn ? (profile?.experience_level ?? "Athlete") : "Semi-Pro"}
                     </span>
                   </div>
                   <span className="font-body-sm text-body-sm text-on-surface-variant truncate">
-                    {email ?? "alex.carter@kinetics.io"}
+                    {email}
                   </span>
                   <span className="font-label-caps text-label-caps text-secondary uppercase tracking-widest mt-1">
-                    Twin Node ID: #SHDW-7492-AC
+                    Twin Node ID: #SHDW-{signedIn && profile ? String(profile.id).padStart(4, "0") : "7492-AC"}
                   </span>
                 </div>
               </div>
@@ -121,13 +134,13 @@ export default function Profile() {
                   </span>
                   <div className="flex items-baseline gap-space-xs mt-0.5">
                     <span className="font-metric-large text-metric-large font-bold text-primary tracking-tight">
-                      782
+                      {live ? fmt(dash?.athlete.athlete_score) : 782}
                     </span>
                     <span className="font-label-caps text-label-caps text-primary flex items-center font-bold">
                       <span className="material-symbols-outlined text-[14px]">
                         trending_up
                       </span>
-                      +14 pts
+                      {live ? `Lvl ${dash?.athlete.level}` : "+14 pts"}
                     </span>
                   </div>
                 </div>
@@ -181,7 +194,7 @@ export default function Profile() {
                   Age
                 </span>
                 <span className="font-headline-md text-[18px] font-bold text-on-surface mt-0.5">
-                  {profile?.age ?? 24}
+                  {stat(profile?.age, 24)}
                 </span>
                 <span className="font-body-sm text-[10px] text-on-surface-variant">
                   years
@@ -192,7 +205,7 @@ export default function Profile() {
                   Height
                 </span>
                 <span className="font-headline-md text-[18px] font-bold text-on-surface mt-0.5">
-                  {profile?.height_cm ?? 185}
+                  {stat(profile?.height_cm, 185)}
                 </span>
                 <span className="font-body-sm text-[10px] text-on-surface-variant">
                   cm
@@ -203,7 +216,7 @@ export default function Profile() {
                   Weight
                 </span>
                 <span className="font-headline-md text-[18px] font-bold text-on-surface mt-0.5">
-                  {profile?.weight_kg ?? 78}
+                  {stat(profile?.weight_kg, 78)}
                 </span>
                 <span className="font-body-sm text-[10px] text-on-surface-variant">
                   kg
@@ -236,6 +249,38 @@ export default function Profile() {
               </span>
             </div>
             <div className="grid grid-cols-3 gap-space-sm mt-1">
+              {live ? (
+                (records ?? []).length === 0 ? (
+                  <div className="col-span-3 flex flex-col p-space-sm rounded-lg bg-surface-container-high">
+                    <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
+                      No records yet
+                    </span>
+                    <span className="font-body-sm text-[12px] text-on-surface-variant mt-1">
+                      Analyzed sessions set your personal bests.
+                    </span>
+                  </div>
+                ) : (
+                  [...records!].sort((a, b) => b.achieved_at.localeCompare(a.achieved_at)).slice(0, 3).map((r) => (
+                    <div key={r.id} className="flex flex-col p-space-sm rounded-lg bg-surface-container-high relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-1">
+                        <span className="material-symbols-outlined text-primary text-[14px]">
+                          bolt
+                        </span>
+                      </div>
+                      <span className="font-label-caps text-label-caps uppercase text-on-surface-variant truncate">
+                        {SPORT_NAME[SPORT_BY_ID[r.sport_id]] ?? ""} {r.metric_name.replace(/_/g, " ")}
+                      </span>
+                      <span className="font-headline-md text-[20px] font-bold text-on-surface mt-1">
+                        {Math.round(r.metric_value * 10) / 10}
+                      </span>
+                      <span className="font-label-caps text-label-caps text-primary uppercase">
+                        {r.unit ?? ""} • PR
+                      </span>
+                    </div>
+                  ))
+                )
+              ) : (
+                <>
               {/* PR 1 */}
               <div className="flex flex-col p-space-sm rounded-lg bg-surface-container-high relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-1">
@@ -287,6 +332,8 @@ export default function Profile() {
                   mph • Release
                 </span>
               </div>
+                </>
+              )}
             </div>
           </section>
           {/* Active Disciplines & Targets */}
@@ -299,7 +346,7 @@ export default function Profile() {
                 </h2>
               </div>
               <span className="font-label-caps text-label-caps uppercase text-primary">
-                3 Active Links
+                {live ? `${dash!.sports.length} Active Links` : "3 Active Links"}
               </span>
             </div>
             {/* Sport 1 (Primary) */}
@@ -317,7 +364,7 @@ export default function Profile() {
                   </span>
                 </div>
                 <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
-                  142 Telemetry Runs
+                  {live ? `${count(1)} Telemetry Runs` : "142 Telemetry Runs"}
                 </span>
               </div>
               <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -353,7 +400,7 @@ export default function Profile() {
                   </span>
                 </div>
                 <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
-                  68 Sessions
+                  {live ? `${count(2)} Sessions` : "68 Sessions"}
                 </span>
               </div>
               <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -402,16 +449,16 @@ export default function Profile() {
                     Weekly Training Goal
                   </span>
                   <span className="font-body-sm text-[12px] text-on-surface-variant">
-                    Target: 5 high-speed telemetry sessions
+                    Target: {live ? weekTarget : 5} high-speed telemetry sessions
                   </span>
                 </div>
               </div>
               <div className="flex flex-col items-end">
                 <span className="font-headline-md text-[18px] font-bold text-primary">
-                  4 / 5
+                  {live ? `${thisWeek} / ${weekTarget}` : "4 / 5"}
                 </span>
                 <span className="font-label-caps text-label-caps uppercase text-secondary">
-                  80% Done
+                  {live ? `${Math.min(100, Math.round((thisWeek / weekTarget) * 100))}% Done` : "80% Done"}
                 </span>
               </div>
             </div>

@@ -3,7 +3,8 @@ from pathlib import Path
 
 from app.analyzers.tennis import analyze_tennis
 from app.analyzers.running import analyze_running_video
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
@@ -267,12 +268,89 @@ def get_session_metrics(
         )
     ).all()
     
-@router.post("/{session_id}/upload")
-def upload_session_video(session_id: int):
-    raise HTTPException(
-        status_code=501,
-        detail="Video upload not implemented yet",
+UPLOAD_DIR = Path(__file__).resolve().parents[2] / "uploads"
+VIDEO_MEDIA_TYPES = {".mp4": "video/mp4", ".m4v": "video/mp4", ".mov": "video/quicktime", ".webm": "video/webm", ".avi": "video/x-msvideo", ".mkv": "video/x-matroska"}
+
+
+@router.get("/{session_id}/video")
+def get_session_video(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id == current_user.id
+        )
     )
+    if not athlete:
+        raise HTTPException(404, "Athlete profile not found")
+
+    video_session = db.scalar(
+        select(VideoSession).where(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id == athlete.id,
+        )
+    )
+    if not video_session or not video_session.video_url:
+        raise HTTPException(404, "Session has no video")
+
+    # Only serve files from the folders the analyzers read (same rule as analyze-tennis).
+    backend_dir = UPLOAD_DIR.parent
+    video_path = (backend_dir / video_session.video_url).resolve()
+    allowed = [(backend_dir / "uploads").resolve(), (backend_dir / "data").resolve()]
+    if not any(video_path.is_relative_to(d) for d in allowed) or not video_path.is_file():
+        raise HTTPException(404, "Video file not found")
+
+    return FileResponse(video_path, media_type=VIDEO_MEDIA_TYPES.get(video_path.suffix.lower(), "application/octet-stream"))
+ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".m4v", ".webm", ".avi", ".mkv"}
+
+
+@router.post(
+    "/{session_id}/upload",
+    response_model=SessionResponse,
+)
+def upload_session_video(
+    session_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id == current_user.id
+        )
+    )
+    if not athlete:
+        raise HTTPException(404, "Athlete profile not found")
+
+    video_session = db.scalar(
+        select(VideoSession).where(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id == athlete.id,
+        )
+    )
+    if not video_session:
+        raise HTTPException(404, "Session not found")
+
+    extension = Path(file.filename or "").suffix.lower() or ".mp4"
+    if extension not in ALLOWED_VIDEO_EXTENSIONS:
+        raise HTTPException(400, f"Unsupported video type: {extension}")
+
+    # Stored relative to backend/ (e.g. uploads/3/12.mp4), which is what the analyze endpoints expect.
+    athlete_dir = UPLOAD_DIR / str(athlete.id)
+    athlete_dir.mkdir(parents=True, exist_ok=True)
+    destination = athlete_dir / f"{session_id}{extension}"
+    with destination.open("wb") as out:
+        while chunk := file.file.read(1024 * 1024):
+            out.write(chunk)
+
+    video_session.video_url = str(destination.relative_to(UPLOAD_DIR.parent))
+    video_session.status = "uploaded"
+    db.commit()
+    db.refresh(video_session)
+
+    return video_session
 
 @router.post("/{session_id}/analyze")
 def analyze_cricket_session(
@@ -484,17 +562,31 @@ def analyze_cricket_session(
         "analysis":
             result,
     }
+
+@router.post("/{session_id}/analyze-running")
 def analyze_session(
     session_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     # --------------------------------------------------------
-    # 1. Find session
+    # 1. Find session (scoped to the signed-in athlete)
     # --------------------------------------------------------
+
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id == current_user.id
+        )
+    )
+    if not athlete:
+        raise HTTPException(404, "Athlete profile not found")
 
     session = (
         db.query(VideoSession)
-        .filter(VideoSession.id == session_id)
+        .filter(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id == athlete.id,
+        )
         .first()
     )
 
@@ -650,22 +742,6 @@ def analyze_session(
 
 
 
-@router.get("/{session_id}/explanation")
-def get_session_explanation(session_id: int):
-    raise HTTPException(
-        status_code=501,
-        detail="Performance explanation not implemented yet",
-    )
-
-
-@router.get("/{session_id}/recap")
-def get_session_recap(session_id: int):
-    raise HTTPException(
-        status_code=501,
-        detail="Session recap not implemented yet",
-    )
-
-
 @router.get(
     "/{session_id}/technique-replay",
     response_model=list[TechniqueReplayResponse],
@@ -705,14 +781,6 @@ def get_technique_replay(
             TechniqueReplay.session_id == session_id
         )
     ).all()
-
-@router.get("/{session_id}/reference-comparison")
-def get_reference_comparison(session_id: int):
-    raise HTTPException(
-        status_code=501,
-        detail="Reference comparison not implemented yet",
-    )
-
 
 @router.patch("/{session_id}/status")
 def update_session_status(session_id: int):
@@ -1123,6 +1191,69 @@ def get_reference_comparison(
         })
 
     return results
+
+@router.post("/{session_id}/analyze-basketball")
+def analyze_basketball_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    from app.analyzers.basketball_video import analyze_basketball_video
+
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id == current_user.id
+        )
+    )
+    if not athlete:
+        raise HTTPException(404, "Athlete profile not found")
+
+    video_session = db.scalar(
+        select(VideoSession).where(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id == athlete.id,
+        )
+    )
+    if not video_session:
+        raise HTTPException(404, "Session not found")
+    if not video_session.video_url:
+        raise HTTPException(400, "Session has no video path")
+
+    # Same path rules as analyze-tennis.
+    backend_dir = Path(__file__).resolve().parents[2]
+    video_path = (backend_dir / video_session.video_url).resolve()
+    allowed_dirs = [(backend_dir / "data").resolve(), (backend_dir / "uploads").resolve()]
+    if not any(video_path.is_relative_to(d) for d in allowed_dirs):
+        raise HTTPException(400, "Video must be inside backend/data or backend/uploads")
+
+    if db.scalar(select(SessionAnalysis).where(SessionAnalysis.session_id == session_id)):
+        raise HTTPException(409, "Analysis already exists")
+
+    try:
+        result = analyze_basketball_video(video_path)
+    except FileNotFoundError:
+        raise HTTPException(404, "Video or model file not found")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+
+    analysis = SessionAnalysis(
+        session_id=session_id,
+        performance_score=result.get("session_score"),
+        summary=json.dumps(result),
+        analysis_data=result,
+        status="completed",
+    )
+    video_session.status = "completed"
+    db.add(analysis)
+    db.commit()
+    db.refresh(analysis)
+
+    return {
+        "session_id": session_id,
+        "analysis_id": analysis.id,
+        "results": result,
+    }
+
 
 @router.post("/{session_id}/analyze-tennis")
 def analyze_tennis_session(

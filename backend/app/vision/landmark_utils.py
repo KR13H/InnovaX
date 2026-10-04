@@ -29,3 +29,17 @@ def landmark_angle(landmarks, indices, width, height, min_visibility=0.6):
         points.append((landmark.x * width, landmark.y * height))
 
     return joint_angle(*points)
+
+def get_landmark(landmarks, index):
+    """(x, y) of a normalized MediaPipe landmark, or None when it is poorly visible."""
+    landmark = landmarks[index]
+    if (getattr(landmark, "visibility", 1.0) or 0.0) < 0.5:
+        return None
+    return (landmark.x, landmark.y)
+
+
+def calculate_angle(a, b, c):
+    """Angle at b in degrees for 2D points; None if any point is missing."""
+    if a is None or b is None or c is None:
+        return None
+    return joint_angle(a, b, c)

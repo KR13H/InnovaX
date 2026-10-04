@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import QuickCapture from "@/components/QuickCapture";
 
 // Shared tab bar. Markup is the 5-tab variant from the Stitch "My Avatar" screen;
 // the active tab gets the same classes Stitch applies via `data-active-classes`.
@@ -16,9 +17,12 @@ const TABS = [
 const BASE = "flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-colors group";
 const ACTIVE = "text-primary [&_span.indicator]:opacity-100 [&_.material-symbols-outlined]:text-primary";
 
-export default function BottomNav() {
+/** `capture={false}` hides the floating record button (for screens with their own "new session" action). */
+export default function BottomNav({ capture = true }: { capture?: boolean } = {}) {
   const pathname = usePathname();
   return (
+    <>
+    {capture && <QuickCapture />}
     <nav className="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/85 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.6)]">
       <div className="flex items-center justify-around h-16 px-space-xs">
         {TABS.map((tab) => {
@@ -38,5 +42,6 @@ export default function BottomNav() {
         })}
       </div>
     </nav>
+    </>
   );
 }

@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import LiveSessionCard from "@/components/LiveSessionCard";
+import { type Session, SPORT_BY_ID, SPORT_NAME, relativeDay, useApi } from "@/lib/data";
 
 const CHIP_ON = ["bg-primary-container", "text-on-primary-container"];
 const CHIP_OFF = ["bg-surface-container-high", "text-on-surface-variant"];
@@ -25,6 +27,19 @@ export default function SessionHistory() {
   }, []);
 
   const q = query.trim().toLowerCase();
+  const { data: liveSessions } = useApi<Session[]>("/sessions");
+  const live = liveSessions !== null;
+  const liveShown = (liveSessions ?? [])
+    .filter((s) => sport === "all" || SPORT_BY_ID[s.sport_id] === sport)
+    .filter((s) => q === "" || `${SPORT_NAME[SPORT_BY_ID[s.sport_id]] ?? ""} session #${s.id} ${s.status} ${relativeDay(s.created_at)}`.toLowerCase().includes(q))
+    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+  const analyzedCount = (liveSessions ?? []).filter((x) => x.status === "completed" || x.status === "analyzed").length;
+  // Newest session that still needs analysis, surfaced in the banner.
+  const pending = [...(liveSessions ?? [])]
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .find((x) => x.status === "uploaded" || x.status === "processing" || x.status === "failed");
+  const count = (slug: string, demo: number) =>
+    live ? (slug === "all" ? liveSessions!.length : liveSessions!.filter((s) => SPORT_BY_ID[s.sport_id] === slug).length) : demo;
   const visible = (i: number, cardSport: string) =>
     (sport === "all" || sport === cardSport) && (q === "" || (cardText[i] ?? "").includes(q));
   const chip = (base: string, value: string) => {
@@ -71,6 +86,37 @@ export default function SessionHistory() {
       <main className="flex flex-col relative w-full pt-16 pb-20 bg-surface flex-1">
         <div className="flex flex-col w-full">
           {/* Active Live Background Processing Banner */}
+          {live ? (
+            <>
+          {pending && (
+            <aside aria-label="Session awaiting analysis" onClick={() => router.push(`/sessions/${pending.id}`)} className="cursor-pointer relative mx-margin-mobile mt-space-md mb-space-sm p-space-md rounded-xl bg-surface-container-high flex items-center justify-between gap-space-sm overflow-hidden shadow-md">
+              <div className="flex items-center gap-space-sm min-w-0 z-10">
+                <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-highest flex-shrink-0">
+                  <span className="w-3 h-3 rounded-full bg-secondary animate-ping absolute opacity-75"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-secondary relative"></span>
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-space-xs">
+                    <span className="font-headline-md text-body-sm font-semibold text-on-surface truncate">
+                      Session #{pending.id}
+                    </span>
+                    <span className="font-label-caps text-label-caps uppercase px-1.5 py-0.5 rounded-full bg-secondary/15 text-secondary">
+                      {SPORT_NAME[SPORT_BY_ID[pending.sport_id]] ?? "Session"}
+                    </span>
+                  </div>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant truncate">
+                    {pending.status === "processing" ? "Analyzing biomechanics…" : pending.status === "failed" ? "Analysis failed — tap to retry" : "Uploaded — tap to analyze"}
+                  </p>
+                </div>
+              </div>
+              <span className="z-10 flex-shrink-0 px-space-sm py-1.5 rounded-full bg-secondary/15 text-secondary font-label-caps text-label-caps uppercase tracking-wider">
+                Open
+              </span>
+            </aside>
+          )}
+            </>
+          ) : (
+            <>
           <aside aria-label="Active session processing banner" className="relative mx-margin-mobile mt-space-md mb-space-sm p-space-md rounded-xl bg-surface-container-high shadow-lg overflow-hidden flex items-center justify-between gap-space-sm">
             <div className="absolute -right-6 -bottom-6 w-28 h-28 bg-secondary-container/10 rounded-full blur-2xl pointer-events-none"></div>
             <div className="flex items-center gap-space-sm min-w-0 z-10">
@@ -96,6 +142,8 @@ export default function SessionHistory() {
               Status
             </button>
           </aside>
+            </>
+          )}
           {/* Title & Meta Overview */}
           <section className="px-margin-mobile pt-space-sm pb-space-xs flex items-baseline justify-between">
             <div>
@@ -104,10 +152,10 @@ export default function SessionHistory() {
               </h1>
               {" "}
               <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                28 Sessions Logged • 12 Personal Bests
+                {live ? `${liveSessions!.length} ${liveSessions!.length === 1 ? "Session" : "Sessions"} Logged • ${analyzedCount} Analyzed` : "28 Sessions Logged • 12 Personal Bests"}
               </p>
             </div>
-            <div className="flex items-center gap-1 text-primary">
+            <div className={`flex items-center gap-1 text-primary ${live ? "hidden" : ""}`}>
               <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                 insights
               </span>
@@ -137,7 +185,7 @@ export default function SessionHistory() {
                 All Sports
               </span>
               <span className="bg-on-primary-container/20 px-1.5 py-0.2 rounded-full text-[10px]">
-                28
+                {count("all", 28)}
               </span>
             </button>
             <button className={chip("filter-chip flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider flex-shrink-0 active:scale-95 transition-transform", "tennis")} data-sport="tennis" onClick={() => setSport("tennis")}>
@@ -145,7 +193,7 @@ export default function SessionHistory() {
                 Tennis
               </span>
               <span className="bg-surface-container-highest px-1.5 py-0.2 rounded-full text-[10px]">
-                14
+                {count("tennis", 14)}
               </span>
             </button>
             <button className={chip("filter-chip flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider flex-shrink-0 active:scale-95 transition-transform", "cricket")} data-sport="cricket" onClick={() => setSport("cricket")}>
@@ -153,7 +201,7 @@ export default function SessionHistory() {
                 Cricket
               </span>
               <span className="bg-surface-container-highest px-1.5 py-0.2 rounded-full text-[10px]">
-                6
+                {count("cricket", 6)}
               </span>
             </button>
             <button className={chip("filter-chip flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider flex-shrink-0 active:scale-95 transition-transform", "basketball")} data-sport="basketball" onClick={() => setSport("basketball")}>
@@ -161,7 +209,7 @@ export default function SessionHistory() {
                 Basketball
               </span>
               <span className="bg-surface-container-highest px-1.5 py-0.2 rounded-full text-[10px]">
-                5
+                {count("basketball", 5)}
               </span>
             </button>
             <button className={chip("filter-chip flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider flex-shrink-0 mr-margin-mobile active:scale-95 transition-transform", "running")} data-sport="running" onClick={() => setSport("running")}>
@@ -169,12 +217,28 @@ export default function SessionHistory() {
                 Running
               </span>
               <span className="bg-surface-container-highest px-1.5 py-0.2 rounded-full text-[10px]">
-                3
+                {count("running", 3)}
               </span>
             </button>
           </nav>
           {/* Sessions Timeline Groups */}
           <div ref={listRef} className="px-margin-mobile mt-space-md flex flex-col gap-space-lg mb-space-xl">
+            {live ? (
+              <div className="session-group flex flex-col gap-space-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-widest">
+                    Your Sessions
+                  </span>
+                  <span className="font-label-caps text-label-caps uppercase text-primary font-bold">
+                    {liveShown.length} {liveShown.length === 1 ? "Session" : "Sessions"}
+                  </span>
+                </div>
+                {liveShown.map((s) => (
+                  <LiveSessionCard key={s.id} session={s} />
+                ))}
+              </div>
+            ) : (
+              <>
             {/* GROUP: YESTERDAY */}
             <div className={`${visible(0, "tennis") ? "" : "hidden "}session-group flex flex-col gap-space-sm`}>
               <div className="flex items-center justify-between">
@@ -445,8 +509,10 @@ export default function SessionHistory() {
                 </div>
               </article>
             </div>
+              </>
+            )}
             {/* Empty State Container (Hidden by default, triggered on empty search) */}
-            <div className={`${visible(0, "tennis") || visible(1, "cricket") || visible(2, "tennis") || visible(3, "running") ? "hidden" : "flex"} flex-col items-center justify-center p-space-xl text-center rounded-xl bg-surface-container`} id="no-sessions-fallback">
+            <div className={`${(live ? liveShown.length > 0 : visible(0, "tennis") || visible(1, "cricket") || visible(2, "tennis") || visible(3, "running")) ? "hidden" : "flex"} flex-col items-center justify-center p-space-xl text-center rounded-xl bg-surface-container`} id="no-sessions-fallback">
               <div className="w-14 h-14 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant mb-space-sm">
                 <span className="material-symbols-outlined text-[28px]">
                   search_off
