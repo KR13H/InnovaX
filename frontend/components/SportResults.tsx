@@ -42,7 +42,8 @@ function cricketNotes(r: CricketResult): Note[] {
 export function CricketResults({ result }: { result: CricketResult }) {
   const pose = result.pose ?? {};
   const bio = pose.biomechanics ?? {};
-  const frames = pose.video?.frames ?? 0;
+  // High-fps clips are sampled (~30 fps) for pose, so measure coverage against sampled frames.
+  const frames = pose.processing?.frames_sampled ?? pose.video?.frames ?? 0;
   const tracked = frames ? ((pose.processing?.frames_with_pose ?? 0) / frames) * 100 : 0;
   const t = pose.timing ?? {};
   const fk = bio.ffc?.front_knee_angle_deg;

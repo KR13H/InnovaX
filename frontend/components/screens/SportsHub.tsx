@@ -42,12 +42,6 @@ export default function SportsHub() {
             </div>
           </div>
           <div className="flex items-center gap-space-xs shrink-0">
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-surface-container-low shadow-[inset_0_0_12px_rgba(34,197,94,0.08)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
-              <span className="font-label-caps text-label-caps text-primary-container uppercase hidden xs:inline">
-                LIVE
-              </span>
-            </div>
             <Link className="min-w-[44px] min-h-[44px] flex items-center justify-center" data-path="profile" href="/profile">
               <img alt="Profile" className="w-8 h-8 rounded-full object-cover ring-1 ring-secondary-container/40 hover:ring-secondary-container transition-all" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8" />
             </Link>
@@ -63,33 +57,10 @@ export default function SportsHub() {
                 <h1 className="font-headline-xl-mobile text-headline-xl-mobile text-on-surface tracking-tight">
                   Sports Hub
                 </h1>
-                <span className="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-caps text-label-caps uppercase">
-                  Live Sync
-                </span>
               </div>
               <p className="font-body-md text-body-md text-on-surface-variant">
                 4 Disciplines • 1 Persistent Avatar
               </p>
-            </div>
-            {/* Telemetry Calibration Callout */}
-            <div className="p-space-md rounded-xl bg-surface-container-high relative overflow-hidden shadow-lg">
-              <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-primary/10 blur-xl pointer-events-none"></div>
-              {" "}
-              <div className="flex items-start gap-space-sm relative z-10">
-                <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center shrink-0 text-primary-container">
-                  <span className="material-symbols-outlined text-[18px]">
-                    sync_alt
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1 min-w-0">
-                  <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase">
-                    Cross-Sport Kinematics
-                  </span>
-                  <p className="font-body-sm text-body-sm text-on-surface">
-                    Every session in any sport calibrates your unified digital twin's biomechanics.
-                  </p>
-                </div>
-              </div>
             </div>
             {/* Sports Stream Stack */}
             <div className="flex flex-col gap-space-md">
@@ -118,7 +89,7 @@ export default function SportsHub() {
                         Tennis
                       </span>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className={`${live ? "hidden" : "flex"} flex-col items-end`}>
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
                         Kinetic Index
                       </span>
@@ -229,7 +200,7 @@ export default function SportsHub() {
                         Cricket Pace
                       </span>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className={`${live ? "hidden" : "flex"} flex-col items-end`}>
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
                         Index
                       </span>
@@ -340,7 +311,7 @@ export default function SportsHub() {
                         Basketball
                       </span>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className={`${live ? "hidden" : "flex"} flex-col items-end`}>
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
                         Index
                       </span>
@@ -451,7 +422,7 @@ export default function SportsHub() {
                         Running
                       </span>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className={`${live ? "hidden" : "flex"} flex-col items-end`}>
                       <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
                         Index
                       </span>
@@ -537,118 +508,6 @@ export default function SportsHub() {
                   </div>
                 </div>
               </div>
-            </div>
-            {/* Unified Profile Synthesis Banner */}
-            <div className="p-space-md rounded-xl bg-surface-container-low shadow-2xl flex flex-col gap-space-sm mt-space-xs">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-space-sm">
-                  <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-secondary">
-                    <span className="material-symbols-outlined text-[24px]">
-                      view_in_ar
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-headline-md text-body-md text-on-surface tracking-tight">
-                      {name} • Digital Twin
-                    </span>
-                    <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                      Biomechanical Calibration Status
-                    </span>
-                  </div>
-                </div>
-                <span className="px-2 py-0.5 rounded bg-surface-container-highest text-outline font-label-caps text-label-caps uppercase">
-                  Demo Data
-                </span>
-              </div>
-              <div className="h-px w-full bg-outline-variant/30"></div>
-              {/* Cross-Discipline Calibration Feeds */}
-              <div className="flex flex-col gap-space-xs">
-                <span className="font-label-caps text-label-caps text-outline uppercase tracking-wider">
-                  Active Contribution Feeds
-                </span>
-                <div className="grid grid-cols-1 gap-2 pt-1">
-                  {/* Tennis Feed */}
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-primary">
-                        sports_tennis
-                      </span>
-                      <span className="font-body-sm text-body-sm text-on-surface">
-                        Tennis
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-label-badge text-label-badge text-on-surface-variant">
-                        Agility &amp; Arm Speed
-                      </span>
-                      <span className="w-2 h-2 rounded-full bg-primary-container"></span>
-                    </div>
-                  </div>
-                  {/* Cricket Feed */}
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-secondary">
-                        sports_cricket
-                      </span>
-                      <span className="font-body-sm text-body-sm text-on-surface">
-                        Cricket Pace
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-label-badge text-label-badge text-on-surface-variant">
-                        Power &amp; Shoulder Load
-                      </span>
-                      <span className="w-2 h-2 rounded-full bg-secondary-fixed-dim"></span>
-                    </div>
-                  </div>
-                  {/* Basketball Feed */}
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-tertiary">
-                        sports_basketball
-                      </span>
-                      <span className="font-body-sm text-body-sm text-on-surface">
-                        Basketball
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-label-badge text-label-badge text-on-surface-variant">
-                        Vertical &amp; Coordination
-                      </span>
-                      <span className="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
-                    </div>
-                  </div>
-                  {/* Running Feed */}
-                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-primary">
-                        directions_run
-                      </span>
-                      <span className="font-body-sm text-body-sm text-on-surface">
-                        Running
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-label-badge text-label-badge text-on-surface-variant">
-                        Cadence &amp; Endurance
-                      </span>
-                      <span className="w-2 h-2 rounded-full bg-primary"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Quick Action to Inspect Avatar */}
-              <Link className="min-h-[44px] w-full mt-2 py-2.5 px-4 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-secondary font-headline-md text-body-md flex items-center justify-center gap-2 transition-colors" data-path="my-avatar" href="/avatar">
-                <span className="material-symbols-outlined text-[20px]">
-                  3d_rotation
-                </span>
-                <span>
-                  Inspect Unified Mesh in 3D
-                </span>
-                <span className="material-symbols-outlined text-[16px]">
-                  chevron_right
-                </span>
-              </Link>
             </div>
           </div>
         </div>

@@ -30,7 +30,7 @@ export default function HomeDashboard() {
 
   // A signed-in athlete with no attributes or sessions sees the "uncalibrated" twin state.
   useEffect(() => {
-    if (dash && dash.attributes.length === 0 && (sessions?.length ?? 0) === 0) setDemo(false);
+    if (dash && sessions) setDemo(dash.attributes.length > 0 || sessions.length > 0);
   }, [dash, sessions]);
   const [spinning, setSpinning] = useState(false);
 
@@ -55,12 +55,6 @@ export default function HomeDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-space-xs shrink-0">
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-surface-container-low shadow-[inset_0_0_12px_rgba(34,197,94,0.08)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
-              <span className="font-label-caps text-label-caps text-primary-container uppercase hidden xs:inline">
-                LIVE
-              </span>
-            </div>
             <Link className="min-w-[44px] min-h-[44px] flex items-center justify-center" data-path="profile" href="/profile">
               <img alt="Profile" className="w-8 h-8 rounded-full object-cover ring-1 ring-secondary-container/40 hover:ring-secondary-container transition-all" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8" />
             </Link>
@@ -102,7 +96,7 @@ export default function HomeDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col items-end bg-surface-container-low px-3 py-1.5 rounded-xl shadow-sm">
+              <div className={`${live && dash?.athlete.athlete_score == null ? "hidden" : "flex"} flex-col items-end bg-surface-container-low px-3 py-1.5 rounded-xl shadow-sm`}>
                 <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
                   Athlete Score
                 </span>
@@ -119,24 +113,6 @@ export default function HomeDashboard() {
           </section>
           {/* CENTERPIECE: DIGITAL ATHLETE AVATAR CARD WITH STATE SWITCHER */}
           <section className="flex flex-col bg-surface-container-low rounded-xl overflow-hidden shadow-xl">
-            {/* State Toggle Bar */}
-            <div className="flex items-center justify-between p-space-sm bg-surface-container-lowest/60 backdrop-blur-md">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
-                <span className="font-label-caps text-label-caps text-secondary-container uppercase tracking-wider">
-                  Neural Mesh V4.2
-                </span>
-              </div>
-              {/* Interactive Preview Pill Switcher */}
-              <div className="inline-flex p-0.5 bg-surface-container-highest rounded-full shadow-inner" id="state-toggle-group">
-                <button className={demo ? TOG_ON : TOG_OFF} id="btn-populated" type="button" onClick={() => setDemo(true)}>
-                  Demo Data
-                </button>
-                <button className={demo ? TOG_OFF : TOG_ON} id="btn-empty" type="button" onClick={() => setDemo(false)}>
-                  New User
-                </button>
-              </div>
-            </div>
             {/* POPULATED STATE CONTAINER */}
             <div className={demo ? "flex flex-col" : "hidden flex-col"} id="avatar-populated-view">
               {/* 3D Ghost Canvas Simulation */}
@@ -144,34 +120,6 @@ export default function HomeDashboard() {
                 {/* Background Neon Telemetry Field */}
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_rgba(0,238,252,0.3)_0%,_transparent_70%)] pointer-events-none"></div>
                 <div className="absolute inset-0 bg-cover bg-center mix-blend-screen opacity-90" data-alt="Full body holographic wireframe sports avatar swinging a tennis racket with luminous cyan biometric stroboscopic motion paths and neon trail vectors against a jet black sports laboratory background, hyper-detailed kinetic depth" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkTgUuZaAWPSNrKDX6-Dq5MVCj9Ma70MwwvhiOljkdRzk3GR6uTsbX7IGHqyU17u90K8mUNs5VoP90gwkhl-H9nBJIa7HiKM-mmBhTbH7yfmnbWw3p_bG8h30aePf6QyqWeOLs0TvlP47AQm6JHKSdFPFvyCqfoR8z_ZDV7ZP8g33P02c965AneNU1G9_2E2i3baGbhPzkOR6QO1xX4Wyi6p3uLJlkmWOuBfdaK3YolqCGRWD2F24K')" }}></div>
-                {/* Telemetry Data Overlay Badges */}
-                <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                  <div className="flex items-center gap-1.5 bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded-full shadow-md">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
-                    <span className="font-label-caps text-label-caps text-secondary uppercase">
-                      Twin Sync: 99.4%
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded-full shadow-md">
-                    <span className="material-symbols-outlined text-[13px] text-primary">
-                      sensors
-                    </span>
-                    <span className="font-label-caps text-label-caps text-primary uppercase">
-                      32 Joint Nodes
-                    </span>
-                  </div>
-                </div>
-                <div className="absolute top-3 right-3 bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded-full shadow-md">
-                  <span className="font-label-caps text-label-caps text-tertiary uppercase">
-                    4 Sports Unified
-                  </span>
-                </div>
-                {/* Interactive Pose Calibrator Icon Action */}
-                <button className={`${spinning ? "rotate-180 " : ""}absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-high/90 backdrop-blur-md flex items-center justify-center text-secondary-container hover:bg-secondary-container hover:text-on-secondary-fixed transition-colors shadow-lg active:scale-95`} id="recalibrate-btn" onClick={spin} title="Rotate avatar mesh" type="button">
-                  <span className="material-symbols-outlined text-lg">
-                    360
-                  </span>
-                </button>
               </div>
               {/* XP Level Progress & Calibrated Sports Footnote */}
               <div className="p-space-md flex flex-col gap-space-sm bg-surface-container-low">
@@ -212,9 +160,6 @@ export default function HomeDashboard() {
                       </span>
                     </div>
                   </div>
-                  <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                    Model ID #SHDW-2704
-                  </span>
                 </div>
               </div>
             </div>
@@ -255,15 +200,10 @@ export default function HomeDashboard() {
                   Start Session
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 bg-on-primary-container/20 px-2.5 py-1 rounded-full text-xs font-label-caps">
-                <span className="w-2 h-2 rounded-full bg-on-primary-container animate-pulse"></span>
-                <span>
-                  Ready for Capture
-                </span>
-              </div>
             </button>
           </section>
           {/* "SHADOW YOU" KINETIC CHALLENGE SECTION */}
+          {!live && (
           <section className="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-xl shadow-lg relative overflow-hidden">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -341,7 +281,9 @@ export default function HomeDashboard() {
               </span>
             </button>
           </section>
+          )}
           {/* UNIVERSAL ATTRIBUTES QUICK GRID */}
+          {(!live || (dash?.attributes.length ?? 0) > 0) && (
           <section className="flex flex-col gap-space-sm">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
@@ -471,6 +413,7 @@ export default function HomeDashboard() {
               </div>
             </div>
           </section>
+          )}
           {/* MULTI-SPORT SHORTCUTS (2x2 Grid) */}
           <section className="flex flex-col gap-space-sm">
             <div className="flex items-center justify-between">
@@ -498,11 +441,11 @@ export default function HomeDashboard() {
                   Tennis
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  {live ? `${sessionCount(1)} sessions logged` : "14 sessions logged"}
+                  {live ? `${sessionCount(1)} ${sessionCount(1) === 1 ? "session" : "sessions"} logged` : "14 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-secondary uppercase">
-                    Score 814
+                    {live ? "" : "Score 814"}
                   </span>
                   <button className="w-6 h-6 rounded-md bg-primary-container text-on-primary-container flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" title="Quick Capture Tennis" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=tennis"); }}>
                     <span className="material-symbols-outlined text-sm">
@@ -520,18 +463,18 @@ export default function HomeDashboard() {
                     </span>
                   </div>
                   <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                    Calibrated
+                    {live ? (sessionCount(2) > 0 ? "Calibrated" : "New") : "Calibrated"}
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md text-on-surface font-semibold truncate">
                   Fast Bowling
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  {live ? `${sessionCount(2)} sessions logged` : "6 sessions logged"}
+                  {live ? `${sessionCount(2)} ${sessionCount(2) === 1 ? "session" : "sessions"} logged` : "6 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
-                    Score 775
+                    {live ? "" : "Score 775"}
                   </span>
                   <button className="w-6 h-6 rounded-md bg-surface-container-highest text-on-surface flex items-center justify-center hover:bg-secondary-container hover:text-on-secondary-fixed transition-colors" title="Quick Capture Bowling" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=cricket"); }}>
                     <span className="material-symbols-outlined text-sm">
@@ -549,18 +492,18 @@ export default function HomeDashboard() {
                     </span>
                   </div>
                   <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                    Calibrated
+                    {live ? (sessionCount(3) > 0 ? "Calibrated" : "New") : "Calibrated"}
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md text-on-surface font-semibold truncate">
                   Basketball
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  {live ? `${sessionCount(3)} sessions logged` : "4 sessions logged"}
+                  {live ? `${sessionCount(3)} ${sessionCount(3) === 1 ? "session" : "sessions"} logged` : "4 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
-                    Score 740
+                    {live ? "" : "Score 740"}
                   </span>
                   <button className="w-6 h-6 rounded-md bg-surface-container-highest text-on-surface flex items-center justify-center hover:bg-secondary-container hover:text-on-secondary-fixed transition-colors" title="Quick Capture Basketball" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=basketball"); }}>
                     <span className="material-symbols-outlined text-sm">
@@ -578,18 +521,18 @@ export default function HomeDashboard() {
                     </span>
                   </div>
                   <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                    Calibrated
+                    {live ? (sessionCount(4) > 0 ? "Calibrated" : "New") : "Calibrated"}
                   </span>
                 </div>
                 <span className="font-headline-md text-body-md text-on-surface font-semibold truncate">
                   Sprint Mechanics
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  {live ? `${sessionCount(4)} sessions logged` : "8 sessions logged"}
+                  {live ? `${sessionCount(4)} ${sessionCount(4) === 1 ? "session" : "sessions"} logged` : "8 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
-                    Score 798
+                    {live ? "" : "Score 798"}
                   </span>
                   <button className="w-6 h-6 rounded-md bg-surface-container-highest text-on-surface flex items-center justify-center hover:bg-secondary-container hover:text-on-secondary-fixed transition-colors" title="Quick Capture Running" type="button" onClick={(e) => { e.stopPropagation(); router.push("/capture?sport=running"); }}>
                     <span className="material-symbols-outlined text-sm">

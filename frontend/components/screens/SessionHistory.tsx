@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LiveSessionCard from "@/components/LiveSessionCard";
+import SessionsTabs from "@/components/SessionsTabs";
 import { type Session, SPORT_BY_ID, SPORT_NAME, relativeDay, useApi } from "@/lib/data";
 
 const CHIP_ON = ["bg-primary-container", "text-on-primary-container"];
@@ -63,20 +64,11 @@ export default function SessionHistory() {
                 ShadowAthlete
               </span>
               <span className="font-label-caps text-label-caps uppercase text-secondary tracking-widest leading-none truncate">
-                AI Telemetry Twin
+                Your athletic twin
               </span>
             </div>
           </div>
           <div className="flex items-center gap-space-sm flex-shrink-0">
-            <button aria-label="Live telemetry sync" className="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high/90 shadow-[0_0_12px_rgba(34,197,94,0.2)] min-h-[44px] min-w-[44px] justify-center">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="font-label-caps text-label-caps uppercase text-primary tracking-wider hidden sm:inline">
-                LIVE
-              </span>
-              <span className="material-symbols-outlined text-primary text-[18px]">
-                sensors
-              </span>
-            </button>
             <button aria-label="Alex Carter athlete profile" onClick={() => router.push("/profile")} className="relative p-0.5 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center">
               <img alt="Athlete Avatar" className="w-8 h-8 rounded-full object-cover shadow-[0_0_8px_rgba(0,238,252,0.3)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYlzWa0WhdHMrlXCOeOKrE_gA6mkG7xt-gxYspgU6fUaJkV_Akz3Qz6MylgYcPyVE5OFBPRU96jXhHmhrUEMgtTe5nfrrt5Ip72wHjEBYrLJcFt3L5dJ4GHGcCD6NC26qS_GST3vE73Y1k2PcA1WX9In53HhyZuOM2ZyVBvkQRU2MYC4KbQ7J3e7gzFYeCTbh28FW7TZt25JcL5lEMN9kpQGB5Rl-Bpp84AiV9NN1X0XPv8ZVW6f2y" />
             </button>
@@ -144,6 +136,9 @@ export default function SessionHistory() {
           </aside>
             </>
           )}
+          <div className="px-margin-mobile mt-space-sm">
+            <SessionsTabs active="history" />
+          </div>
           {/* Title & Meta Overview */}
           <section className="px-margin-mobile pt-space-sm pb-space-xs flex items-baseline justify-between">
             <div>

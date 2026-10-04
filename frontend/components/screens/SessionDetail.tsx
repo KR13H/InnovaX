@@ -330,6 +330,20 @@ export default function SessionDetail() {
               </div>
             )}
 
+            {/* Compare + progress */}
+            {analyzed && sport && (
+              <div className="grid grid-cols-2 gap-gutter-mobile">
+                <Link href={`/compare?now=${id}`} className="py-3 rounded-xl bg-surface-container-high text-on-surface font-headline-md text-body-sm font-semibold flex items-center justify-center gap-1.5">
+                  <span className="material-symbols-outlined text-[18px] text-secondary-container">compare</span>
+                  Compare
+                </Link>
+                <Link href={`/progress?sport=${sport}`} className="py-3 rounded-xl bg-surface-container-high text-on-surface font-headline-md text-body-sm font-semibold flex items-center justify-center gap-1.5">
+                  <span className="material-symbols-outlined text-[18px] text-secondary-container">monitoring</span>
+                  Progress
+                </Link>
+              </div>
+            )}
+
             {/* Next actions */}
             <div className="grid grid-cols-2 gap-gutter-mobile pt-space-xs">
               <Link href={`/capture/upload?sport=${sport ?? "tennis"}`} className="py-3 rounded-xl bg-primary text-on-primary font-headline-md text-body-sm font-bold flex items-center justify-center gap-1.5 shadow-[0_0_20px_-4px_rgba(34,197,94,0.45)]">
