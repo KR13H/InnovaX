@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#10141a;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-background": "#dfe2eb", "on-secondary-fixed-variant": "#004f54", "on-secondary-fixed": "#002022", "primary": "#4be277", "surface": "#10141a", "on-primary-fixed-variant": "#005321", "error": "#ffb4ab", "on-primary": "#003915", "secondary-container": "#00eefc", "error-container": "#93000a", "on-secondary": "#00363a", "on-error-container": "#ffdad6", "secondary": "#d3fbff", "primary-fixed-dim": "#4ae176", "secondary-fixed-dim": "#00dbe9", "surface-bright": "#353940", "surface-tint": "#4ae176", "on-surface-variant": "#bccbb9", "surface-container": "#1c2026", "tertiary-fixed": "#ffddb8", "inverse-surface": "#dfe2eb", "on-tertiary": "#472a00", "surface-container-lowest": "#0a0e14", "surface-container-highest": "#31353c", "surface-variant": "#31353c", "on-tertiary-fixed": "#2a1700", "secondary-fixed": "#7df4ff", "on-tertiary-fixed-variant": "#653e00", "on-primary-container": "#004b1e", "on-secondary-container": "#00686f", "primary-fixed": "#6bff8f", "on-surface": "#dfe2eb", "inverse-primary": "#006e2f", "on-error": "#690005", "outline": "#869585", "surface-container-low": "#181c22", "tertiary-container": "#ef9900", "surface-dim": "#10141a", "tertiary-fixed-dim": "#ffb95f", "on-tertiary-container": "#5c3800", "on-primary-fixed": "#002109", "background": "#10141a", "primary-container": "#22c55e", "surface-container-high": "#262a31", "inverse-on-surface": "#2d3137", "tertiary": "#ffba61", "outline-variant": "#3d4a3d" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-sm": "0.5rem", "space-xs": "0.25rem", "space-xl": "2.5rem", "margin": "2.5rem", "space-md": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "margin-mobile": "1rem", "gutter": "1.5rem" }, "fontFamily": { "body-lg": ["Inter"], "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "label-caps": ["Space Grotesk"], "headline-lg": ["Space Grotesk"], "body-sm": ["Inter"], "display-hero": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "display-hero-mobile": ["Space Grotesk"], "metric-large": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "metric-huge": ["Space Grotesk"], "label-badge": ["Inter"] }, "fontSize": { "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}], "headline-md": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "body-md": ["15px", {"lineHeight": "24px", "fontWeight": "400"}], "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}], "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}], "display-hero": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700"}], "headline-xl-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "display-hero-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "metric-large": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}], "metric-huge": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "700"}], "label-badge": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary selection:text-on-primary"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.5)] pt-safe"><div class="h-16 px-space-xs flex items-center justify-between"><div class="flex items-center gap-space-xs"><button aria-label="Go back" class="min-w-[44px] min-h-[44px] w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><div class="flex items-center gap-space-xs"><img alt="Athletic silhouette icon with a subtle glowing cyan/lime duplicate shadow offset mark, symbolizing 'ShadowAthlete' and 'Your only opponent is you'. Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U3su2IAJUfImc-QDFIgi5gzTYlDbkzgOVUovo_BNyYGtYNa9qhX4P-2oyefwHVQLhZ1Ab4ChydkqNbQYJ6oFFxL_5J_Qddc6EFgbqZ0J_0WRGiZMLAdr9Zbyj22BuHGThZeOIqyijB8g8KkiHaFQvfwq9-n-bK31wtBSZzAKwsfXkmsWzUb-vNdXU1acb3RA2HpoEFk8GGPHAJO2_JBzWeKHcIe9Wj_ZNrU6FINegMlz-Os5bYSEFdNK0"/><h1 class="font-headline-md text-headline-md font-semibold text-on-surface tracking-tight truncate max-w-[190px]">Live Capture</h1></div></div><div class="flex items-center pr-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8"/></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-safe bg-surface"><div class="flex flex-col w-full relative select-none">
+<!-- CAMERA VIEWPORT STAGE -->
+<div class="relative w-full aspect-[9/16] max-h-[720px] bg-surface-container-lowest overflow-hidden flex flex-col justify-between p-space-sm shadow-2xl">
+<!-- Camera Sensor Background Simulation -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container-lowest/80 via-transparent to-surface-container-lowest/90 z-0 pointer-events-none"></div>
+<div class="absolute inset-0 bg-cover bg-center opacity-40 scale-105 pointer-events-none mix-blend-luminosity" data-alt="Dark dramatic indoor hardcourt tennis training facility illuminated with soft focused cinematic floor spotlights. In the background a net and court baseline are visible under high-contrast moody lighting with electric lime reflections on the acrylic court floor. Modern cybernetic sports training telemetry atmosphere with pitch dark periphery." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJ3DY34spe0F6MDOPtgX4Y2ADCUmGQB1uwWCK7B1YQq9riBi_XiyDnxWi1e51hpaRolMV7SPDPStkKs4_Vo5ia6aq41ll00a95N2Ys-COZ-t7KPBBRM4Bc3YBc8feM-Dn3jTjpjRpghsByEbjz58wdmqvb-7v1a3JlRIZEShQJ147TRe4Sqm4qZk0avSUNTMLMIr_tk2qd1InVv7CFHHSu4Q2Hphyrm6GqeG4d-OlnZWS5CQZvH6aa')"></div>
+<!-- Telemetry Scanning Grid Overlay -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-30" fill="none" preserveaspectratio="none" viewbox="0 0 360 640">
+<defs>
+<pattern height="40" id="cam-grid" patternunits="userSpaceOnUse" width="40">
+<path class="text-outline-variant" d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-dasharray="2 4" stroke-width="0.5"></path>
+</pattern>
+</defs>
+<rect fill="url(#cam-grid)" height="100%" width="100%"></rect>
+<!-- Court Horizon & Baseline Reference Vectors -->
+<line class="text-secondary" opacity="0.4" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1" x1="20" x2="340" y1="410" y2="410"></line>
+<line class="text-outline" opacity="0.3" stroke="currentColor" stroke-dasharray="2 6" stroke-width="0.5" x1="180" x2="180" y1="20" y2="620"></line>
+<!-- Alignment Reticle Crosshairs -->
+<circle class="text-secondary-fixed" cx="180" cy="300" fill="currentColor" opacity="0.8" r="4"></circle>
+<circle class="text-secondary-fixed" cx="180" cy="300" opacity="0.4" r="14" stroke="currentColor" stroke-width="0.75"></circle>
+</svg>
+<!-- KINETIC SHADOW ATHLETE FRAMING SILHOUETTE (Cyan Ghost Mesh) -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 p-space-md">
+<svg class="w-full h-full max-h-[520px] text-secondary-fixed" fill="none" viewbox="0 0 300 520" xmlns="http://www.w3.org/2000/svg">
+<!-- Digital Twin Biomechanical Wireframe Silhouette -->
+<g class="opacity-75" stroke="currentColor" stroke-dasharray="4 3" stroke-width="1.5">
+<!-- Head / Neural tracking node -->
+<circle class="text-secondary" cx="150" cy="72" r="24" stroke="currentColor" stroke-dasharray="none" stroke-width="1.75"></circle>
+<circle class="text-primary animate-pulse" cx="150" cy="72" fill="currentColor" r="3"></circle>
+<!-- Spine & Torso Kinetic Core -->
+<line stroke="currentColor" stroke-width="1.5" x1="150" x2="150" y1="96" y2="230"></line>
+<line stroke="currentColor" stroke-width="1.5" x1="110" x2="190" y1="130" y2="130"></line>
+<!-- Torso Polygon Matrix -->
+<polygon fill="currentColor" fill-opacity="0.04" points="110,130 190,130 175,230 125,230" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1"></polygon>
+<!-- Right Forehand Kinetic Extension Arm -->
+<line stroke="currentColor" stroke-width="1.5" x1="190" x2="228" y1="130" y2="185"></line>
+<line stroke="currentColor" stroke-width="1.5" x1="228" x2="248" y1="185" y2="245"></line>
+<!-- Racket Impact Target Envelope -->
+<ellipse class="text-primary" cx="260" cy="275" rx="22" ry="32" stroke="currentColor" stroke-dasharray="2 3" stroke-width="1.2" transform="rotate(-25 260 275)"></ellipse>
+<circle class="text-primary" cx="260" cy="275" fill="currentColor" r="4"></circle>
+<!-- Left Balance Arm -->
+<line stroke="currentColor" stroke-width="1.5" x1="110" x2="78" y1="130" y2="180"></line>
+<line stroke="currentColor" stroke-width="1.5" x1="78" x2="68" y1="180" y2="225"></line>
+<!-- Hips and Lower Extremity Ground Load -->
+<line stroke="currentColor" stroke-width="1.5" x1="125" x2="175" y1="230" y2="230"></line>
+<!-- Left Leg & Stance Base -->
+<line stroke="currentColor" stroke-width="1.5" x1="130" x2="114" y1="230" y2="340"></line>
+<line stroke="currentColor" stroke-width="1.5" x1="114" x2="98" y1="340" y2="460"></line>
+<line stroke="currentColor" stroke-dasharray="none" stroke-width="2" x1="98" x2="130" y1="460" y2="465"></line>
+<!-- Right Drive Leg -->
+<line stroke="currentColor" stroke-width="1.5" x1="170" x2="198" y1="230" y2="335"></line>
+<line stroke="currentColor" stroke-width="1.5" x1="198" x2="216" y1="335" y2="455"></line>
+<line stroke="currentColor" stroke-dasharray="none" stroke-width="2" x1="216" x2="248" y1="455" y2="458"></line>
+</g>
+<!-- Skeletal Biomechanical Joints (Luminous Nodes) -->
+<g class="text-secondary" fill="currentColor">
+<circle cx="110" cy="130" r="3.5"></circle>
+<circle cx="190" cy="130" r="3.5"></circle>
+<circle cx="228" cy="185" r="3"></circle>
+<circle cx="248" cy="245" r="3.5"></circle>
+<circle cx="78" cy="180" r="3"></circle>
+<circle cx="68" cy="225" r="3"></circle>
+<circle cx="130" cy="230" r="3.5"></circle>
+<circle cx="170" cy="230" r="3.5"></circle>
+<circle cx="114" cy="340" r="3"></circle>
+<circle cx="198" cy="335" r="3"></circle>
+<circle class="text-primary" cx="98" cy="460" fill="currentColor" r="4"></circle>
+<circle class="text-primary" cx="216" cy="455" fill="currentColor" r="4"></circle>
+</g>
+<!-- Corner Viewfinder Calibrators -->
+<path class="text-on-surface-variant opacity-50" d="M 28 40 L 48 40 M 28 40 L 28 60" stroke="currentColor" stroke-width="2"></path>
+<path class="text-on-surface-variant opacity-50" d="M 272 40 L 252 40 M 272 40 L 272 60" stroke="currentColor" stroke-width="2"></path>
+<path class="text-on-surface-variant opacity-50" d="M 28 480 L 48 480 M 28 480 L 28 460" stroke="currentColor" stroke-width="2"></path>
+<path class="text-on-surface-variant opacity-50" d="M 272 480 L 252 480 M 272 480 L 272 460" stroke="currentColor" stroke-width="2"></path>
+</svg>
+</div>
+<!-- HUD LAYER: TOP TELEMETRY CONTROLS -->
+<div class="relative z-20 flex flex-col gap-space-xs pt-space-xs">
+<!-- Top Action Bar -->
+<div class="flex items-center justify-between gap-space-xs">
+<!-- Close / Cancel Return -->
+<button aria-label="Cancel session" class="min-w-[40px] min-h-[40px] h-10 w-10 rounded-full bg-surface-container/85 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-primary transition-colors" onclick="history.back()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+<!-- Active Sport Drill Pill -->
+<div class="flex items-center gap-space-xs px-space-md py-1 bg-surface-container-high/90 backdrop-blur-xl rounded-full shadow-lg">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-caps text-label-caps tracking-wider text-on-surface uppercase">Tennis: Forehand Drive</span>
+<span class="font-label-caps text-label-caps text-secondary-fixed opacity-70">#04</span>
+</div>
+<!-- Utility Switchers (Flash & Lens Cluster) -->
+<div class="flex items-center gap-1.5">
+<button aria-label="Toggle court illumination assistance" class="min-w-[40px] min-h-[40px] h-10 w-10 rounded-full bg-surface-container/85 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-tertiary transition-colors" id="torchBtn" onclick="toggleTorch()">
+<span class="material-symbols-outlined text-[20px]" id="torchIcon">flash_off</span>
+</button>
+<button aria-label="Toggle lens focal length" class="min-w-[40px] min-h-[40px] h-10 px-2.5 rounded-full bg-surface-container/85 backdrop-blur-md flex items-center justify-center gap-0.5 text-on-surface hover:text-primary transition-colors" id="lensToggle" onclick="cycleLens()">
+<span class="font-label-caps text-label-caps text-secondary font-bold" id="lensVal">1x</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Sub-bar: Audio & Dynamic Ghost Sync Status -->
+<div class="flex items-center justify-between px-space-xs mt-1">
+<!-- Audio Input Meter Indicator -->
+<div class="flex items-center gap-1.5 bg-surface-container-lowest/80 backdrop-blur-md px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-primary text-[14px]">mic</span>
+<div class="flex items-center gap-0.5 h-2">
+<span class="w-0.5 h-1.5 bg-primary rounded-full"></span>
+<span class="w-0.5 h-2.5 bg-primary rounded-full"></span>
+<span class="w-0.5 h-3 bg-primary rounded-full"></span>
+<span class="w-0.5 h-1.5 bg-outline rounded-full"></span>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">KINETIC AUDIO</span>
+</div>
+<!-- 60FPS Neural Feed Marker -->
+<div class="flex items-center gap-1.5 bg-surface-container-lowest/80 backdrop-blur-md px-2.5 py-1 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+<span class="font-label-caps text-[10px] text-secondary uppercase tracking-wider">1080P • 60 FPS</span>
+</div>
+</div>
+<!-- Waist Height Physical Positioning Banner -->
+<div class="mt-2 mx-auto w-full max-w-xs bg-surface-container-low/90 backdrop-blur-md px-space-sm py-1.5 rounded-xl flex items-center gap-space-xs shadow-md">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px] shrink-0">straighten</span>
+<p class="font-body-sm text-[12px] leading-tight text-on-surface truncate">
+          Position camera at <strong class="text-secondary font-semibold">waist height</strong> (8–10 ft back)
+        </p>
+</div>
+</div>
+<!-- HUD LAYER: LIVE KINETIC POSE QUALITY CHECKLIST -->
+<div class="relative z-20 flex flex-col gap-1.5 pb-space-xs max-w-[280px]">
+<!-- Pose Parameter 1 -->
+<div class="flex items-center gap-2 bg-surface-container-lowest/80 backdrop-blur-md px-space-sm py-1 rounded-lg">
+<div class="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</div>
+<span class="font-body-sm text-[12px] text-on-surface font-medium">Full body in frame</span>
+<span class="font-label-caps text-[10px] text-primary ml-auto tracking-wider">LOCKED</span>
+</div>
+<!-- Pose Parameter 2 -->
+<div class="flex items-center gap-2 bg-surface-container-lowest/80 backdrop-blur-md px-space-sm py-1 rounded-lg">
+<div class="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</div>
+<span class="font-body-sm text-[12px] text-on-surface font-medium">Court lighting optimal</span>
+<span class="font-label-caps text-[10px] text-primary ml-auto tracking-wider">340 LUX</span>
+</div>
+<!-- Pose Parameter 3 -->
+<div class="flex items-center gap-2 bg-surface-container-lowest/80 backdrop-blur-md px-space-sm py-1 rounded-lg">
+<div class="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</div>
+<span class="font-body-sm text-[12px] text-on-surface font-medium">Camera steady (gyro stable)</span>
+<span class="font-label-caps text-[10px] text-primary ml-auto tracking-wider">0.02°</span>
+</div>
+</div>
+</div>
+<!-- LOWER CONTROL CONSOLE & RECORDING ENGINE -->
+<div class="flex flex-col w-full bg-surface px-space-md pt-space-sm pb-space-lg gap-space-md">
+<!-- Delay Countdown Selector & Time Horizon -->
+<div class="flex items-center justify-between pt-1">
+<!-- Countdown Presets -->
+<div class="flex items-center gap-1.5 p-1 bg-surface-container-low rounded-xl">
+<button class="timer-btn font-label-caps text-label-caps px-2.5 py-1 rounded-lg bg-surface-container text-on-surface transition-colors" id="delay0" onclick="setTimerDelay(0)">OFF</button>
+<button class="timer-btn font-label-caps text-label-caps px-2.5 py-1 rounded-lg bg-primary text-on-primary font-bold transition-colors" id="delay3" onclick="setTimerDelay(3)">3s</button>
+<button class="timer-btn font-label-caps text-label-caps px-2.5 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" id="delay5" onclick="setTimerDelay(5)">5s</button>
+<button class="timer-btn font-label-caps text-label-caps px-2.5 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" id="delay10" onclick="setTimerDelay(10)">10s</button>
+</div>
+<!-- Elapsed & Cap Telemetry -->
+<div class="flex items-baseline gap-1 bg-surface-container-lowest px-space-sm py-1 rounded-xl">
+<span class="font-metric-large text-[22px] leading-none text-primary font-bold font-mono tracking-tight" id="recordTimer">00:00.0</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">/ 30.0s</span>
+</div>
+</div>
+<!-- MAIN SHUTTER TRIGGER & QUICK ACTIONS HUB -->
+<div class="flex items-center justify-around py-1">
+<!-- Quick Camera Flipper (Front / Back) -->
+<button aria-label="Switch between selfie and rear camera" class="flex flex-col items-center justify-center gap-1 min-w-[56px] min-h-[56px] text-on-surface hover:text-primary transition-colors" onclick="flipCameraOrientation()">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[22px]">flip_camera_ios</span>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">FLIP</span>
+</button>
+<!-- Tactical Shutter Button -->
+<div class="relative flex items-center justify-center">
+<!-- Ambient kinetic pulse ring when live -->
+<div class="absolute w-24 h-24 rounded-full bg-primary/20 opacity-0 transition-opacity" id="pulseHalo"></div>
+<button aria-label="Start recording kinetic forehand drill" class="relative group min-w-[80px] min-h-[80px] w-20 h-20 rounded-full p-1.5 flex items-center justify-center transition-transform active:scale-95 shadow-xl bg-surface-container-lowest" id="shutterBtn" onclick="toggleRecording()">
+<!-- Outer dynamic track -->
+<div class="absolute inset-1 rounded-full bg-gradient-to-tr from-primary to-secondary-fixed p-1" id="shutterRing">
+<div class="w-full h-full rounded-full bg-surface-container-lowest flex items-center justify-center">
+<!-- Tactile Core Trigger -->
+<div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(75,226,119,0.6)] group-hover:bg-primary-fixed transition-all duration-300" id="shutterCore">
+<span class="material-symbols-outlined text-on-primary text-[28px]" id="shutterIcon">videocam</span>
+</div>
+</div>
+</div>
+</button>
+</div>
+<!-- Quick Gallery Ingestion Trigger -->
+<label class="flex flex-col items-center justify-center gap-1 min-w-[56px] min-h-[56px] cursor-pointer text-on-surface hover:text-secondary-fixed transition-colors" for="galleryUpload">
+<input accept="video/*" class="sr-only" id="galleryUpload" onchange="handleGalleryUpload(event)" type="file"/>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[22px] text-secondary">video_file</span>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">UPLOAD</span>
+</label>
+</div>
+<!-- PIPELINE STATUS & TELEMETRY READY BANNER -->
+<div class="flex flex-col gap-1.5 px-space-xs text-center">
+<div class="flex items-center justify-center gap-1.5 py-1 px-space-sm rounded-lg bg-surface-container-low">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<p class="font-body-sm text-[12px] text-on-surface leading-tight">
+          Camera ready at <strong class="text-primary font-medium">1080p 60fps</strong> • Neural tracking active upon submission
+        </p>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant tracking-wide">
+        AI digital twin analysis and biomechanical ghost overlay render immediately after clip capture.
+      </p>
+</div>
+</div>
+<!-- Client-side Interactive Simulation Logic -->
+<script>
+    let isRecording = false;
+    let timerInterval = null;
+    let elapsedTenths = 0;
+    let activeDelay = 3;
+    let torchActive = false;
+    const lensOptions = ['0.5x', '1x', '2x'];
+    let lensIdx = 1;
+
+    function setTimerDelay(val) {
+      activeDelay = val;
+      [0, 3, 5, 10].forEach(d => {
+        const btn = document.getElementById('delay' + d);
+        if (btn) {
+          if (d === val) {
+            btn.className = 'timer-btn font-label-caps text-label-caps px-2.5 py-1 rounded-lg bg-primary text-on-primary font-bold transition-colors';
+          } else {
+            btn.className = 'timer-btn font-label-caps text-label-caps px-2.5 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors';
+          }
+        }
+      });
+    }
+
+    function cycleLens() {
+      lensIdx = (lensIdx + 1) % lensOptions.length;
+      document.getElementById('lensVal').textContent = lensOptions[lensIdx];
+    }
+
+    function toggleTorch() {
+      torchActive = !torchActive;
+      const icon = document.getElementById('torchIcon');
+      if (torchActive) {
+        icon.textContent = 'flash_on';
+        icon.parentElement.classList.add('text-tertiary');
+      } else {
+        icon.textContent = 'flash_off';
+        icon.parentElement.classList.remove('text-tertiary');
+      }
+    }
+
+    function flipCameraOrientation() {
+      const stage = document.querySelector('[data-alt]');
+      if (stage) {
+        stage.classList.toggle('-scale-x-100');
+      }
+    }
+
+    function toggleRecording() {
+      const core = document.getElementById('shutterCore');
+      const icon = document.getElementById('shutterIcon');
+      const halo = document.getElementById('pulseHalo');
+      const timerDisplay = document.getElementById('recordTimer');
+
+      if (!isRecording) {
+        // Start countdown or direct start
+        isRecording = true;
+        halo.classList.remove('opacity-0');
+        halo.classList.add('animate-ping', 'opacity-80');
+        core.classList.remove('rounded-full', 'bg-primary');
+        core.classList.add('rounded-lg', 'bg-error', 'w-10', 'h-10');
+        icon.textContent = 'stop';
+        icon.className = 'material-symbols-outlined text-on-error text-[24px]';
+
+        timerInterval = setInterval(() => {
+          elapsedTenths++;
+          const totalSeconds = (elapsedTenths / 10);
+          const mins = Math.floor(totalSeconds / 60);
+          const secs = Math.floor(totalSeconds % 60);
+          const tenths = elapsedTenths % 10;
+          timerDisplay.textContent = 
+            String(mins).padStart(2, '0') + ':' + 
+            String(secs).padStart(2, '0') + '.' + 
+            tenths;
+
+          if (elapsedTenths >= 300) { // 30 seconds max
+            toggleRecording();
+          }
+        }, 100);
+      } else {
+        // Stop recording
+        isRecording = false;
+        clearInterval(timerInterval);
+        halo.classList.add('opacity-0');
+        halo.classList.remove('animate-ping', 'opacity-80');
+        core.classList.add('rounded-full', 'bg-primary');
+        core.classList.remove('rounded-lg', 'bg-error', 'w-10', 'h-10');
+        icon.textContent = 'videocam';
+        icon.className = 'material-symbols-outlined text-on-primary text-[28px]';
+        elapsedTenths = 0;
+      }
+    }
+
+    function handleGalleryUpload(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        const timerDisplay = document.getElementById('recordTimer');
+        timerDisplay.textContent = "QUEUED";
+        timerDisplay.classList.add('text-secondary-fixed');
+      }
+    }
+  </script>
+</div></main></body></html>

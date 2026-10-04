@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#10141a;}body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-tertiary": "#472a00", "surface-container": "#1c2026", "tertiary": "#ffba61", "surface-container-lowest": "#0a0e14", "on-surface": "#dfe2eb", "on-error-container": "#ffdad6", "on-tertiary-fixed-variant": "#653e00", "surface-container-highest": "#31353c", "on-secondary-fixed-variant": "#004f54", "outline-variant": "#3d4a3d", "surface-container-low": "#181c22", "on-tertiary-container": "#5c3800", "background": "#10141a", "surface-dim": "#10141a", "secondary": "#d3fbff", "inverse-on-surface": "#2d3137", "on-background": "#dfe2eb", "on-error": "#690005", "on-tertiary-fixed": "#2a1700", "primary-container": "#22c55e", "error-container": "#93000a", "primary": "#4be277", "on-primary-container": "#004b1e", "on-secondary-fixed": "#002022", "secondary-container": "#00eefc", "inverse-primary": "#006e2f", "on-primary-fixed-variant": "#005321", "on-surface-variant": "#bccbb9", "surface-variant": "#31353c", "on-primary": "#003915", "tertiary-fixed": "#ffddb8", "secondary-fixed-dim": "#00dbe9", "surface-tint": "#4ae176", "outline": "#869585", "on-primary-fixed": "#002109", "surface-container-high": "#262a31", "tertiary-container": "#ef9900", "primary-fixed": "#6bff8f", "inverse-surface": "#dfe2eb", "on-secondary-container": "#00686f", "tertiary-fixed-dim": "#ffb95f", "surface-bright": "#353940", "error": "#ffb4ab", "secondary-fixed": "#7df4ff", "primary-fixed-dim": "#4ae176", "surface": "#10141a", "on-secondary": "#00363a" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "space-lg": "1.5rem", "margin": "2.5rem", "gutter-mobile": "0.75rem", "space-xs": "0.25rem", "gutter": "1.5rem", "space-md": "1rem", "margin-mobile": "1rem", "space-xl": "2.5rem", "space-sm": "0.5rem" }, fontFamily: { "body-md": ["Inter"], "body-lg": ["Inter"], "body-sm": ["Inter"], "display-hero": ["Space Grotesk"], "metric-large": ["Space Grotesk"], "label-caps": ["Space Grotesk"], "headline-lg": ["Space Grotesk"], "headline-md": ["Space Grotesk"], "display-hero-mobile": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "metric-huge": ["Space Grotesk"], "label-badge": ["Inter"] }, fontSize: { "body-md": ["15px", { lineHeight: "24px", fontWeight: "400" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }], "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }], "display-hero": ["56px", { lineHeight: "64px", letterSpacing: "-0.03em", fontWeight: "700" }], "metric-large": ["32px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }], "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "700" }], "headline-lg": ["30px", { lineHeight: "38px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" }], "display-hero-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "600" }], "headline-xl-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }], "metric-huge": ["48px", { lineHeight: "52px", letterSpacing: "-0.03em", fontWeight: "700" }], "label-badge": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.35)]"><div class="h-16 px-gutter-mobile flex items-center justify-between"><div class="flex items-center gap-space-xs"><button aria-label="Go back" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-on-surface hover:text-primary transition-colors rounded-full active:bg-surface-container-high" onclick="history.back()" type="button"><span class="material-symbols-outlined text-[24px]">chevron_left</span></button><div class="flex items-center gap-space-xs"><img alt="Athletic silhouette icon with a subtle glowing cyan/lime duplicate shadow offset mark, symbolizing 'ShadowAthlete' and 'Your only opponent is you'. Brand logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U3su2IAJUfImc-QDFIgi5gzTYlDbkzgOVUovo_BNyYGtYNa9qhX4P-2oyefwHVQLhZ1Ab4ChydkqNbQYJ6oFFxL_5J_Qddc6EFgbqZ0J_0WRGiZMLAdr9Zbyj22BuHGThZeOIqyijB8g8KkiHaFQvfwq9-n-bK31wtBSZzAKwsfXkmsWzUb-vNdXU1acb3RA2HpoEFk8GGPHAJO2_JBzWeKHcIe9Wj_ZNrU6FINegMlz-Os5bYSEFdNK0"/><h1 class="font-headline-md text-headline-md text-on-surface truncate max-w-[200px]">Onboarding</h1></div></div><div class="flex items-center gap-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover p-0.5 bg-surface-container-high" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8"/><button aria-label="Close view" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors rounded-full active:bg-surface-container-high" onclick="history.back()" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full text-on-surface pb-safe">
+<!-- Progress Header Track -->
+<div class="px-margin-mobile pt-space-sm pb-space-xs flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider flex items-center gap-1.5">
+<span class="inline-block w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#22c55e]"></span>
+        Step 2 of 2: Sports &amp; Goals
+      </span>
+<span class="font-label-caps text-label-caps text-secondary font-semibold">100% Final Step</span>
+</div>
+<!-- 100% Progress Bar -->
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full w-full shadow-[0_0_12px_#22c55e]"></div>
+</div>
+</div>
+<!-- Hero Header Typography -->
+<div class="px-margin-mobile pt-space-md pb-space-sm">
+<h2 class="font-headline-xl-mobile text-headline-xl-mobile text-on-surface">Select your sports and goals</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+      All four sports feed into your single persistent avatar. Choose your primary focus and weekly commitment.
+    </p>
+</div>
+<!-- Content Stream -->
+<div class="flex flex-col gap-space-lg px-margin-mobile pt-space-xs">
+<!-- Section 1: Sport Selection -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+          Disciplines &amp; Biomechanics
+        </h3>
+<span class="font-label-badge text-label-badge text-secondary font-medium">4 of 4 active</span>
+</div>
+<!-- Sports Cards Grid -->
+<div class="flex flex-col gap-space-xs">
+<!-- Card 1: Tennis (Primary) -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container p-space-md flex items-center justify-between shadow-[0_0_20px_-4px_rgba(34,197,94,0.3)]">
+<div class="flex items-start gap-space-sm min-w-0 pr-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0 shadow-[0_0_12px_rgba(34,197,94,0.3)]">
+<span class="material-symbols-outlined text-[22px]">sports_tennis</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-headline-md text-[17px] font-semibold text-on-surface truncate">Tennis</span>
+<span class="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold">Primary</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant line-clamp-1 mt-0.5">
+                Forehand, backhand, and serve tracking
+              </p>
+</div>
+</div>
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 shadow-[0_0_10px_#22c55e]">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Card 2: Cricket Fast Bowling (Secondary) -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md flex items-center justify-between shadow-[0_0_18px_-6px_rgba(0,240,255,0.25)]">
+<div class="flex items-start gap-space-sm min-w-0 pr-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary-container shrink-0">
+<span class="material-symbols-outlined text-[22px]">sports_cricket</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-headline-md text-[17px] font-semibold text-on-surface truncate">Cricket: Fast Bowling</span>
+<span class="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary-container font-bold">Secondary</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant line-clamp-1 mt-0.5">
+                Run-up rhythm and bowling mechanics
+              </p>
+</div>
+</div>
+<div class="w-7 h-7 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shrink-0 shadow-[0_0_10px_#00eefc]">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Card 3: Basketball -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md flex items-center justify-between">
+<div class="flex items-start gap-space-sm min-w-0 pr-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[22px]">sports_basketball</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-md text-[17px] font-semibold text-on-surface truncate">Basketball</span>
+<span class="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-semibold">Active</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant line-clamp-1 mt-0.5">
+                Shooting posture and elbow alignment
+              </p>
+</div>
+</div>
+<div class="w-7 h-7 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary-container shrink-0">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Card 4: Running -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md flex items-center justify-between">
+<div class="flex items-start gap-space-sm min-w-0 pr-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[22px]">directions_run</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-md text-[17px] font-semibold text-on-surface truncate">Running</span>
+<span class="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-semibold">Active</span>
+</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant line-clamp-1 mt-0.5">
+                Sprint posture and cadence consistency
+              </p>
+</div>
+</div>
+<div class="w-7 h-7 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary-container shrink-0">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Avatar Telemetry Banner -->
+<div class="w-full rounded-xl bg-surface-container p-space-md flex items-center gap-space-md relative overflow-hidden">
+<div class="w-14 h-14 rounded-lg bg-surface-container-lowest overflow-hidden shrink-0 flex items-center justify-center relative">
+<img class="w-full h-full object-cover" data-alt="Cybernetic holographic athletic humanoid wireframe avatar illuminated with glowing lime green kinetic joints and cyan telemetry ghost aura in dark studio sports lab, high fidelity rendering" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD937jgpr5B6DbyIHHMkpLLm9NWjyZ-I_pyDndsCUbv-tCGA25wBjVv1uWvIU3Fbfpys3tgYIdDr7BjIJsJWGWHpg_WQcamGm3ULdV34cVUdDDFMWgjgeolQS3SYbYJpe1caF2Goy3GjLYk_4BwA7QmfsvL5RZSzHoyA_cNaP09UxurY8DxqxE3ji2RPZ90Ckb2xA6tYUNgd45aliZ3_2ROvkvXF1uEeDdSuuok27wON5xFvZ_fDKL_"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-caps text-[10px] text-primary uppercase font-bold tracking-widest">Avatar Synced</span>
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+</div>
+<span class="font-headline-md text-[14px] text-on-surface font-semibold truncate">Multi-Discipline Kinetic Mesh</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Kinematic limits computed across all 4 regimes</span>
+</div>
+</div>
+<!-- Section 2: Primary Training Goals (Interactive Pills) -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+          Primary Training Goals
+        </h3>
+<span class="font-label-badge text-label-badge text-primary">3 Selected</span>
+</div>
+<div class="flex flex-wrap gap-2" id="goals-container">
+<!-- Goal 1 (Active) -->
+<button class="goal-pill px-space-md py-2.5 rounded-full bg-surface-container-highest text-primary flex items-center gap-2 active:scale-95 transition-transform" data-selected="true" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-sm text-[13px] font-semibold text-on-surface">Improve technique &amp; consistency</span>
+</button>
+<!-- Goal 2 (Active) -->
+<button class="goal-pill px-space-md py-2.5 rounded-full bg-surface-container-highest text-primary flex items-center gap-2 active:scale-95 transition-transform" data-selected="true" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-sm text-[13px] font-semibold text-on-surface">Match previous personal bests</span>
+</button>
+<!-- Goal 3 (Inactive) -->
+<button class="goal-pill px-space-md py-2.5 rounded-full bg-surface-container-low text-on-surface-variant flex items-center gap-2 active:scale-95 transition-transform" data-selected="false" type="button">
+<span class="material-symbols-outlined text-[18px] text-outline">radio_button_unchecked</span>
+<span class="font-body-sm text-[13px] font-normal text-on-surface-variant">Injury prevention &amp; joint load</span>
+</button>
+<!-- Goal 4 (Active) -->
+<button class="goal-pill px-space-md py-2.5 rounded-full bg-surface-container-highest text-primary flex items-center gap-2 active:scale-95 transition-transform" data-selected="true" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-sm text-[13px] font-semibold text-on-surface">Increase stroke / release speed</span>
+</button>
+</div>
+</section>
+<!-- Section 3: Training Availability -->
+<section class="flex flex-col gap-space-sm mb-space-sm">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+        Training Availability
+      </h3>
+<div class="rounded-xl bg-surface-container p-space-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface font-semibold">Sessions per week</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Calibrates your shadow recovery curve</span>
+</div>
+<!-- Stepper -->
+<div class="flex items-center bg-surface-container-highest rounded-full p-1 gap-1">
+<button aria-label="Decrease session count" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary active:bg-surface-container-low transition-colors" id="btn-decrement" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<span class="font-headline-md text-[16px] text-primary font-bold px-2.5 select-none" id="session-count">5</span>
+<button aria-label="Increase session count" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary active:bg-surface-container-low transition-colors" id="btn-increment" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Estimation Banner -->
+<div class="rounded-lg bg-surface-container-lowest p-space-sm flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">timer</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Estimated weekly tracking</span>
+</div>
+<span class="font-label-caps text-label-caps text-secondary font-bold tracking-normal" id="est-hours">
+            ~2.5 hrs active
+          </span>
+</div>
+</div>
+</section>
+<!-- Bottom CTA Fixed-feel Container -->
+<div class="pt-space-xs pb-space-lg flex flex-col gap-space-xs">
+<button class="w-full h-14 rounded-full bg-primary text-on-primary font-headline-md text-[17px] font-bold tracking-tight flex items-center justify-center gap-space-xs shadow-[0_0_24px_rgba(34,197,94,0.35)] active:scale-[0.98] transition-all" id="build-athlete-btn" type="button">
+<span>Build my athlete</span>
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</button>
+<p class="font-body-sm text-[11px] text-center text-on-surface-variant/70">
+        Continuous multi-sport AI models deploy instantaneously to your twin
+      </p>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    // Stepper logic
+    var count = 5;
+    var countEl = document.getElementById('session-count');
+    var estEl = document.getElementById('est-hours');
+    var decBtn = document.getElementById('btn-decrement');
+    var incBtn = document.getElementById('btn-increment');
+
+    function updateView() {
+      if (countEl) countEl.textContent = count;
+      if (estEl) {
+        var hours = (count * 0.5).toFixed(1);
+        estEl.textContent = '~' + hours + ' hrs active';
+      }
+    }
+
+    if (decBtn) {
+      decBtn.addEventListener('click', function() {
+        if (count > 1) {
+          count--;
+          updateView();
+        }
+      });
+    }
+
+    if (incBtn) {
+      incBtn.addEventListener('click', function() {
+        if (count < 14) {
+          count++;
+          updateView();
+        }
+      });
+    }
+
+    // Toggle Goal Pills
+    var pills = document.querySelectorAll('.goal-pill');
+    pills.forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        var isSelected = pill.getAttribute('data-selected') === 'true';
+        var icon = pill.querySelector('.material-symbols-outlined');
+        var text = pill.querySelector('span:last-child');
+
+        if (isSelected) {
+          pill.setAttribute('data-selected', 'false');
+          pill.classList.remove('bg-surface-container-highest', 'text-primary');
+          pill.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+          if (icon) {
+            icon.textContent = 'radio_button_unchecked';
+            icon.classList.remove('text-primary');
+            icon.classList.add('text-outline');
+            icon.style.fontVariationSettings = "'FILL' 0";
+          }
+          if (text) {
+            text.classList.remove('font-semibold');
+            text.classList.add('font-normal', 'text-on-surface-variant');
+          }
+        } else {
+          pill.setAttribute('data-selected', 'true');
+          pill.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+          pill.classList.add('bg-surface-container-highest', 'text-primary');
+          if (icon) {
+            icon.textContent = 'check_circle';
+            icon.classList.remove('text-outline');
+            icon.classList.add('text-primary');
+            icon.style.fontVariationSettings = "'FILL' 1";
+          }
+          if (text) {
+            text.classList.remove('font-normal', 'text-on-surface-variant');
+            text.classList.add('font-semibold', 'text-on-surface');
+          }
+        }
+      });
+    });
+
+    // Button pulse micro-interaction
+    var buildBtn = document.getElementById('build-athlete-btn');
+    if (buildBtn) {
+      buildBtn.addEventListener('click', function() {
+        buildBtn.classList.add('brightness-125');
+        setTimeout(function() {
+          buildBtn.classList.remove('brightness-125');
+        }, 150);
+      });
+    }
+  })();
+</script></main></body></html>

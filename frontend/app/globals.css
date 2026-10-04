@@ -1,0 +1,66 @@
+/* Fonts are imported here (not via <link>) so Tailwind utilities like `text-sm`
+   come later in the cascade and override Material Symbols' default 24px size, as in Stitch. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles shared by every Stitch screen export. */
+@layer base {
+  html,
+  body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #10141a;
+    color: #dfe2eb;
+  }
+  body {
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Phone frame: on wide screens the app renders in a centered phone-width column.
+   The transform makes `position: fixed` headers/nav bars pin to the frame, not the window. */
+.app-frame {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  margin: 0 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform: translateZ(0);
+  background-color: #10141a;
+  scrollbar-width: none;
+}
+.app-frame > * {
+  min-height: 100dvh;
+}
+@media (min-width: 640px) {
+  body {
+    background-color: #05070a;
+  }
+  .app-frame {
+    box-shadow: 0 0 0 1px #1c2026, 0 24px 80px rgba(0, 0, 0, 0.6);
+  }
+}

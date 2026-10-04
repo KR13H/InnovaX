@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#10141a;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-background": "#dfe2eb", "on-secondary-fixed-variant": "#004f54", "on-secondary-fixed": "#002022", "primary": "#4be277", "surface": "#10141a", "on-primary-fixed-variant": "#005321", "error": "#ffb4ab", "on-primary": "#003915", "secondary-container": "#00eefc", "error-container": "#93000a", "on-secondary": "#00363a", "on-error-container": "#ffdad6", "secondary": "#d3fbff", "primary-fixed-dim": "#4ae176", "secondary-fixed-dim": "#00dbe9", "surface-bright": "#353940", "surface-tint": "#4ae176", "on-surface-variant": "#bccbb9", "surface-container": "#1c2026", "tertiary-fixed": "#ffddb8", "inverse-surface": "#dfe2eb", "on-tertiary": "#472a00", "surface-container-lowest": "#0a0e14", "surface-container-highest": "#31353c", "surface-variant": "#31353c", "on-tertiary-fixed": "#2a1700", "secondary-fixed": "#7df4ff", "on-tertiary-fixed-variant": "#653e00", "on-primary-container": "#004b1e", "on-secondary-container": "#00686f", "primary-fixed": "#6bff8f", "on-surface": "#dfe2eb", "inverse-primary": "#006e2f", "on-error": "#690005", "outline": "#869585", "surface-container-low": "#181c22", "tertiary-container": "#ef9900", "surface-dim": "#10141a", "tertiary-fixed-dim": "#ffb95f", "on-tertiary-container": "#5c3800", "on-primary-fixed": "#002109", "background": "#10141a", "primary-container": "#22c55e", "surface-container-high": "#262a31", "inverse-on-surface": "#2d3137", "tertiary": "#ffba61", "outline-variant": "#3d4a3d" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-sm": "0.5rem", "space-xs": "0.25rem", "space-xl": "2.5rem", "margin": "2.5rem", "space-md": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "margin-mobile": "1rem", "gutter": "1.5rem" }, "fontFamily": { "body-lg": ["Inter"], "headline-md": ["Space Grotesk"], "body-md": ["Inter"], "label-caps": ["Space Grotesk"], "headline-lg": ["Space Grotesk"], "body-sm": ["Inter"], "display-hero": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "display-hero-mobile": ["Space Grotesk"], "metric-large": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "metric-huge": ["Space Grotesk"], "label-badge": ["Inter"] }, "fontSize": { "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}], "headline-md": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "body-md": ["15px", {"lineHeight": "24px", "fontWeight": "400"}], "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}], "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}], "display-hero": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700"}], "headline-xl-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "display-hero-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "metric-large": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}], "metric-huge": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "700"}], "label-badge": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary selection:text-on-primary"><header class="fixed top-0 inset-x-0 z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.45)] pt-safe"><div class="h-16 px-margin-mobile flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Athletic silhouette icon with a subtle glowing cyan/lime duplicate shadow offset mark, symbolizing 'ShadowAthlete' and 'Your only opponent is you'. Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U3su2IAJUfImc-QDFIgi5gzTYlDbkzgOVUovo_BNyYGtYNa9qhX4P-2oyefwHVQLhZ1Ab4ChydkqNbQYJ6oFFxL_5J_Qddc6EFgbqZ0J_0WRGiZMLAdr9Zbyj22BuHGThZeOIqyijB8g8KkiHaFQvfwq9-n-bK31wtBSZzAKwsfXkmsWzUb-vNdXU1acb3RA2HpoEFk8GGPHAJO2_JBzWeKHcIe9Wj_ZNrU6FINegMlz-Os5bYSEFdNK0"/><div class="flex flex-col"><span class="font-label-caps text-label-caps tracking-widest text-primary uppercase leading-none">ShadowAthlete</span><span class="font-headline-md text-headline-md font-semibold text-on-surface tracking-tight leading-tight truncate max-w-[170px]">Sports</span></div></div><div class="flex items-center gap-space-sm"><div class="h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#00eefc] animate-pulse" title="Twin Synced"></div><button aria-label="Athlete Profile" class="w-11 h-11 flex items-center justify-center p-0.5 rounded-full hover:opacity-90 transition-opacity"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8"/></button></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full px-margin-mobile pb-space-xl gap-space-md">
+<!-- Top Sport Badge & Context Header -->
+<div class="flex flex-col gap-space-xs mt-space-sm">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-caps text-label-caps">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+        PRIMARY DISCIPLINE • LEVEL 27
+      </div>
+<span class="font-label-badge text-label-badge text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">Demo Data</span>
+</div>
+<h1 class="font-headline-xl-mobile text-headline-xl-mobile font-semibold text-on-surface tracking-tight">Tennis Biomechanics</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+      Forehand unit turn, backhand crosscourt &amp; serve pronation telemetry.
+    </p>
+</div>
+<!-- Primary Kinetic Call-to-Actions -->
+<div class="grid grid-cols-2 gap-gutter-mobile">
+<button class="flex items-center justify-center gap-2 py-3.5 px-3 bg-primary text-on-primary rounded-xl font-headline-md text-body-md font-bold shadow-[0_0_20px_rgba(75,226,119,0.25)] active:scale-[0.98] transition-all" id="btn-record">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">videocam</span>
+<span>Record video</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-3.5 px-3 bg-surface-container-high text-on-surface rounded-xl font-headline-md text-body-md font-semibold active:scale-[0.98] transition-all hover:bg-surface-bright" id="btn-upload">
+<span class="material-symbols-outlined text-[20px] text-secondary">upload_file</span>
+<span>Upload video</span>
+</button>
+</div>
+<!-- Hero Analysis Visualizer Card -->
+<div class="relative w-full rounded-xl overflow-hidden bg-surface-container-lowest shadow-xl flex flex-col">
+<div class="relative w-full h-56 bg-surface-container">
+<div class="w-full h-full bg-cover bg-center" data-alt="Professional tennis female player executing a dynamic forehand stroke on a twilight hard court, illuminated with luminous cyan skeletal tracking vector lines and neon lime racket velocity directional arrows matching high-performance AI telemetry." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByYZu2J6WtkWRBblx51JyQkSzbdbaYgmwaK2oG-uDKV9MmVHGAPi6nB_U6dLS_QkS1HBh-ZAOOfGoae9NEd7ot0RYUolP9U34DXB4NGWKiDGv0mljBZ0IpGzjySqjxO9toWwkLDaroCbZ3ktlx8sHUKe_hwjn0yfvxTs8JAIpe7MSEgGavLzZyQ_l3DjoAzmuHHbrMsOIRQj1p02SL6l_EcIdKP1DgYxGi-UpuK5FqCBnv875CNJXn')">
+</div>
+<!-- HUD Overlay Elements -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<!-- Real-time skeletal node overlay simulation tags -->
+<div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface/85 backdrop-blur-md">
+<span class="material-symbols-outlined text-[15px] text-secondary">flare</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Shadow Twin Mesh</span>
+</div>
+<div class="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded bg-surface/85 backdrop-blur-md">
+<span class="font-label-caps text-label-caps text-primary uppercase">33/33 Joints</span>
+</div>
+<!-- Kinetic Telemetry Callouts directly mapped to joints -->
+<div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-on-surface">
+<div class="flex items-center gap-2 bg-surface-container/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase leading-none">Elbow Flexion</span>
+<span class="font-headline-md text-body-md font-semibold text-on-surface">142° <span class="text-primary text-[11px] font-normal">Optimal</span></span>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-surface-container/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase leading-none">Load Knee Flex</span>
+<span class="font-headline-md text-body-md font-semibold text-on-surface">128° <span class="text-secondary text-[11px] font-normal">Target 130°</span></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Telemetry Health Bar inside hero card -->
+<div class="px-space-md py-3 flex items-center justify-between bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">verified</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">97.2% Model Fidelity</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-caps text-label-caps">
+<span>99.1% FRAMES TRACKED</span>
+</div>
+</div>
+</div>
+<!-- Stroke Classification & Action Distribution -->
+<div class="flex flex-col bg-surface-container rounded-xl p-space-md gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">sports_tennis</span>
+<h2 class="font-headline-md text-body-lg font-semibold text-on-surface">Stroke Distribution</h2>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">LAST 240 SHOTS</span>
+</div>
+<!-- Multi-segmented Kinetic Bar -->
+<div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden flex gap-0.5">
+<div class="h-full bg-primary" style="width: 54%" title="Forehand: 54%"></div>
+<div class="h-full bg-secondary-container" style="width: 28%" title="Backhand: 28%"></div>
+<div class="h-full bg-tertiary" style="width: 12%" title="Serve: 12%"></div>
+<div class="h-full bg-surface-bright" style="width: 6%" title="Ready: 6%"></div>
+</div>
+<!-- Stroke breakdown legend -->
+<div class="grid grid-cols-4 gap-1 pt-1">
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Forehand</span>
+</div>
+<span class="font-headline-md text-body-md font-bold text-on-surface">54%</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Backhand</span>
+</div>
+<span class="font-headline-md text-body-md font-bold text-on-surface">28%</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Serve</span>
+</div>
+<span class="font-headline-md text-body-md font-bold text-on-surface">12%</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-surface-bright"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Ready</span>
+</div>
+<span class="font-headline-md text-body-md font-bold text-on-surface">6%</span>
+</div>
+</div>
+</div>
+<!-- Personal Bests & Kinetic Chain Performance -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-body-lg font-semibold text-on-surface">Performance Benchmarks</h2>
+<span class="font-label-caps text-label-caps text-secondary uppercase">vs Shadow Twin</span>
+</div>
+<div class="grid grid-cols-3 gap-gutter-mobile">
+<!-- PR 1 -->
+<div class="bg-surface-container rounded-xl p-3 flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-caps text-[10px] uppercase">Serve Speed</span>
+<span class="material-symbols-outlined text-[16px] text-primary">bolt</span>
+</div>
+<div class="my-1.5">
+<span class="font-headline-md text-body-lg font-bold text-on-surface">124.6</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">MPH</span>
+</div>
+<span class="font-label-caps text-[10px] text-primary bg-primary-container/20 px-1.5 py-0.5 rounded w-fit">+3.2 mph PR</span>
+</div>
+<!-- PR 2 -->
+<div class="bg-surface-container rounded-xl p-3 flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-caps text-[10px] uppercase">Racket Lag</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">timer</span>
+</div>
+<div class="my-1.5">
+<span class="font-headline-md text-body-lg font-bold text-on-surface">38</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">ms</span>
+</div>
+<span class="font-label-caps text-[10px] text-secondary bg-on-secondary-fixed-variant/40 px-1.5 py-0.5 rounded w-fit">-6ms faster</span>
+</div>
+<!-- PR 3 -->
+<div class="bg-surface-container rounded-xl p-3 flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-caps text-[10px] uppercase">Kinetic Chain</span>
+<span class="material-symbols-outlined text-[16px] text-primary">hub</span>
+</div>
+<div class="my-1.5">
+<span class="font-headline-md text-body-lg font-bold text-on-surface">92%</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Sync</span>
+</div>
+<span class="font-label-caps text-[10px] text-primary bg-primary-container/20 px-1.5 py-0.5 rounded w-fit">Top 4%</span>
+</div>
+</div>
+</div>
+<!-- Hardware Sensors Telemetry State (Truthful UX) -->
+<div class="flex items-center justify-between p-3.5 bg-surface-container-low rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">sensors_off</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">Ball Spin &amp; String Impact</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Optical tracking active • Dampener sensor unlinked</span>
+</div>
+</div>
+<span class="font-label-caps text-[10px] text-tertiary bg-tertiary-container/20 px-2 py-1 rounded uppercase font-semibold">
+      Sensor Not Connected
+    </span>
+</div>
+<!-- Recent Tennis Sessions -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-body-lg font-semibold text-on-surface">Recent Recorded Sessions</h2>
+<a class="font-label-caps text-label-caps text-primary uppercase flex items-center gap-0.5" href="#">
+        View All <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+<!-- Session Card 1 -->
+<div class="flex items-center justify-between p-3.5 bg-surface-container rounded-xl active:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high overflow-hidden relative flex-shrink-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="Athletic woman practicing a powerful tennis groundstroke on a sunlit court with subtle tracking markers overlay." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCqUWSAng0L2UY--IED85xTYUdycgkqvfk43GkXLqtuhA_J-Ib8U-LPI7iYKUWddsK9mOXBL0i9602nHdJIGh-hMWNOq3fAs0xUtnroUWAEWKs9R9-K_IKYNP1hkqgcYDgptg-yNtN_4FyqswlvWrNoUMIITyOh_HnJiAQdQFw_vcD6Nj9zgs8W6Ill9Ag0v9YaTyc8zKDKUEiGLXFoglVBAgWDMI6Eu5igCnysZC7zb8vmcHpg_leL')">
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Morning Baseline Forehand</span>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-[12px]">
+<span>Yesterday</span>
+<span>•</span>
+<span>14m 20s</span>
+<span>•</span>
+<span class="text-primary font-medium">88 shots</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1">
+<span class="font-headline-md text-body-lg font-bold text-primary">814</span>
+<span class="material-symbols-outlined text-primary text-[16px]">trending_up</span>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Biom Score</span>
+</div>
+</div>
+<!-- Session Card 2 -->
+<div class="flex items-center justify-between p-3.5 bg-surface-container rounded-xl active:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high overflow-hidden relative flex-shrink-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="Close up of tennis racket impact point on ball with illuminated digital trace vectors over player wrist." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBF6_NvqsedFvCYd8mjC2jH89uR1jSevshIoWNUTTInQcTM50LLfWu9HsrvuvFJpCRyGcLzAt-4CNu9S-daebqYaiHnyB3bmpeJIcGtjewLOYfxFHjoS-uAqxTYwiwQUpocG3b5YnUj80yCRsjIXbfQRCmbI-q7big7wUM11btCmm8rkFCaukSegbopvP9TUmBzSqTYB9iWbQyURjIGlryqpFwHY1BQnFxVTPerkQ9f8VEGuG8qaFg8')">
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Backhand Crosscourt Drill</span>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-[12px]">
+<span>May 10</span>
+<span>•</span>
+<span>18m 05s</span>
+<span>•</span>
+<span class="text-secondary font-medium">112 shots</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1">
+<span class="font-headline-md text-body-lg font-bold text-secondary">792</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">done</span>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Biom Score</span>
+</div>
+</div>
+</div>
+<!-- Hidden native file input for camera/gallery triggers -->
+<input accept="video/*" capture="environment" class="hidden" id="camera-capture-input" type="file"/>
+<input accept="video/*" class="hidden" id="video-upload-input" type="file"/>
+</div>
+<script>
+  (function() {
+    const recordBtn = document.getElementById('btn-record');
+    const uploadBtn = document.getElementById('btn-upload');
+    const cameraInput = document.getElementById('camera-capture-input');
+    const uploadInput = document.getElementById('video-upload-input');
+
+    if (recordBtn && cameraInput) {
+      recordBtn.addEventListener('click', function() {
+        cameraInput.click();
+      });
+    }
+
+    if (uploadBtn && uploadInput) {
+      uploadBtn.addEventListener('click', function() {
+        uploadInput.click();
+      });
+    }
+
+    const handleFile = function(e) {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        const originalText = recordBtn.innerHTML;
+        recordBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">sync</span><span>Analyzing Pose...</span>';
+        recordBtn.classList.add('opacity-80');
+        setTimeout(() => {
+          recordBtn.innerHTML = originalText;
+          recordBtn.classList.remove('opacity-80');
+        }, 2200);
+      }
+    };
+
+    if (cameraInput) cameraInput.addEventListener('change', handleFile);
+    if (uploadInput) uploadInput.addEventListener('change', handleFile);
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/85 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.6)]" data-active-classes="text-primary [&amp;_span.indicator]:opacity-100 [&amp;_.material-symbols-outlined]:text-primary"><div class="flex items-center justify-around h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-colors group" data-path="home" href="#"><span class="material-symbols-outlined text-[22px] transition-transform group-hover:scale-110">home</span><span class="font-label-caps text-label-caps uppercase mt-1">Home</span><span class="indicator h-1 w-1 rounded-full bg-primary mt-0.5 opacity-0 transition-opacity"></span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-colors group text-primary [&amp;_span.indicator]:opacity-100 [&amp;_.material-symbols-outlined]:text-primary" data-path="sports" href="#"><span class="material-symbols-outlined text-[22px] transition-transform group-hover:scale-110">sprint</span><span class="font-label-caps text-label-caps uppercase mt-1">Sports</span><span class="indicator h-1 w-1 rounded-full bg-primary mt-0.5 opacity-0 transition-opacity"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-colors group" data-path="my-avatar" href="#"><span class="material-symbols-outlined text-[22px] transition-transform group-hover:scale-110">accessibility_new</span><span class="font-label-caps text-label-caps uppercase mt-1">My Avatar</span><span class="indicator h-1 w-1 rounded-full bg-primary mt-0.5 opacity-0 transition-opacity"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-colors group" data-path="sessions" href="#"><span class="material-symbols-outlined text-[22px] transition-transform group-hover:scale-110">history_toggle_off</span><span class="font-label-caps text-label-caps uppercase mt-1">Sessions</span><span class="indicator h-1 w-1 rounded-full bg-primary mt-0.5 opacity-0 transition-opacity"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-colors group" data-path="profile" href="#"><span class="material-symbols-outlined text-[22px] transition-transform group-hover:scale-110">person</span><span class="font-label-caps text-label-caps uppercase mt-1">Profile</span><span class="indicator h-1 w-1 rounded-full bg-primary mt-0.5 opacity-0 transition-opacity"></span></a></div></nav></body></html>

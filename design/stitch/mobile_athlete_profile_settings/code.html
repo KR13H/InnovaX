@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-primary-fixed": "#002109", "on-surface-variant": "#bccbb9", "tertiary-fixed-dim": "#ffb95f", "surface-container-highest": "#31353c", "secondary-fixed-dim": "#00dbe9", "outline-variant": "#3d4a3d", "inverse-surface": "#dfe2eb", "surface-container-high": "#262a31", "secondary": "#d3fbff", "outline": "#869585", "tertiary-fixed": "#ffddb8", "on-tertiary-fixed": "#2a1700", "error-container": "#93000a", "surface": "#10141a", "surface-container-lowest": "#0a0e14", "on-secondary-fixed": "#002022", "inverse-on-surface": "#2d3137", "on-surface": "#dfe2eb", "surface-dim": "#10141a", "primary-fixed": "#6bff8f", "secondary-container": "#00eefc", "on-tertiary-container": "#5c3800", "primary-fixed-dim": "#4ae176", "on-primary-fixed-variant": "#005321", "background": "#10141a", "surface-bright": "#353940", "primary-container": "#22c55e", "on-secondary": "#00363a", "on-primary-container": "#004b1e", "on-secondary-fixed-variant": "#004f54", "on-primary": "#003915", "inverse-primary": "#006e2f", "primary": "#4be277", "surface-tint": "#4ae176", "error": "#ffb4ab", "on-error": "#690005", "on-tertiary-fixed-variant": "#653e00", "on-tertiary": "#472a00", "tertiary": "#ffba61", "surface-container-low": "#181c22", "on-background": "#dfe2eb", "surface-variant": "#31353c", "tertiary-container": "#ef9900", "on-secondary-container": "#00686f", "secondary-fixed": "#7df4ff", "on-error-container": "#ffdad6", "surface-container": "#1c2026" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "margin-mobile": "1rem", "space-sm": "0.5rem", "margin": "2.5rem", "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1.5rem" }, fontFamily: { "label-badge": ["Inter"], "headline-xl-mobile": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "headline-lg": ["Space Grotesk"], "display-hero-mobile": ["Space Grotesk"], "metric-huge": ["Space Grotesk"], "body-md": ["Inter"], "body-sm": ["Inter"], "headline-md": ["Space Grotesk"], "body-lg": ["Inter"], "label-caps": ["Space Grotesk"], "display-hero": ["Space Grotesk"], "metric-large": ["Space Grotesk"] }, fontSize: { "label-badge": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }], "headline-xl-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "600" }], "headline-lg": ["30px", { lineHeight: "38px", letterSpacing: "-0.01em", fontWeight: "600" }], "display-hero-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }], "metric-huge": ["48px", { lineHeight: "52px", letterSpacing: "-0.03em", fontWeight: "700" }], "body-md": ["15px", { lineHeight: "24px", fontWeight: "400" }], "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }], "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" }], "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }], "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "700" }], "display-hero": ["56px", { lineHeight: "64px", letterSpacing: "-0.03em", fontWeight: "700" }], "metric-large": ["32px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#10141a;color:#dfe2eb;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.35)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><img alt="ShadowAthlete Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UoqXpjPGNJSR-Q39He4Cj6z06lTETlc0DfTrne2HOlkf_XP7hWEwPeVbUU2qoF52S3LnrZgnn2YQMVDGZ_uOWQBvtfRd7djhMctxg8S2S90__M00NtlIV5y9w8s0vb1s7-4WJuDb6k5I9zozmPg0cKl0FaX5rVEmxODpltbDFj7NIVHML92KfvT8QLxkyGhJdM1nTvhpH97NOal3TyNmT5VktOUEHXK_1bawjj68d_F-NVtchiePtGkoE"/><div class="flex flex-col min-w-0"><span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface truncate">ShadowAthlete</span><span class="font-label-caps text-label-caps uppercase text-secondary tracking-widest leading-none truncate">AI Telemetry Twin</span></div></div><div class="flex items-center gap-space-sm flex-shrink-0"><button aria-label="Live telemetry sync" class="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high/90 shadow-[0_0_12px_rgba(34,197,94,0.2)] min-h-[44px] min-w-[44px] justify-center"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-caps text-label-caps uppercase text-primary tracking-wider hidden sm:inline">LIVE</span><span class="material-symbols-outlined text-primary text-[18px]">sensors</span></button><button aria-label="Alex Carter athlete profile" class="relative p-0.5 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"><img alt="Athlete Avatar" class="w-8 h-8 rounded-full object-cover shadow-[0_0_8px_rgba(0,238,252,0.3)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYlzWa0WhdHMrlXCOeOKrE_gA6mkG7xt-gxYspgU6fUaJkV_Akz3Qz6MylgYcPyVE5OFBPRU96jXhHmhrUEMgtTe5nfrrt5Ip72wHjEBYrLJcFt3L5dJ4GHGcCD6NC26qS_GST3vE73Y1k2PcA1WX9In53HhyZuOM2ZyVBvkQRU2MYC4KbQ7J3e7gzFYeCTbh28FW7TZt25JcL5lEMN9kpQGB5Rl-Bpp84AiV9NN1X0XPv8ZVW6f2y"/></button></div></div></header><main class="flex flex-col relative w-full pt-16 pb-20 bg-surface flex-1"><div class="flex flex-col w-full px-margin-mobile pb-space-xl gap-space-md">
+<!-- Profile Header HUD -->
+<section class="relative w-full rounded-xl bg-surface-container-high p-space-md shadow-xl overflow-hidden">
+<div class="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 w-36 h-36 rounded-full bg-primary/10 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col gap-space-md">
+<!-- Top Row: Avatar & Core ID -->
+<div class="flex items-center gap-space-md">
+<div class="relative flex-shrink-0">
+<div class="w-20 h-20 rounded-full overflow-hidden shadow-[0_0_16px_rgba(75,226,119,0.3)] bg-surface-container-highest">
+<img alt="Alex Carter Studio Athletic Portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8"/>
+</div>
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest text-primary px-space-xs py-0.5 rounded-full font-label-caps text-label-caps uppercase shadow-md flex items-center gap-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            LVL 27
+          </span>
+<button aria-label="Edit Profile Avatar" class="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-surface-container-highest text-secondary flex items-center justify-center shadow hover:bg-surface-bright transition-colors" id="editAvatarBtn">
+<span class="material-symbols-outlined text-[15px]">photo_camera</span>
+</button>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface truncate">Alex Carter</h1>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary/15 text-secondary font-label-caps text-label-caps uppercase">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+              Semi-Pro
+            </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">alex.carter@kinetics.io</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest mt-1">Twin Node ID: #SHDW-7492-AC</span>
+</div>
+</div>
+<!-- Telemetry Score Bento Strip -->
+<div class="grid grid-cols-2 gap-space-sm bg-surface-container-lowest/80 rounded-lg p-space-sm">
+<div class="flex flex-col justify-center">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-wider">Athlete Kinetic Score</span>
+<div class="flex items-baseline gap-space-xs mt-0.5">
+<span class="font-metric-large text-metric-large font-bold text-primary tracking-tight">782</span>
+<span class="font-label-caps text-label-caps text-primary flex items-center font-bold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>+14 pts
+            </span>
+</div>
+</div>
+<div class="flex flex-col justify-center items-end text-right">
+<span class="font-label-caps text-label-caps uppercase text-secondary tracking-wider">Cohort Benchmark</span>
+<div class="flex items-center gap-1 mt-1">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps uppercase font-bold">
+              Top 4%
+            </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] mt-0.5">Global Semi-Pro Division</span>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="flex items-center gap-space-sm">
+<button class="flex-1 min-h-[48px] px-space-md py-2.5 rounded-lg bg-primary text-on-primary font-headline-md text-[14px] font-bold uppercase tracking-wider flex items-center justify-center gap-space-xs shadow-[0_0_20px_rgba(75,226,119,0.3)] active:scale-[0.98] transition-transform" id="editProfileBtn">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+          Edit Profile
+        </button>
+<button class="flex-1 min-h-[48px] px-space-md py-2.5 rounded-lg bg-surface-container-highest text-secondary font-headline-md text-[14px] font-bold uppercase tracking-wider flex items-center justify-center gap-space-xs hover:bg-surface-bright active:scale-[0.98] transition-transform shadow" id="shareTwinBtn">
+<span class="material-symbols-outlined text-[18px]">share_location</span>
+          Share Twin
+        </button>
+</div>
+</div>
+</section>
+<!-- Biometrics & Body Spec Card -->
+<section class="flex flex-col w-full rounded-xl bg-surface-container p-space-md shadow-lg gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-3.5 rounded-full bg-primary"></span>
+<h2 class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">Kinetic Biometrics</h2>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-secondary">Verified Sensor Hub</span>
+</div>
+<div class="grid grid-cols-4 gap-space-xs mt-1">
+<div class="flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container-high text-center">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">Age</span>
+<span class="font-headline-md text-[18px] font-bold text-on-surface mt-0.5">24</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">years</span>
+</div>
+<div class="flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container-high text-center">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">Height</span>
+<span class="font-headline-md text-[18px] font-bold text-on-surface mt-0.5">185</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">cm</span>
+</div>
+<div class="flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container-high text-center">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">Weight</span>
+<span class="font-headline-md text-[18px] font-bold text-on-surface mt-0.5">78</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">kg</span>
+</div>
+<div class="flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container-high text-center">
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">Dominant</span>
+<span class="font-headline-md text-[18px] font-bold text-primary mt-0.5">Right</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">Hand/Foot</span>
+</div>
+</div>
+</section>
+<!-- Personal Bests / Telemetry PRs -->
+<section class="flex flex-col w-full rounded-xl bg-surface-container p-space-md shadow-lg gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-3.5 rounded-full bg-secondary"></span>
+<h2 class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">Personal Bests &amp; Records</h2>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Optical Tracking</span>
+</div>
+<div class="grid grid-cols-3 gap-space-sm mt-1">
+<!-- PR 1 -->
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high relative overflow-hidden">
+<div class="absolute top-0 right-0 p-1">
+<span class="material-symbols-outlined text-primary text-[14px]">bolt</span>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant truncate">Tennis Serve</span>
+<span class="font-headline-md text-[20px] font-bold text-on-surface mt-1">124.6</span>
+<span class="font-label-caps text-label-caps text-primary uppercase">mph • PR</span>
+</div>
+<!-- PR 2 -->
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high relative overflow-hidden">
+<div class="absolute top-0 right-0 p-1">
+<span class="material-symbols-outlined text-secondary text-[14px]">speed</span>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant truncate">40yd Sprint</span>
+<span class="font-headline-md text-[20px] font-bold text-on-surface mt-1">4.38</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase">sec • Laser</span>
+</div>
+<!-- PR 3 -->
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high relative overflow-hidden">
+<div class="absolute top-0 right-0 p-1">
+<span class="material-symbols-outlined text-primary text-[14px]">sports_cricket</span>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant truncate">Bowling Run</span>
+<span class="font-headline-md text-[20px] font-bold text-on-surface mt-1">88.2</span>
+<span class="font-label-caps text-label-caps text-primary uppercase">mph • Release</span>
+</div>
+</div>
+</section>
+<!-- Active Disciplines & Targets -->
+<section class="flex flex-col w-full rounded-xl bg-surface-container p-space-md shadow-lg gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-3.5 rounded-full bg-primary"></span>
+<h2 class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">Active Sports &amp; Disciplines</h2>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-primary">3 Active Links</span>
+</div>
+<!-- Sport 1 (Primary) -->
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">sports_tennis</span>
+<span class="font-headline-md text-[16px] font-semibold text-on-surface">Tennis</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-label-caps text-label-caps uppercase">Primary</span>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">142 Telemetry Runs</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Focus: Deep baseline topspin forehand stability &amp; kinetic chain whip.</p>
+<!-- Attribute Bar -->
+<div class="w-full bg-surface-container-lowest h-2 rounded-full overflow-hidden mt-1 relative">
+<div class="bg-secondary/40 h-full w-[88%] rounded-full absolute left-0 top-0"></div>
+<div class="bg-primary h-full w-[94%] rounded-full absolute left-0 top-0 shadow-[0_0_8px_rgba(75,226,119,0.7)]"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-label-caps text-on-surface-variant uppercase">
+<span>Shadow Target: 88%</span>
+<span class="text-primary font-bold">Current Form: 94% (+6%)</span>
+</div>
+</div>
+<!-- Sport 2 (Secondary) -->
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">sports_cricket</span>
+<span class="font-headline-md text-[16px] font-semibold text-on-surface">Cricket</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-caps text-label-caps uppercase">Secondary</span>
+</div>
+<span class="font-label-caps text-label-caps uppercase text-on-surface-variant">68 Sessions</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Focus: Fast bowling run-up momentum conservation &amp; front-foot brace angle.</p>
+</div>
+<!-- Sport 3 & 4 Mini Links -->
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="flex items-center gap-space-xs p-2.5 rounded-lg bg-surface-container-high">
+<span class="material-symbols-outlined text-tertiary text-[18px]">sports_basketball</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Basketball</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Jump Load Sync</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs p-2.5 rounded-lg bg-surface-container-high">
+<span class="material-symbols-outlined text-secondary text-[18px]">directions_run</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Running</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Cadence Radar</span>
+</div>
+</div>
+</div>
+<!-- Weekly Commitment Goal -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest mt-1">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">event_repeat</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Weekly Training Goal</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Target: 5 high-speed telemetry sessions</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-headline-md text-[18px] font-bold text-primary">4 / 5</span>
+<span class="font-label-caps text-label-caps uppercase text-secondary">80% Done</span>
+</div>
+</div>
+</section>
+<!-- Preferences & App Settings Module -->
+<section class="flex flex-col w-full rounded-xl bg-surface-container p-space-md shadow-lg gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-3.5 rounded-full bg-secondary"></span>
+<h2 class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">System Preferences &amp; Settings</h2>
+</div>
+<div class="flex flex-col gap-1 mt-1">
+<!-- Setting Item 1: Camera -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-high min-h-[48px] hover:bg-surface-bright transition-colors cursor-pointer">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-secondary text-[22px]">videocam</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Telemetry Video Quality</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant truncate">High speed capture &amp; frame interpolation</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-label-caps text-label-caps uppercase font-bold">4K 60FPS</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+</div>
+</div>
+<!-- Setting Item 2: Ghost Overlay -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-high min-h-[48px]">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-primary text-[22px]">blur_on</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Ghost Overlay Trail</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant truncate">Render digital twin kinetic shadow</span>
+</div>
+</div>
+<button aria-label="Toggle Ghost Overlay Trail" class="w-12 h-6 rounded-full bg-primary flex items-center p-0.5 transition-colors cursor-pointer" id="toggleGhostTrail">
+<div class="w-5 h-5 rounded-full bg-on-primary-fixed shadow-md transform translate-x-6 transition-transform"></div>
+</button>
+</div>
+<!-- Setting Item 3: Push Alerts -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-high min-h-[48px]">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[22px]">notifications_active</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Analysis &amp; Deficit Alerts</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant truncate">Instant notification when twin parses run</span>
+</div>
+</div>
+<button aria-label="Toggle Analysis Alerts" class="w-12 h-6 rounded-full bg-primary flex items-center p-0.5 transition-colors cursor-pointer" id="toggleAlerts">
+<div class="w-5 h-5 rounded-full bg-on-primary-fixed shadow-md transform translate-x-6 transition-transform"></div>
+</button>
+</div>
+<!-- Setting Item 4: Biometrics & Privacy -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-high min-h-[48px] hover:bg-surface-bright transition-colors cursor-pointer">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-secondary text-[22px]">shield</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Biometric Privacy &amp; Cloud Sync</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant truncate">End-to-end encrypted limb kinematic vectors</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="px-2 py-0.5 rounded bg-surface-container text-secondary font-label-caps text-label-caps uppercase font-bold">Sync On</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+</div>
+</div>
+<!-- Setting Item 5: Help & Support -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-high min-h-[48px] hover:bg-surface-bright transition-colors cursor-pointer">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-on-surface-variant text-[22px]">support_agent</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Help, Support &amp; Feedback</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant truncate">Kinetic calibration guides &amp; bug logs</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+</div>
+</div>
+<!-- Log Out Button -->
+<div class="mt-space-sm pt-space-xs flex flex-col">
+<button class="w-full min-h-[48px] rounded-lg bg-error-container/40 text-error hover:bg-error-container/60 active:scale-[0.99] font-headline-md text-[14px] font-bold uppercase tracking-wider flex items-center justify-center gap-space-xs transition-all" id="logoutBtn">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+        Log Out Alex Carter
+      </button>
+<span class="font-label-caps text-label-caps text-center text-on-surface-variant uppercase mt-space-sm opacity-60">
+        ShadowAthlete AI Core v4.2.1 • Build 8820
+      </span>
+</div>
+</section>
+<!-- Interactive Feedback Toast -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-full bg-surface-bright text-on-surface shadow-2xl flex items-center gap-2 font-body-sm text-body-sm pointer-events-none opacity-0 transition-opacity duration-300 z-50" id="toastMessage">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span id="toastText">Settings updated successfully</span>
+</div>
+</div>
+<script>
+  (function initAthleteProfile() {
+    // Highlight active 'Profile' bottom nav button dynamically
+    const navLinks = document.querySelectorAll('nav a[data-path]');
+    navLinks.forEach(link => {
+      if (link.getAttribute('data-path') === 'athlete-profile') {
+        link.classList.remove('text-on-surface-variant');
+        link.classList.add('text-primary', 'font-semibold');
+      } else {
+        link.classList.remove('text-primary', 'font-semibold');
+        link.classList.add('text-on-surface-variant');
+      }
+    });
+
+    const toast = document.getElementById('toastMessage');
+    const toastText = document.getElementById('toastText');
+    let toastTimeout = null;
+
+    function showToast(msg) {
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastText.textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2600);
+    }
+
+    // Toggle button animations
+    function setupToggle(buttonId, label) {
+      const btn = document.getElementById(buttonId);
+      if (!btn) return;
+      let active = true;
+      btn.addEventListener('click', () => {
+        active = !active;
+        const knob = btn.firstElementChild;
+        if (active) {
+          btn.classList.remove('bg-surface-container-highest');
+          btn.classList.add('bg-primary');
+          knob.classList.remove('translate-x-0', 'bg-on-surface-variant');
+          knob.classList.add('translate-x-6', 'bg-on-primary-fixed');
+          showToast(label + ' Enabled');
+        } else {
+          btn.classList.remove('bg-primary');
+          btn.classList.add('bg-surface-container-highest');
+          knob.classList.remove('translate-x-6', 'bg-on-primary-fixed');
+          knob.classList.add('translate-x-0', 'bg-on-surface-variant');
+          showToast(label + ' Disabled');
+        }
+      });
+    }
+
+    setupToggle('toggleGhostTrail', 'Ghost Overlay Trail');
+    setupToggle('toggleAlerts', 'Push Telemetry Alerts');
+
+    // Quick Action button handlers
+    const shareBtn = document.getElementById('shareTwinBtn');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => {
+        showToast('Shadow Twin Telemetry link copied to clipboard!');
+      });
+    }
+
+    const editBtn = document.getElementById('editProfileBtn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        showToast('Entering Biometrics Edit Mode...');
+      });
+    }
+
+    const avatarBtn = document.getElementById('editAvatarBtn');
+    if (avatarBtn) {
+      avatarBtn.addEventListener('click', () => {
+        showToast('Kinetic Avatar capture launched.');
+      });
+    }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        showToast('Secure biometric session terminated.');
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_12px_rgba(0,0,0,0.4)]" data-active-classes="text-primary font-semibold"><div class="flex items-center justify-around h-16 px-space-xs relative"><a class="flex flex-col items-center justify-center gap-0.5 flex-1 min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="athlete-home-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">space_dashboard</span><span class="font-label-caps text-label-caps uppercase tracking-wider">Home</span></a><a class="flex flex-col items-center justify-center gap-0.5 flex-1 min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="sports-disciplines" href="#"><span class="material-symbols-outlined text-[24px]">sports_score</span><span class="font-label-caps text-label-caps uppercase tracking-wider">Sports</span></a><a class="flex flex-col items-center justify-center gap-0.5 flex-1 min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="sessions-archive" href="#"><span class="material-symbols-outlined text-[24px]">monitoring</span><span class="font-label-caps text-label-caps uppercase tracking-wider">Sessions</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 flex-1 min-h-[44px] transition-colors text-primary font-semibold" data-path="athlete-profile" href="#"><span class="material-symbols-outlined text-[24px]">person</span><span class="font-label-caps text-label-caps uppercase tracking-wider">Profile</span></a></div></nav></body></html>
