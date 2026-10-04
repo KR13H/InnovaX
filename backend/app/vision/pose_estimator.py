@@ -1,8 +1,20 @@
+from rtmlib import Wholebody
 from ultralytics import YOLO
 
 
 class PoseEstimator:
     def __init__(self):
+        self.model = Wholebody(
+            mode="balanced",
+            backend="onnxruntime",
+            device="cpu",
+            to_openpose=False,
+        )
+
+    def process_frame(self, frame):
+        keypoints, scores = self.model(frame)
+
+        return keypoints, scores
         # Pretrained YOLO pose model.
         # Downloads the weights automatically the first time.
         self.model = YOLO("yolo11n-pose.pt")
