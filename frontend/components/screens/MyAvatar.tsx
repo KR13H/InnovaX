@@ -99,15 +99,6 @@ export default function MyAvatar() {
         <div className="flex flex-col w-full pb-10 space-y-space-md">
           {/* Top Telemetry Banner */}
           <div className="px-margin-mobile flex flex-col space-y-space-xs">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-caps text-label-caps tracking-widest uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                {" "}Persistent Digital Twin
-              </span>
-              <span className="font-label-badge text-label-badge text-on-surface-variant font-medium bg-surface-container-low px-2 py-0.5 rounded-md">
-                SYS.VER 3.4.2
-              </span>
-            </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               Single kinetic avatar synchronized across Tennis, Cricket, Basketball &amp; Running.
             </p>
@@ -173,28 +164,12 @@ export default function MyAvatar() {
                       <span className="font-headline-md text-[18px] leading-tight font-bold text-on-surface">
                         Twin Lv. {dash?.athlete.level ?? 27}
                       </span>
-                      <span className="px-1.5 py-0.2 rounded bg-primary/20 text-primary text-[10px] font-mono font-bold tracking-tight">
-                        SYNCD
-                      </span>
                     </div>
                     {" "}
                     <p className="font-body-sm text-[11px] text-on-surface-variant leading-none">
-                      Global Biomechanical Fidelity
+                      {live ? (lastSession ? `Calibrated ${relativeDay(lastSession.created_at).toLowerCase()}` : "Not calibrated yet") : "Calibrated 2h ago"}
                     </p>
                   </div>
-                </div>
-                <div className="flex flex-col items-end">
-                  <div className="flex items-center gap-1 text-secondary">
-                    <span className="material-symbols-outlined text-[14px]">
-                      sensors
-                    </span>
-                    <span className="font-label-caps text-label-caps uppercase tracking-wider font-bold">
-                      33 Joint Nodes
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-primary font-mono">
-                    100% Locked
-                  </span>
                 </div>
               </div>
               {" "}
@@ -203,76 +178,8 @@ export default function MyAvatar() {
               <div className="relative w-full h-72 rounded-xl overflow-hidden bg-surface-container-lowest flex items-center justify-center">
                 {/* Visual Backdrop Image depicting Biomechanical Skeletal & Kinetic Mesh */}
                 <img className="absolute inset-0 w-full h-full object-cover object-center opacity-85 mix-blend-screen" data-alt="Futuristic athletic 3D wireframe digital twin skeleton showing kinetic motion tracking. High-contrast cybernetic sports science aesthetic with luminous neon green nodes and glowing cyan translucent bones in dynamic athletic readiness stance on a pure black telemetry grid." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDM8ujHrdGLjzcGWo_W6ED9NUmq36NIbDElHnFfLMubktLR1xiNMDR0mUERgpPXUFPbMv5ZZdNea6LtNuPP6iyFCi6DlFQj6zIFfpIxKoYydaPqomRDOCjlmnBqnwi4-bZ714iXhQtwWRsC3nkmpIo7d14qnZLf4kl0EbmSYv0WCTTFlA68Nq5JvU_9zULieossCdDqGWXnpkifeqEsjlM0b8dTtiiGPU7GIJp3UzbMSrWPGtz3Bg8" />
-                {/* High-tech HUD Reticle & Crosshairs Overlay */}
-                <div className="absolute inset-0 p-3 pointer-events-none flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="p-1.5 rounded bg-surface-container-highest/60 backdrop-blur-md">
-                      <div className="flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
-                        <span className="font-label-caps text-[9px] uppercase tracking-widest text-secondary">
-                          KINETIC FEED : FOREHAND &amp; SPRINT
-                        </span>
-                      </div>
-                      {" "}
-                      <div className="font-mono text-[10px] text-on-surface-variant mt-0.5">
-                        VEL: 124.6 MPH • ANG: 118°
-                      </div>
-                    </div>
-                    <div className="text-right p-1.5 rounded bg-surface-container-highest/60 backdrop-blur-md">
-                      <span className="font-label-caps text-[9px] uppercase tracking-widest text-primary">
-                        SKELETAL ALIGNMENT
-                      </span>
-                      {" "}
-                      <div className="font-mono text-[11px] text-primary font-bold">
-                        98.4% OPTIMAL
-                      </div>
-                    </div>
-                  </div>
-                  {/* Bottom Telemetry Badges */}
-                  <div className="flex justify-between items-end">
-                    <div className="flex flex-col gap-1">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-highest/70 backdrop-blur-sm text-on-surface text-[10px] font-mono">
-                        <span className="material-symbols-outlined text-[12px] text-primary">
-                          speed
-                        </span>
-                        {" "}LATENCY 14ms
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-highest/70 backdrop-blur-sm text-on-surface text-[10px] font-mono">
-                        <span className="material-symbols-outlined text-[12px] text-secondary">
-                          adjust
-                        </span>
-                        {" "}COORD BIAS +3.2%
-                      </span>
-                    </div>
-                    {/* Kinetic pulse trigger visualizer button */}
-                    <button aria-label="Calibrate Skeletal Rig" className="h-9 px-3 rounded-lg bg-surface-container-high/90 backdrop-blur-md text-secondary hover:text-primary flex items-center gap-1.5 shadow-lg active:scale-95 transition-all" onClick={() => showToast("33-joint kinetic rig inspected. Calibration optimal.")}>
-                      <span className="material-symbols-outlined text-[16px]">
-                        view_in_ar
-                      </span>
-                      <span className="font-label-caps text-[10px] uppercase tracking-wider font-bold">
-                        Inspect Rig
-                      </span>
-                    </button>
-                  </div>
-                </div>
               </div>
               {" "}
-              {/* Quick Twin State Status Bar */}
-              {" "}
-              <div className="mt-3 pt-3 flex items-center justify-between text-on-surface-variant">
-                <div className="flex items-center gap-1.5 text-[12px]">
-                  <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_#4be277]"></span>
-                  <span className="text-on-surface font-medium">
-                    Kinetic Mesh Status:
-                  </span>
-                  <span className="text-primary font-mono">
-                    Synchronized
-                  </span>
-                </div>
-                <span className="text-[11px] font-mono text-outline">
-                  {live ? (lastSession ? `CALIBRATED ${relativeDay(lastSession.created_at).toUpperCase()}` : "NOT CALIBRATED") : "CALIBRATED 2h AGO"}
-                </span>
-              </div>
             </div>
           </div>
           {/* Biomechanics Radar Chart Module */}
@@ -285,7 +192,7 @@ export default function MyAvatar() {
                   </span>
                   {" "}
                   <h2 className="font-headline-md text-[18px] text-on-surface font-bold leading-tight">
-                    10-Vector Kinetic Radar
+                    Athlete attributes
                   </h2>
                 </div>
                 <div className="flex flex-col items-end text-right">
@@ -299,9 +206,6 @@ export default function MyAvatar() {
                       {" "}Benchmark
                     </span>
                   </div>
-                  <span className="text-[10px] text-outline font-mono mt-0.5">
-                    Semi-Pro Decathlon Model
-                  </span>
                 </div>
               </div>
               {/* Radar Web Graphic: 10 Universals */}
@@ -705,9 +609,11 @@ export default function MyAvatar() {
                 <span>
                   {live ? `Target: ${fmt(speed.target)}` : "P90 Standard: 86"}
                 </span>
-                <span className="text-on-surface-variant">
-                  Demo Data Tagged
-                </span>
+                {!live && (
+                  <span className="text-on-surface-variant">
+                    Demo Data Tagged
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -721,26 +627,6 @@ export default function MyAvatar() {
                 Start Calibration Session
               </span>
             </button>
-            <button className="w-full py-3 px-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-secondary font-label-caps text-label-caps tracking-wider uppercase font-bold active:scale-[0.98] transition-all flex items-center justify-center gap-2" onClick={() => showToast("Opening 10-Vector parameter tuner...")}>
-              <span className="material-symbols-outlined text-[18px]">
-                tune
-              </span>
-              <span>
-                Tune Avatar Targets &amp; Parameters
-              </span>
-            </button>
-            {/* Calibration Info footnote */}
-            <div className="flex items-center justify-center gap-1.5 text-center text-outline font-body-sm text-[11px] pt-1">
-              <span className="material-symbols-outlined text-[14px]">
-                lock_clock
-              </span>
-              <span>
-                All non-calibrated projection figures labeled as{" "}
-                <b>
-                  Demo Data
-                </b>
-              </span>
-            </div>
           </div>
           {/* Subtle Micro-Toast Container for Interactive Clicks */}
           <div className={`fixed bottom-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 ${toastVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"} transform px-4 py-2 rounded-xl bg-surface-bright/95 backdrop-blur-md shadow-2xl text-on-surface text-[12px] font-mono flex items-center gap-2`} id="avatar-toast">

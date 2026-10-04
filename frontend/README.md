@@ -42,6 +42,8 @@ data and show "—" (or an empty state) where the backend has nothing yet — ne
 | My Avatar | `GET /athlete/dashboard` attributes → radar (current / peak / target) |
 | Sessions | `GET /sessions`, `GET /sessions/{id}/recap` |
 | Session detail (`/sessions/[id]`) | `GET /sessions/{id}`, `/recap`, `/explanation`, `/video` (clip playback), analyze endpoints for un-analyzed clips |
+| Progress (`/progress?sport=`) | `GET /sessions` + each session's `recap`; key metrics per sport and a "future you" projection (`lib/progress.ts`) |
+| Compare (`/compare?now=&past=`) | two sessions' `recap` + `video`; in-browser ghost overlay of both skeletons (`components/GhostCompare.tsx`) |
 | Sports hub | `GET /sessions` (latest per sport) |
 | Tennis | latest tennis `recap` → stroke split, elbow/knee angles, pose detection |
 | Profile / Settings | `GET /athlete/dashboard`, `GET /records`, `GET /auth/me` |

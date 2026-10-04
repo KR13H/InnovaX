@@ -128,20 +128,7 @@ export default function TennisDetails() {
               {" "}
               {/* Real-time skeletal node overlay simulation tags */}
               {" "}
-              <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface/85 backdrop-blur-md">
-                <span className="material-symbols-outlined text-[15px] text-secondary">
-                  flare
-                </span>
-                <span className="font-label-caps text-label-caps text-secondary uppercase tracking-wider">
-                  Shadow Twin Mesh
-                </span>
-              </div>
               {" "}
-              <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded bg-surface/85 backdrop-blur-md">
-                <span className="font-label-caps text-label-caps text-primary uppercase">
-                  33/33 Joints
-                </span>
-              </div>
               {" "}
               {/* Kinetic Telemetry Callouts directly mapped to joints */}
               {" "}
@@ -347,27 +334,6 @@ export default function TennisDetails() {
             </div>
           </div>
           )}
-          {/* Hardware Sensors Telemetry State (Truthful UX) */}
-          <div className="flex items-center justify-between p-3.5 bg-surface-container-low rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-                <span className="material-symbols-outlined text-[18px]">
-                  sensors_off
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-body-sm text-body-sm text-on-surface font-semibold">
-                  Ball Spin &amp; String Impact
-                </span>
-                <span className="font-body-sm text-[11px] text-on-surface-variant">
-                  Optical tracking active • Dampener sensor unlinked
-                </span>
-              </div>
-            </div>
-            <span className="font-label-caps text-[10px] text-tertiary bg-tertiary-container/20 px-2 py-1 rounded uppercase font-semibold">
-              Sensor Not Connected
-            </span>
-          </div>
           {/* Recent Tennis Sessions */}
           <div className="flex flex-col gap-space-xs">
             <div className="flex items-center justify-between">

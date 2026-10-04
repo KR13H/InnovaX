@@ -59,20 +59,11 @@ export default function Profile() {
                 ShadowAthlete
               </span>
               <span className="font-label-caps text-label-caps uppercase text-secondary tracking-widest leading-none truncate">
-                AI Telemetry Twin
+                Your athletic twin
               </span>
             </div>
           </div>
           <div className="flex items-center gap-space-sm flex-shrink-0">
-            <button aria-label="Live telemetry sync" className="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high/90 shadow-[0_0_12px_rgba(34,197,94,0.2)] min-h-[44px] min-w-[44px] justify-center">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="font-label-caps text-label-caps uppercase text-primary tracking-wider hidden sm:inline">
-                LIVE
-              </span>
-              <span className="material-symbols-outlined text-primary text-[18px]">
-                sensors
-              </span>
-            </button>
             <button aria-label="Alex Carter athlete profile" onClick={() => router.push("/settings")} className="relative p-0.5 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center">
               <img alt="Athlete Avatar" className="w-8 h-8 rounded-full object-cover shadow-[0_0_8px_rgba(0,238,252,0.3)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYlzWa0WhdHMrlXCOeOKrE_gA6mkG7xt-gxYspgU6fUaJkV_Akz3Qz6MylgYcPyVE5OFBPRU96jXhHmhrUEMgtTe5nfrrt5Ip72wHjEBYrLJcFt3L5dJ4GHGcCD6NC26qS_GST3vE73Y1k2PcA1WX9In53HhyZuOM2ZyVBvkQRU2MYC4KbQ7J3e7gzFYeCTbh28FW7TZt25JcL5lEMN9kpQGB5Rl-Bpp84AiV9NN1X0XPv8ZVW6f2y" />
             </button>
@@ -95,10 +86,6 @@ export default function Profile() {
                     <img alt="Alex Carter Studio Athletic Portrait" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VMnOn0JU8o67qYlYqYCfMg1WkAfuvSKYr7KKY53q6BP96YUKVar9XDhOk_G0q9oEEjtyqPTnjPz-jEJrc0WYt38c3cNqYZcfCBRJw4q5MRzBkPerclP4uhy8_16kr0ms5etlkMLS_PsBNC0_ErIoeYXxd2zuxLTVC_llRYg3rM1224q-gsYbE7WRhzle6ndzpYuYW6zR9J2qVASfJ92oWz4LbzfGQXXuIcMd1SHheY-ciDcBNW3LLRji8" />
                   </div>
                   {" "}
-                  <span className="absolute -bottom-1 -right-1 bg-surface-container-lowest text-primary px-space-xs py-0.5 rounded-full font-label-caps text-label-caps uppercase shadow-md flex items-center gap-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                    {" "}LVL 27
-                  </span>
                   {" "}
                   <button aria-label="Edit Profile Avatar" className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-surface-container-highest text-secondary flex items-center justify-center shadow hover:bg-surface-bright transition-colors" id="editAvatarBtn" onClick={() => router.push("/capture")}>
                     <span className="material-symbols-outlined text-[15px]">
@@ -121,13 +108,10 @@ export default function Profile() {
                   <span className="font-body-sm text-body-sm text-on-surface-variant truncate">
                     {email}
                   </span>
-                  <span className="font-label-caps text-label-caps text-secondary uppercase tracking-widest mt-1">
-                    Twin Node ID: #SHDW-{signedIn && profile ? String(profile.id).padStart(4, "0") : "7492-AC"}
-                  </span>
                 </div>
               </div>
               {/* Telemetry Score Bento Strip */}
-              <div className="grid grid-cols-2 gap-space-sm bg-surface-container-lowest/80 rounded-lg p-space-sm">
+              <div className={`${live && dash?.athlete.athlete_score == null ? "hidden" : "grid"} grid-cols-2 gap-space-sm bg-surface-container-lowest/80 rounded-lg p-space-sm`}>
                 <div className="flex flex-col justify-center">
                   <span className="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-wider">
                     Athlete Kinetic Score
@@ -144,7 +128,7 @@ export default function Profile() {
                     </span>
                   </div>
                 </div>
-                <div className="flex flex-col justify-center items-end text-right">
+                <div className={`${live ? "hidden" : "flex"} flex-col justify-center items-end text-right`}>
                   <span className="font-label-caps text-label-caps uppercase text-secondary tracking-wider">
                     Cohort Benchmark
                   </span>
@@ -181,12 +165,9 @@ export default function Profile() {
               <div className="flex items-center gap-space-xs">
                 <span className="w-1.5 h-3.5 rounded-full bg-primary"></span>
                 <h2 className="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">
-                  Kinetic Biometrics
+                  Body
                 </h2>
               </div>
-              <span className="font-label-caps text-label-caps uppercase text-secondary">
-                Verified Sensor Hub
-              </span>
             </div>
             <div className="grid grid-cols-4 gap-space-xs mt-1">
               <div className="flex flex-col items-center justify-center p-space-xs rounded-lg bg-surface-container-high text-center">
@@ -244,9 +225,6 @@ export default function Profile() {
                   Personal Bests &amp; Records
                 </h2>
               </div>
-              <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                Optical Tracking
-              </span>
             </div>
             <div className="grid grid-cols-3 gap-space-sm mt-1">
               {live ? (
@@ -342,11 +320,11 @@ export default function Profile() {
               <div className="flex items-center gap-space-xs">
                 <span className="w-1.5 h-3.5 rounded-full bg-primary"></span>
                 <h2 className="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">
-                  Active Sports &amp; Disciplines
+                  Sports
                 </h2>
               </div>
               <span className="font-label-caps text-label-caps uppercase text-primary">
-                {live ? `${dash!.sports.length} Active Links` : "3 Active Links"}
+                {live ? `${dash!.sports.length} linked` : "4 linked"}
               </span>
             </div>
             {/* Sport 1 (Primary) */}
@@ -364,24 +342,7 @@ export default function Profile() {
                   </span>
                 </div>
                 <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
-                  {live ? `${count(1)} Telemetry Runs` : "142 Telemetry Runs"}
-                </span>
-              </div>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Focus: Deep baseline topspin forehand stability &amp; kinetic chain whip.
-              </p>
-              {/* Attribute Bar */}
-              <div className="w-full bg-surface-container-lowest h-2 rounded-full overflow-hidden mt-1 relative">
-                <div className="bg-secondary/40 h-full w-[88%] rounded-full absolute left-0 top-0"></div>
-                {" "}
-                <div className="bg-primary h-full w-[94%] rounded-full absolute left-0 top-0 shadow-[0_0_8px_rgba(75,226,119,0.7)]"></div>
-              </div>
-              <div className="flex justify-between items-center text-[10px] font-label-caps text-on-surface-variant uppercase">
-                <span>
-                  Shadow Target: 88%
-                </span>
-                <span className="text-primary font-bold">
-                  Current Form: 94% (+6%)
+                  {live ? `${count(1)} ${count(1) === 1 ? "session" : "sessions"}` : "142 sessions"}
                 </span>
               </div>
             </div>
@@ -400,12 +361,9 @@ export default function Profile() {
                   </span>
                 </div>
                 <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
-                  {live ? `${count(2)} Sessions` : "68 Sessions"}
+                  {live ? `${count(2)} ${count(2) === 1 ? "session" : "sessions"}` : "68 sessions"}
                 </span>
               </div>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Focus: Fast bowling run-up momentum conservation &amp; front-foot brace angle.
-              </p>
             </div>
             {/* Sport 3 & 4 Mini Links */}
             <div className="grid grid-cols-2 gap-space-xs">
@@ -418,7 +376,7 @@ export default function Profile() {
                     Basketball
                   </span>
                   <span className="font-label-caps text-[10px] text-on-surface-variant">
-                    Jump Load Sync
+                    {live ? `${count(3)} ${count(3) === 1 ? "session" : "sessions"}` : "Jump shots"}
                   </span>
                 </div>
               </div>
@@ -431,7 +389,7 @@ export default function Profile() {
                     Running
                   </span>
                   <span className="font-label-caps text-[10px] text-on-surface-variant">
-                    Cadence Radar
+                    {live ? `${count(4)} ${count(4) === 1 ? "session" : "sessions"}` : "Sprint drills"}
                   </span>
                 </div>
               </div>
@@ -449,7 +407,7 @@ export default function Profile() {
                     Weekly Training Goal
                   </span>
                   <span className="font-body-sm text-[12px] text-on-surface-variant">
-                    Target: {live ? weekTarget : 5} high-speed telemetry sessions
+                    Target: {live ? weekTarget : 5} sessions this week
                   </span>
                 </div>
               </div>
@@ -468,7 +426,7 @@ export default function Profile() {
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-3.5 rounded-full bg-secondary"></span>
               <h2 className="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">
-                System Preferences &amp; Settings
+                Settings
               </h2>
             </div>
             <div className="flex flex-col gap-1 mt-1">
@@ -480,10 +438,10 @@ export default function Profile() {
                   </span>
                   <div className="flex flex-col min-w-0">
                     <span className="font-body-md text-body-md text-on-surface font-medium truncate">
-                      Telemetry Video Quality
+                      Video quality
                     </span>
                     <span className="font-body-sm text-[12px] text-on-surface-variant truncate">
-                      High speed capture &amp; frame interpolation
+                      Resolution for new recordings
                     </span>
                   </div>
                 </div>
@@ -504,14 +462,14 @@ export default function Profile() {
                   </span>
                   <div className="flex flex-col min-w-0">
                     <span className="font-body-md text-body-md text-on-surface font-medium truncate">
-                      Ghost Overlay Trail
+                      Pose overlay
                     </span>
                     <span className="font-body-sm text-[12px] text-on-surface-variant truncate">
-                      Render digital twin kinetic shadow
+                      Show the skeleton on your clips
                     </span>
                   </div>
                 </div>
-                <button aria-label="Toggle Ghost Overlay Trail" aria-pressed={ghostTrail} className={ghostTrail ? SWITCH_ON : SWITCH_OFF} id="toggleGhostTrail" onClick={() => { setGhostTrail(!ghostTrail); showToast(`Ghost Overlay Trail ${ghostTrail ? "Disabled" : "Enabled"}`); }}>
+                <button aria-label="Toggle Pose overlay" aria-pressed={ghostTrail} className={ghostTrail ? SWITCH_ON : SWITCH_OFF} id="toggleGhostTrail" onClick={() => { setGhostTrail(!ghostTrail); showToast(`Pose overlay ${ghostTrail ? "Disabled" : "Enabled"}`); }}>
                   <div className={ghostTrail ? KNOB_ON : KNOB_OFF}></div>
                 </button>
               </div>
@@ -523,14 +481,14 @@ export default function Profile() {
                   </span>
                   <div className="flex flex-col min-w-0">
                     <span className="font-body-md text-body-md text-on-surface font-medium truncate">
-                      Analysis &amp; Deficit Alerts
+                      Analysis alerts
                     </span>
                     <span className="font-body-sm text-[12px] text-on-surface-variant truncate">
-                      Instant notification when twin parses run
+                      Notify me when results are ready
                     </span>
                   </div>
                 </div>
-                <button aria-label="Toggle Analysis Alerts" aria-pressed={alerts} className={alerts ? SWITCH_ON : SWITCH_OFF} id="toggleAlerts" onClick={() => { setAlerts(!alerts); showToast(`Push Telemetry Alerts ${alerts ? "Disabled" : "Enabled"}`); }}>
+                <button aria-label="Toggle Analysis Alerts" aria-pressed={alerts} className={alerts ? SWITCH_ON : SWITCH_OFF} id="toggleAlerts" onClick={() => { setAlerts(!alerts); showToast(`Analysis alerts ${alerts ? "Disabled" : "Enabled"}`); }}>
                   <div className={alerts ? KNOB_ON : KNOB_OFF}></div>
                 </button>
               </div>
@@ -542,10 +500,10 @@ export default function Profile() {
                   </span>
                   <div className="flex flex-col min-w-0">
                     <span className="font-body-md text-body-md text-on-surface font-medium truncate">
-                      Biometric Privacy &amp; Cloud Sync
+                      Privacy &amp; data
                     </span>
                     <span className="font-body-sm text-[12px] text-on-surface-variant truncate">
-                      End-to-end encrypted limb kinematic vectors
+                      Control what is stored
                     </span>
                   </div>
                 </div>
@@ -566,10 +524,10 @@ export default function Profile() {
                   </span>
                   <div className="flex flex-col min-w-0">
                     <span className="font-body-md text-body-md text-on-surface font-medium truncate">
-                      Help, Support &amp; Feedback
+                      Help &amp; feedback
                     </span>
                     <span className="font-body-sm text-[12px] text-on-surface-variant truncate">
-                      Kinetic calibration guides &amp; bug logs
+                      Filming guides and contact
                     </span>
                   </div>
                 </div>
