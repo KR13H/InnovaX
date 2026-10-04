@@ -76,7 +76,7 @@ export function CoachNotes({ notes }: { notes: Note[] }) {
           <span className="material-symbols-outlined text-primary text-[20px] mt-0.5">{n.icon}</span>
           <div className="flex flex-col">
             <span className="font-body-sm text-body-sm font-semibold text-on-surface">{n.title}</span>
-            <span className="font-body-sm text-[13px] text-on-surface-variant leading-snug">{n.body}</span>
+            {n.body && <span className="font-body-sm text-[13px] text-on-surface-variant leading-snug">{n.body}</span>}
           </div>
         </div>
       ))}

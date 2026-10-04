@@ -184,34 +184,30 @@ export function RunningResults({ metrics }: { metrics: Metric[] }) {
 // ---------- Basketball ----------
 
 const ACTION_COLOR: Record<string, string> = { Shoot: "#4be277", Dribble: "#00eefc", Sprint: "#ffba61", Move: "#bccbb9", Idle: "#3d4a3d" };
-
-function basketballNotes(r: BasketballResult): Note[] {
-  const notes: Note[] = [];
-  const m = r.metrics ?? {};
-  const knee = Math.min(m.avg_left_knee_angle ?? 180, m.avg_right_knee_angle ?? 180);
-  if ((r.pose_detection_percent ?? 0) < 80) {
-    notes.push({ icon: "videocam", title: "Keep your whole body in frame", body: `You were tracked in ${Math.round(r.pose_detection_percent ?? 0)}% of frames. Film from the side with feet and hands visible.` });
-  }
-  if ((r.action_percentages?.Shoot ?? 0) === 0) {
-    notes.push({ icon: "sports_basketball", title: "No shots detected", body: "Record a few jump shots so your twin can learn your release mechanics." });
-  }
-  if (knee < 180 && knee > 150) {
-    notes.push({ icon: "airline_seat_legroom_extra", title: "Get lower", body: `Average knee angle is ${Math.round(knee)}°. A lower athletic stance helps explosive moves and shot power.` });
-  }
-  return notes.slice(0, 3);
-}
+const DRILL_ICON = "fitness_center";
 
 export function BasketballResults({ result }: { result: BasketballResult }) {
   const m = result.metrics ?? {};
-  const actions = Object.entries(result.action_percentages ?? {}).sort((a, b) => b[1] - a[1]);
+  const counts = m.action_counts ?? {};
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  const actions = Object.entries(counts)
+    .map(([action, n]) => [action, total ? (n / total) * 100 : 0] as const)
+    .sort((a, b) => b[1] - a[1]);
+  const training = result.training ?? {};
+  // The pipeline's own feedback and drills, shown as coach notes.
+  const notes: Note[] = [
+    ...(training.feedback ?? []).map((f) => ({ icon: "insights", title: f, body: "" })),
+    ...(training.drills ?? []).map((d) => ({ icon: DRILL_ICON, title: "Drill", body: d })),
+  ];
+
   return (
     <>
       <Headline
-        ring={result.pose_detection_percent ?? 0}
-        ringLabel="Tracked"
+        ring={training.technique_score ?? 0}
+        ringLabel="Technique"
         kicker={`Session score ${result.session_score ?? "—"}`}
         title={m.dominant_action ? `Mostly ${m.dominant_action.toLowerCase()}` : "No actions detected"}
-        sub={`${result.duration_seconds?.toFixed(1) ?? "—"}s clip • ${result.sampled_frames ?? 0} frames`}
+        sub={`${total} frames classified`}
       />
 
       {actions.length > 0 && (
@@ -241,7 +237,7 @@ export function BasketballResults({ result }: { result: BasketballResult }) {
         </div>
       </section>
 
-      <CoachNotes notes={basketballNotes(result)} />
+      <CoachNotes notes={notes} />
     </>
   );
 }

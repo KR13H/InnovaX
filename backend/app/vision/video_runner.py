@@ -1,20 +1,15 @@
 import cv2
 
-from app.vision.pose_estimator import PoseEstimator
 
-
-def analyze_video(video_path: str, analyzer):
+def analyze_video(video_path: str, analyzer, pose_estimator):
     cap = cv2.VideoCapture(video_path)
 
     if not cap.isOpened():
         raise OSError(f"Could not open video: {video_path}")
 
-    pose_estimator = None
     frame_results = []
 
     try:
-        pose_estimator = PoseEstimator()
-
         while True:
             success, frame = cap.read()
 
@@ -23,7 +18,7 @@ def analyze_video(video_path: str, analyzer):
 
             landmarks = pose_estimator.process_frame(frame)
 
-            if landmarks:
+            if landmarks is not None:
                 result = analyzer.analyze_frame(landmarks)
 
                 if result:
@@ -33,6 +28,4 @@ def analyze_video(video_path: str, analyzer):
 
     finally:
         cap.release()
-
-        if pose_estimator is not None:
-            pose_estimator.close()
+        pose_estimator.close()

@@ -1198,7 +1198,7 @@ def analyze_basketball_session(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    from app.analyzers.basketball_video import analyze_basketball_video
+    from app.vision.basketball_pipeline import analyze_basketball
 
     athlete = db.scalar(
         select(AthleteProfile).where(
@@ -1230,7 +1230,7 @@ def analyze_basketball_session(
         raise HTTPException(409, "Analysis already exists")
 
     try:
-        result = analyze_basketball_video(video_path)
+        result = analyze_basketball(str(video_path))
     except FileNotFoundError:
         raise HTTPException(404, "Video or model file not found")
     except ValueError as exc:
