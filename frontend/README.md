@@ -44,6 +44,7 @@ data and show "—" (or an empty state) where the backend has nothing yet — ne
 | Session detail (`/sessions/[id]`) | `GET /sessions/{id}`, `/recap`, `/explanation`, `/video` (clip playback), analyze endpoints for un-analyzed clips |
 | Progress (`/progress?sport=`) | `GET /sessions` + each session's `recap`; key metrics per sport and a "future you" projection (`lib/progress.ts`) |
 | Compare (`/compare?now=&past=`) | two sessions' `recap` + `video`; in-browser ghost overlay of both skeletons (`components/GhostCompare.tsx`) |
+| Train (`/train?sport=`) | `POST /training/generate/{sport}/{session_id}`, `GET /training/athlete/{id}/history`, `GET /training/plan/{id}`, `POST /training/workout/{id}/complete\|skip`; basketball shows the drills from its analysis (no backend planner) |
 | Sports hub | `GET /sessions` (latest per sport) |
 | Tennis | latest tennis `recap` → stroke split, elbow/knee angles, pose detection |
 | Profile / Settings | `GET /athlete/dashboard`, `GET /records`, `GET /auth/me` |

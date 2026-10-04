@@ -374,36 +374,12 @@ def get_athlete_heatmap():
     )
 
 
-@router.get("/xp")
-def get_athlete_xp():
-    raise HTTPException(
-        status_code=501,
-        detail="Athlete XP not implemented yet",
-    )
 
 
-@router.post("/xp")
-def add_athlete_xp():
-    raise HTTPException(
-        status_code=501,
-        detail="Athlete XP update not implemented yet",
-    )
 
 
-@router.get("/xp/history")
-def get_xp_history():
-    raise HTTPException(
-        status_code=501,
-        detail="XP history not implemented yet",
-    )
 
 
-@router.get("/level")
-def get_athlete_level():
-    raise HTTPException(
-        status_code=501,
-        detail="Athlete level not implemented yet",
-    )
     
 @router.get(
     "/xp",

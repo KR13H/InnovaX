@@ -341,6 +341,10 @@ export default function SessionDetail() {
                   <span className="material-symbols-outlined text-[18px] text-secondary-container">monitoring</span>
                   Progress
                 </Link>
+                <Link href={`/train?sport=${sport}`} className="col-span-2 py-3 rounded-xl bg-surface-container-high text-on-surface font-headline-md text-body-sm font-semibold flex items-center justify-center gap-1.5">
+                  <span className="material-symbols-outlined text-[18px] text-primary">fitness_center</span>
+                  Training plan for this
+                </Link>
               </div>
             )}
 

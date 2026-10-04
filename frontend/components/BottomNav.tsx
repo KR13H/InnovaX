@@ -9,7 +9,7 @@ import QuickCapture from "@/components/QuickCapture";
 const TABS = [
   { href: "/home", icon: "home", label: "Home" },
   { href: "/sports", icon: "sprint", label: "Sports" },
-  { href: "/avatar", icon: "accessibility_new", label: "My Avatar" },
+  { href: "/train", icon: "fitness_center", label: "Train" },
   { href: "/sessions", icon: "history_toggle_off", label: "Sessions", also: ["/progress", "/compare"] },
   { href: "/profile", icon: "person", label: "Profile", also: ["/settings"] },
 ];
