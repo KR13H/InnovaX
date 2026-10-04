@@ -4,6 +4,7 @@
 .env
 .env.*
 !.env.example
+backend/.env
 
 # =========================
 # NODE / NEXT.JS
@@ -113,7 +114,7 @@ backend/tmp/
 *.keras
 *.tflite
 
-models/
+
 checkpoints/
 weights/
 
