@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from app.analyzers.tennis import analyze_tennis
+from app.analyzers.running import analyze_running_video
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -269,19 +270,170 @@ def upload_session_video(session_id: int):
 
 
 @router.post("/{session_id}/analyze")
-def analyze_session(session_id: int):
-    raise HTTPException(
-        status_code=501,
-        detail="Session analysis not implemented yet",
+def analyze_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+):
+    # --------------------------------------------------------
+    # 1. Find session
+    # --------------------------------------------------------
+
+    session = (
+        db.query(VideoSession)
+        .filter(VideoSession.id == session_id)
+        .first()
     )
 
+    if session is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Video session not found",
+        )
 
-@router.get("/{session_id}/analysis")
-def get_session_analysis(session_id: int):
-    raise HTTPException(
-        status_code=501,
-        detail="Session analysis not implemented yet",
-    )
+    # --------------------------------------------------------
+    # 2. Make sure session has a video
+    # --------------------------------------------------------
+
+    if not session.video_url:
+        raise HTTPException(
+            status_code=400,
+            detail="Session does not have a video",
+        )
+
+    # --------------------------------------------------------
+    # 3. Resolve video path
+    # --------------------------------------------------------
+
+    video_path = Path(session.video_url)
+
+    if not video_path.is_absolute():
+        project_root = (
+            Path(__file__)
+            .resolve()
+            .parents[2]
+        )
+
+        video_path = (
+            project_root
+            / video_path
+        )
+
+    if not video_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Video file not found: {video_path}",
+        )
+
+    # --------------------------------------------------------
+    # 4. Mark session as processing
+    # --------------------------------------------------------
+
+    session.status = "processing"
+
+    db.commit()
+
+    try:
+        # ----------------------------------------------------
+        # 5. Run Running V2
+        # ----------------------------------------------------
+
+        result = analyze_running_video(
+            video_path
+        )
+
+        # ----------------------------------------------------
+        # 6. Remove previous automatically generated metrics
+        #
+        # Useful when /analyze is called again.
+        # ----------------------------------------------------
+
+        db.query(SportMetric).filter(
+            SportMetric.session_id
+            == session.id
+        ).delete(
+            synchronize_session=False
+        )
+
+        # ----------------------------------------------------
+        # 7. Save V2 metrics
+        # ----------------------------------------------------
+
+        for metric in result["metrics"]:
+
+            db_metric = SportMetric(
+                session_id=session.id,
+
+                metric_name=metric[
+                    "metric_name"
+                ],
+
+                metric_value=metric[
+                    "metric_value"
+                ],
+
+                unit=metric.get(
+                    "unit"
+                ),
+
+                confidence=metric.get(
+                    "confidence"
+                ),
+            )
+
+            db.add(db_metric)
+
+        # ----------------------------------------------------
+        # 8. Analysis finished
+        # ----------------------------------------------------
+
+        session.status = "analyzed"
+
+        db.commit()
+
+        # ----------------------------------------------------
+        # 9. Return analyzer result
+        # ----------------------------------------------------
+
+        return {
+            "session_id": session.id,
+
+            "status": session.status,
+
+            "running_type":
+                result["running_type"],
+
+            "classification_confidence":
+                result[
+                    "classification_confidence"
+                ],
+
+            "stride_count":
+                result["stride_count"],
+
+            "total_frames":
+                result["total_frames"],
+
+            "usable_frames":
+                result["usable_frames"],
+
+            "metrics":
+                result["metrics"],
+        }
+
+    except Exception as exc:
+
+        db.rollback()
+
+        session.status = "failed"
+
+        db.add(session)
+        db.commit()
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Running analysis failed: {exc}",
+        )
+
 
 
 @router.get("/{session_id}/explanation")

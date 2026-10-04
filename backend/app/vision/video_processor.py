@@ -6,7 +6,7 @@ import numpy as np
 
 from app.vision.features import extract_features
 from app.vision.landmark_utils import landmark_angle
-from app.vision.pose_estimator import PoseEstimator
+from app.vision.tennis_pose_estimator import PoseEstimator
 
 
 MODEL_PATH = (
