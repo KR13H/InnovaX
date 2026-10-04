@@ -117,7 +117,7 @@ backend/tmp/
 
 checkpoints/
 weights/
-
+cv_data/
 # =========================
 # DATABASE FILES
 # =========================

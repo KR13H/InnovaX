@@ -1,36 +1,31 @@
-import math
+import numpy as np
 
 
-def get_landmark(landmarks, index):
-    landmark = landmarks[index]
+def joint_angle(a, b, c):
+    """Angle in degrees at point b. Points use pixel coordinates."""
+    a, b, c = [np.asarray(point, dtype=float) for point in (a, b, c)]
 
-    return {
-        "x": landmark.x,
-        "y": landmark.y,
-        "z": landmark.z,
-        "visibility": landmark.visibility,
-    }
+    ba = a - b
+    bc = c - b
+    denominator = np.linalg.norm(ba) * np.linalg.norm(bc)
 
-
-def calculate_angle(a, b, c):
-    if min(a["visibility"], b["visibility"], c["visibility"]) < 0.5:
+    if denominator < 1e-8:
         return None
 
-    ab_x = a["x"] - b["x"]
-    ab_y = a["y"] - b["y"]
+    cosine = np.clip(np.dot(ba, bc) / denominator, -1.0, 1.0)
+    return float(np.degrees(np.arccos(cosine)))
 
-    cb_x = c["x"] - b["x"]
-    cb_y = c["y"] - b["y"]
 
-    ab_length = math.sqrt(ab_x**2 + ab_y**2)
-    cb_length = math.sqrt(cb_x**2 + cb_y**2)
+def landmark_angle(landmarks, indices, width, height, min_visibility=0.6):
+    """Return None when any required landmark is poorly visible."""
+    points = []
 
-    if ab_length == 0 or cb_length == 0:
-        return None
+    for index in indices:
+        landmark = landmarks[index]
 
-    dot_product = ab_x * cb_x + ab_y * cb_y
+        if (landmark.visibility or 0.0) < min_visibility:
+            return None
 
-    cosine = dot_product / (ab_length * cb_length)
-    cosine = max(-1.0, min(1.0, cosine))
+        points.append((landmark.x * width, landmark.y * height))
 
-    return math.degrees(math.acos(cosine))
+    return joint_angle(*points)

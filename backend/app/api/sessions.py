@@ -1,52 +1,60 @@
+import json
 from pathlib import Path
-from app.analyzers.running import analyze_running_video
 
+from app.analyzers.tennis import analyze_tennis
+from app.analyzers.running import analyze_running_video
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.api.auth import get_current_user
 from app.database.database import get_db
+
 from app.models.athlete import AthleteProfile
 from app.models.session import VideoSession
 from app.models.sport import Sport
 from app.models.user import User
+from app.models.sport_metric import SportMetric
+from app.models.analysis import SessionAnalysis
+from app.models.explanation import PerformanceExplanation
+from app.models.xp import XPEvent
+from app.models.technique_replay import TechniqueReplay
+from app.models.reference import SportReferenceRange
+
 from app.schemas.session import (
     SessionCreate,
     SessionResponse,
 )
-from app.models.sport_metric import SportMetric
+
 from app.schemas.sport_metric import (
     SportMetricCreate,
     SportMetricResponse,
 )
-from app.models.analysis import SessionAnalysis
+
 from app.schemas.analysis import (
     SessionAnalysisCreate,
     SessionAnalysisResponse,
 )
-from app.models.explanation import PerformanceExplanation
 
 from app.schemas.explanation import (
     PerformanceExplanationCreate,
     PerformanceExplanationResponse,
 )
-from sqlalchemy import func
 
-from app.models.xp import XPEvent
 from app.schemas.recap import SessionRecapResponse
-from app.models.technique_replay import TechniqueReplay
 
 from app.schemas.technique_replay import (
     TechniqueReplayCreate,
     TechniqueReplayResponse,
 )
-from app.models.reference import SportReferenceRange
 
 from app.schemas.reference import (
     ReferenceComparisonResponse,
 )
 
+from app.services.cricket_analysis_service import (
+    CricketAnalysisService,
+)
 router = APIRouter(
     prefix="/sessions",
     tags=["Sessions"],
@@ -266,8 +274,216 @@ def upload_session_video(session_id: int):
         detail="Video upload not implemented yet",
     )
 
-
 @router.post("/{session_id}/analyze")
+def analyze_cricket_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # --------------------------------------------
+    # GET ATHLETE
+    # --------------------------------------------
+
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id
+            == current_user.id
+        )
+    )
+
+    if athlete is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Athlete profile not found",
+        )
+
+    # --------------------------------------------
+    # GET SESSION
+    # --------------------------------------------
+
+    video_session = db.scalar(
+        select(VideoSession).where(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id
+            == athlete.id,
+        )
+    )
+
+    if video_session is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Session not found",
+        )
+
+    if not video_session.video_url:
+        raise HTTPException(
+            status_code=400,
+            detail="Session has no video",
+        )
+
+    # --------------------------------------------
+    # CHECK SPORT
+    # --------------------------------------------
+
+    sport = db.scalar(
+        select(Sport).where(
+            Sport.id
+            == video_session.sport_id
+        )
+    )
+
+    if sport is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Sport not found",
+        )
+
+    if sport.name.lower() != "cricket":
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "This analyzer currently "
+                "supports cricket only"
+            ),
+        )
+
+    # --------------------------------------------
+    # MARK PROCESSING
+    # --------------------------------------------
+
+    video_session.status = "processing"
+
+    db.commit()
+
+    # --------------------------------------------
+    # RUN CV PIPELINE
+    # --------------------------------------------
+
+    try:
+        service = CricketAnalysisService()
+
+        result = service.analyze_video(
+            video_session.video_url
+        )
+
+    except Exception as error:
+        video_session.status = "failed"
+
+        db.commit()
+
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                f"Analysis failed: {error}"
+            ),
+        )
+
+    # --------------------------------------------
+    # CHECK PIPELINE RESULT
+    # --------------------------------------------
+
+    pose_result = result.get(
+        "pose",
+        {}
+    )
+
+    if (
+        pose_result.get("status")
+        == "failed"
+    ):
+        video_session.status = "failed"
+
+        db.commit()
+
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "message":
+                    "Pose analysis failed",
+
+                "analysis":
+                    result,
+            },
+        )
+
+    # --------------------------------------------
+    # CREATE SUMMARY
+    # --------------------------------------------
+
+    phases = pose_result.get(
+        "phases",
+        {}
+    )
+
+    biomechanics = pose_result.get(
+        "biomechanics",
+        {}
+    )
+
+    summary = (
+        "Cricket bowling analysis completed. "
+        f"BFC frame: "
+        f"{phases.get('bfc_frame')}, "
+        f"FFC frame: "
+        f"{phases.get('ffc_frame')}, "
+        f"release frame: "
+        f"{phases.get('release_frame')}."
+    )
+
+    # --------------------------------------------
+    # FIND EXISTING ANALYSIS
+    # --------------------------------------------
+
+    analysis_record = db.scalar(
+        select(SessionAnalysis).where(
+            SessionAnalysis.session_id
+            == video_session.id
+        )
+    )
+
+    # --------------------------------------------
+    # UPDATE OR CREATE
+    # --------------------------------------------
+
+    if analysis_record is None:
+        analysis_record = SessionAnalysis(
+            session_id=video_session.id,
+            summary=summary,
+            analysis_data=result,
+            status="completed",
+        )
+
+        db.add(
+            analysis_record
+        )
+
+    else:
+        analysis_record.summary = summary
+        analysis_record.analysis_data = result
+        analysis_record.status = "completed"
+
+    video_session.status = "completed"
+
+    db.commit()
+    db.refresh(analysis_record)
+
+    # --------------------------------------------
+    # RESPONSE
+    # --------------------------------------------
+
+    return {
+        "session_id":
+            video_session.id,
+
+        "analysis_id":
+            analysis_record.id,
+
+        "status":
+            "completed",
+
+        "analysis":
+            result,
+    }
 def analyze_session(
     session_id: int,
     db: Session = Depends(get_db),
@@ -907,3 +1123,80 @@ def get_reference_comparison(
         })
 
     return results
+
+@router.post("/{session_id}/analyze-tennis")
+def analyze_tennis_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id == current_user.id
+        )
+    )
+    if not athlete:
+        raise HTTPException(404, "Athlete profile not found")
+
+    video_session = db.scalar(
+        select(VideoSession).where(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id == athlete.id,
+        )
+    )
+    if not video_session:
+        raise HTTPException(404, "Session not found")
+
+    if not video_session.video_url:
+        raise HTTPException(400, "Session has no video path")
+
+    backend_dir = Path(__file__).resolve().parents[2]
+    video_path = Path(video_session.video_url).expanduser()
+    if not video_path.is_absolute():
+        video_path = backend_dir / video_path
+    video_path = video_path.resolve()
+
+    allowed_dirs = [
+        (backend_dir / "data").resolve(),
+        (backend_dir / "uploads").resolve(),
+    ]
+    if not any(
+        video_path.is_relative_to(directory)
+        for directory in allowed_dirs
+    ):
+        raise HTTPException(
+            400,
+            "Video must be inside backend/data or backend/uploads",
+        )
+
+    existing = db.scalar(
+        select(SessionAnalysis).where(
+            SessionAnalysis.session_id == session_id
+        )
+    )
+    if existing:
+        raise HTTPException(409, "Analysis already exists")
+
+    try:
+        result = analyze_tennis(video_path)
+    except FileNotFoundError:
+        raise HTTPException(404, "Video or model file not found")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+
+    analysis = SessionAnalysis(
+        session_id=session_id,
+        summary=json.dumps(result),
+        status="completed",
+    )
+    video_session.status = "completed"
+
+    db.add(analysis)
+    db.commit()
+    db.refresh(analysis)
+
+    return {
+        "session_id": session_id,
+        "analysis_id": analysis.id,
+        "results": result,
+    }

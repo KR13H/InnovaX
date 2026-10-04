@@ -1,11 +1,12 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    DateTime,
     Float,
     ForeignKey,
     String,
     Text,
+    DateTime,
+    JSON,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
@@ -48,6 +49,11 @@ class SessionAnalysis(Base):
 
     weakest_metric: Mapped[str | None] = mapped_column(
         String(100),
+        nullable=True,
+    )
+
+    analysis_data: Mapped[dict | None] = mapped_column(
+        JSON,
         nullable=True,
     )
 

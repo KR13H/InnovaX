@@ -44,6 +44,7 @@ app.include_router(challenges_router)
 app.include_router(coach_dashboard_router)
 
 
+
 @app.get("/")
 def root():
     return {
