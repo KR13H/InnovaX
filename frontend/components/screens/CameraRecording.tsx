@@ -28,11 +28,18 @@ export default function CameraRecording() {
   const [tenths, setTenths] = useState(0);
   const [queued, setQueued] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const nativeInput = useRef<HTMLInputElement>(null);
+  // Browsers only allow in-page camera access on HTTPS (or localhost). Over plain HTTP on a phone
+  // we hand off to the phone's own camera app via <input capture> instead.
+  const [nativeOnly, setNativeOnly] = useState(false);
   const recorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
   const effectiveDelay = delay ?? 3;
 
-  useEffect(() => setSport(sportFromQuery()), []);
+  useEffect(() => {
+    setSport(sportFromQuery());
+    setNativeOnly(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia);
+  }, []);
 
   // Live camera preview when available; without it the Stitch still image stays as the backdrop.
   useEffect(() => {
@@ -101,6 +108,7 @@ export default function CameraRecording() {
   }
 
   function toggleRecording() {
+    if (nativeOnly) return nativeInput.current?.click();
     if (phase === "idle") {
       setCountdown(effectiveDelay);
       setPhase(effectiveDelay > 0 ? "countdown" : "recording");
@@ -120,6 +128,13 @@ export default function CameraRecording() {
     track?.applyConstraints({ advanced: [{ torch: next } as MediaTrackConstraintSet] }).catch(() => {});
   }
 
+  function onNativeCapture(ev: React.ChangeEvent<HTMLInputElement>) {
+    const file = ev.target.files?.[0];
+    if (!file) return;
+    stageClip(file, sport, file.name || `${sport}-capture.mp4`);
+    router.push(`/capture/review?sport=${sport}`);
+  }
+
   function onGalleryPick(ev: React.ChangeEvent<HTMLInputElement>) {
     const file = ev.target.files?.[0];
     if (!file) return;
@@ -129,7 +144,7 @@ export default function CameraRecording() {
   }
 
   const live = phase === "recording";
-  const timerText = queued ? "QUEUED" : phase === "countdown" ? `T-${countdown}` : formatTenths(tenths);
+  const timerText = nativeOnly ? "TAP ●" : queued ? "QUEUED" : phase === "countdown" ? `T-${countdown}` : formatTenths(tenths);
 
   return (
     <div className="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary selection:text-on-primary">
@@ -415,6 +430,7 @@ export default function CameraRecording() {
               {/* Quick Gallery Ingestion Trigger */}
               <label className="flex flex-col items-center justify-center gap-1 min-w-[56px] min-h-[56px] cursor-pointer text-on-surface hover:text-secondary-fixed transition-colors" htmlFor="galleryUpload">
                 <input accept="video/*" className="sr-only" id="galleryUpload" onChange={onGalleryPick} type="file" />
+                <input ref={nativeInput} accept="video/*" capture="environment" className="sr-only" onChange={onNativeCapture} type="file" />
                 <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shadow-md active:scale-95 transition-transform">
                   <span className="material-symbols-outlined text-[22px] text-secondary">
                     video_file
@@ -429,13 +445,19 @@ export default function CameraRecording() {
             <div className="flex flex-col gap-1.5 px-space-xs text-center">
               <div className="flex items-center justify-center gap-1.5 py-1 px-space-sm rounded-lg bg-surface-container-low">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                <p className="font-body-sm text-[12px] text-on-surface leading-tight">
-                  Camera ready at{" "}
-                  <strong className="text-primary font-medium">
-                    1080p 60fps
-                  </strong>
-                  {" "}• Neural tracking active upon submission
-                </p>
+                {nativeOnly ? (
+                  <p className="font-body-sm text-[12px] text-on-surface leading-tight">
+                    Tap <strong className="text-primary font-medium">record</strong> to open your phone&apos;s camera — the clip comes back here for review
+                  </p>
+                ) : (
+                  <p className="font-body-sm text-[12px] text-on-surface leading-tight">
+                    Camera ready at{" "}
+                    <strong className="text-primary font-medium">
+                      1080p 60fps
+                    </strong>
+                    {" "}• Neural tracking active upon submission
+                  </p>
+                )}
               </div>
               <p className="font-body-sm text-[11px] text-on-surface-variant tracking-wide">
                 AI digital twin analysis and biomechanical ghost overlay render immediately after clip capture.

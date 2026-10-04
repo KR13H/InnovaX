@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { type Dashboard, type Session, SPORT_BY_ID, SPORT_ICON, SPORT_NAME, attributeScore, fmt, relativeDay, useApi } from "@/lib/data";
 import { useAthleteName } from "@/lib/useAthlete";
 
 import BottomNav from "@/components/BottomNav";
@@ -16,6 +17,21 @@ export default function HomeDashboard() {
   const router = useRouter();
   const name = useAthleteName();
   const [demo, setDemo] = useState(true);
+  const { data: dash } = useApi<Dashboard>("/athlete/dashboard");
+  const { data: sessions } = useApi<Session[]>("/sessions");
+  const live = !!dash;
+  const level = dash?.athlete.level ?? 27;
+  // Backend levelling: level = xp // 1000 + 1, so each level spans 1,000 XP.
+  const xpInLevel = dash ? dash.athlete.xp - (level - 1) * 1000 : 2450;
+  const xpSpan = dash ? 1000 : 3000;
+  const sessionCount = (sport: number) => sessions?.filter((s) => s.sport_id === sport).length ?? 0;
+  const attr = (name: string, demoValue: number) => (live ? attributeScore(dash?.attributes, name) : demoValue);
+  const recent = [...(sessions ?? [])].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 3);
+
+  // A signed-in athlete with no attributes or sessions sees the "uncalibrated" twin state.
+  useEffect(() => {
+    if (dash && dash.attributes.length === 0 && (sessions?.length ?? 0) === 0) setDemo(false);
+  }, [dash, sessions]);
   const [spinning, setSpinning] = useState(false);
 
   function spin() {
@@ -63,7 +79,7 @@ export default function HomeDashboard() {
                   </div>
                   {" "}
                   <span className="absolute -bottom-1 -right-1 bg-primary-container text-on-primary-container text-[10px] font-headline-md px-1.5 py-0.5 rounded-full shadow-sm">
-                    27
+                    {level}
                   </span>
                 </div>
                 <div className="flex flex-col">
@@ -77,11 +93,11 @@ export default function HomeDashboard() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-                      Top 4% Semi-Pro
+                      {live ? (dash?.athlete.experience_level ?? "Athlete") : "Top 4% Semi-Pro"}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
                     <span className="font-label-badge text-label-badge text-primary-container">
-                      +14 pts this wk
+                      {live ? `${sessions?.length ?? 0} sessions` : "+14 pts this wk"}
                     </span>
                   </div>
                 </div>
@@ -92,7 +108,7 @@ export default function HomeDashboard() {
                 </span>
                 <div className="flex items-baseline gap-1">
                   <span className="font-metric-large text-metric-large text-on-surface">
-                    782
+                    {live ? fmt(dash?.athlete.athlete_score) : 782}
                   </span>
                   <span className="font-label-caps text-label-caps text-primary">
                     /1000
@@ -165,16 +181,16 @@ export default function HomeDashboard() {
                       XP Progression
                     </span>
                     <span className="font-label-badge text-label-badge text-on-surface font-semibold">
-                      2,450 / 3,000 XP
+                      {xpInLevel.toLocaleString()} / {xpSpan.toLocaleString()} XP
                     </span>
                   </div>
                   <span className="font-label-caps text-label-caps text-secondary-container uppercase">
-                    550 XP to Lvl 28
+                    {(xpSpan - xpInLevel).toLocaleString()} XP to Lvl {level + 1}
                   </span>
                 </div>
                 {/* Dynamic XP Dual Track */}
                 <div className="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden relative">
-                  <div className="absolute inset-y-0 left-0 bg-primary-container rounded-full" style={{ width: "81%" }}></div>
+                  <div className="absolute inset-y-0 left-0 bg-primary-container rounded-full" style={{ width: `${Math.round((xpInLevel / xpSpan) * 100)}%` }}></div>
                 </div>
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex items-center gap-2">
@@ -353,14 +369,14 @@ export default function HomeDashboard() {
                 </div>
                 <div className="flex items-baseline gap-1 my-1">
                   <span className="font-metric-large text-metric-large text-on-surface">
-                    93
+                    {fmt(attr("reaction", 93))}
                   </span>
                   <span className="font-label-caps text-label-caps text-on-surface-variant">
                     /100
                   </span>
                 </div>
                 <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-primary-container rounded-full" style={{ width: "93%" }}></div>
+                  <div className="h-full bg-primary-container rounded-full" style={{ width: `${attr("reaction", 93) ?? 0}%` }}></div>
                 </div>
                 <span className="font-label-badge text-[11px] text-primary-container mt-1.5 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">
@@ -381,14 +397,14 @@ export default function HomeDashboard() {
                 </div>
                 <div className="flex items-baseline gap-1 my-1">
                   <span className="font-metric-large text-metric-large text-on-surface">
-                    86
+                    {fmt(attr("technique", 86))}
                   </span>
                   <span className="font-label-caps text-label-caps text-on-surface-variant">
                     /100
                   </span>
                 </div>
                 <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-primary-container rounded-full" style={{ width: "86%" }}></div>
+                  <div className="h-full bg-primary-container rounded-full" style={{ width: `${attr("technique", 86) ?? 0}%` }}></div>
                 </div>
                 <span className="font-label-badge text-[11px] text-secondary-container mt-1.5 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">
@@ -409,14 +425,14 @@ export default function HomeDashboard() {
                 </div>
                 <div className="flex items-baseline gap-1 my-1">
                   <span className="font-metric-large text-metric-large text-on-surface">
-                    82
+                    {fmt(attr("speed", 82))}
                   </span>
                   <span className="font-label-caps text-label-caps text-on-surface-variant">
                     /100
                   </span>
                 </div>
                 <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-primary-container rounded-full" style={{ width: "82%" }}></div>
+                  <div className="h-full bg-primary-container rounded-full" style={{ width: `${attr("speed", 82) ?? 0}%` }}></div>
                 </div>
                 <span className="font-label-badge text-[11px] text-tertiary mt-1.5 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">
@@ -437,14 +453,14 @@ export default function HomeDashboard() {
                 </div>
                 <div className="flex items-baseline gap-1 my-1">
                   <span className="font-metric-large text-metric-large text-on-surface">
-                    88
+                    {fmt(attr("endurance", 88))}
                   </span>
                   <span className="font-label-caps text-label-caps text-on-surface-variant">
                     /100
                   </span>
                 </div>
                 <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-primary-container rounded-full" style={{ width: "88%" }}></div>
+                  <div className="h-full bg-primary-container rounded-full" style={{ width: `${attr("endurance", 88) ?? 0}%` }}></div>
                 </div>
                 <span className="font-label-badge text-[11px] text-primary mt-1.5 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">
@@ -482,7 +498,7 @@ export default function HomeDashboard() {
                   Tennis
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  14 sessions logged
+                  {live ? `${sessionCount(1)} sessions logged` : "14 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-secondary uppercase">
@@ -511,7 +527,7 @@ export default function HomeDashboard() {
                   Fast Bowling
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  6 sessions logged
+                  {live ? `${sessionCount(2)} sessions logged` : "6 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
@@ -540,7 +556,7 @@ export default function HomeDashboard() {
                   Basketball
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  4 sessions logged
+                  {live ? `${sessionCount(3)} sessions logged` : "4 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
@@ -569,7 +585,7 @@ export default function HomeDashboard() {
                   Sprint Mechanics
                 </span>
                 <span className="font-body-sm text-body-sm text-on-surface-variant">
-                  8 sessions logged
+                  {live ? `${sessionCount(4)} sessions logged` : "8 sessions logged"}
                 </span>
                 <div className="flex items-center justify-between mt-3 pt-2 bg-surface-container-lowest/50 rounded-lg p-1.5">
                   <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">
@@ -591,15 +607,62 @@ export default function HomeDashboard() {
                 <span className="font-headline-md text-headline-md text-on-surface">
                   Recent Sessions
                 </span>
-                <span className="font-label-badge text-label-badge bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full">
-                  Demo Data
-                </span>
+                {!live && (
+                  <span className="font-label-badge text-label-badge bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full">
+                    Demo Data
+                  </span>
+                )}
               </div>
               <Link className="font-label-caps text-label-caps text-primary hover:underline uppercase" href="/sessions">
                 View All
               </Link>
             </div>
             <div className="flex flex-col gap-space-xs">
+              {live ? (
+                <>
+              {recent.length === 0 ? (
+                <div onClick={() => router.push("/capture")} className="cursor-pointer flex items-center justify-between p-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors shadow-sm">
+                  <span className="font-body-sm text-body-sm text-on-surface-variant">
+                    No sessions yet — record your first clip to calibrate your twin.
+                  </span>
+                  <span className="material-symbols-outlined text-primary-container">videocam</span>
+                </div>
+              ) : (
+                recent.map((s) => {
+                  const sport = SPORT_BY_ID[s.sport_id];
+                  return (
+                    <div key={s.id} onClick={() => router.push(`/sessions/${s.id}`)} className="cursor-pointer flex items-center justify-between p-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container shrink-0">
+                          <span className="material-symbols-outlined text-xl">
+                            {sport ? SPORT_ICON[sport] : "videocam"}
+                          </span>
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-headline-md text-body-md text-on-surface truncate">
+                            {sport ? `${SPORT_NAME[sport]} Session` : "Session"} #{s.id}
+                          </span>
+                          <div className="flex items-center gap-2 font-body-sm text-on-surface-variant">
+                            <span>
+                              {relativeDay(s.recorded_at ?? s.created_at)}
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-outline"></span>
+                            <span className="text-secondary-container capitalize">
+                              {s.status}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-on-surface-variant shrink-0 pl-2">
+                        chevron_right
+                      </span>
+                    </div>
+                  );
+                })
+              )}
+                </>
+              ) : (
+                <>
               {/* Session Item 1 */}
               <div onClick={() => router.push("/sessions")} className="cursor-pointer flex items-center justify-between p-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors shadow-sm">
                 <div className="flex items-center gap-3">
@@ -664,6 +727,8 @@ export default function HomeDashboard() {
                   </span>
                 </div>
               </div>
+                </>
+              )}
             </div>
           </section>
         </div>

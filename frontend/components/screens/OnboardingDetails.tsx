@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ApiError, api, athlete } from "@/lib/api";
+import { refreshCurrentUser, useCurrentUser } from "@/lib/useAthlete";
 import { readDraft, saveDraft } from "@/lib/onboarding";
 
 const UNIT_ON_METRIC = "flex-1 py-space-xs px-space-sm rounded-lg font-label-badge text-label-badge text-surface-container-lowest bg-primary font-bold shadow-md transition-all flex items-center justify-center gap-1.5";
@@ -20,41 +21,57 @@ const LEVELS = [
 export default function OnboardingDetails() {
   const router = useRouter();
   const [unit, setUnit] = useState<"metric" | "imperial">("metric");
-  const [name, setName] = useState("Alex Carter");
-  const [age, setAge] = useState("24");
-  const [weight, setWeight] = useState("78");
-  const [height, setHeight] = useState(185);
-  const [level, setLevel] = useState("advanced");
+  const user = useCurrentUser();
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState(175);
+  const [level, setLevel] = useState("intermediate");
+  const [prefilled, setPrefilled] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Start from what's already saved: the profile (when editing) or the name given at sign-up.
   useEffect(() => {
+    if (prefilled || user.status === "loading") return;
+    const p = user.status === "signed-in" ? user.profile : null;
     const draft = readDraft();
-    if (draft.name) setName(draft.name);
-  }, []);
+    setName(p?.name || draft.name || "");
+    if (p?.age) setAge(String(p.age));
+    if (p?.weight_kg) setWeight(String(p.weight_kg));
+    if (p?.height_cm) setHeight(Math.round(p.height_cm));
+    if (p?.experience_level) setLevel(p.experience_level);
+    setPrefilled(true);
+  }, [user, prefilled]);
 
   function switchUnit(next: "metric" | "imperial") {
     if (next === unit) return;
     setUnit(next);
     // Same defaults as the Stitch prototype; real values convert on submit.
-    setHeight(next === "metric" ? 185 : 73);
-    setWeight(next === "metric" ? "78" : "172");
+    setHeight((h) => (next === "metric" ? Math.round(h * 2.54) : Math.round(h / 2.54)));
+    setWeight((w) => (w ? String(Math.round((next === "metric" ? Number(w) * 0.4536 : Number(w) / 0.4536) * 10) / 10) : w));
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!name.trim()) return setError("Enter your name");
+    if (!age || Number(age) < 10 || Number(age) > 100) return setError("Enter an age between 10 and 100");
+    if (!weight || Number(weight) <= 0) return setError("Enter your weight");
     const height_cm = unit === "metric" ? height : Math.round(height * 2.54);
     const weight_kg = unit === "metric" ? Number(weight) : Math.round(Number(weight) * 0.4536 * 10) / 10;
     const profile = { name: name.trim(), age: Number(age) || undefined, height_cm, weight_kg, experience_level: level };
     saveDraft(profile);
     setSaving(true);
     try {
-      await athlete.createProfile(profile);
+      // Sign-up already created the profile, so update it; create it for older accounts.
+      await api("/athlete/profile", { method: "PATCH", body: JSON.stringify(profile) }).catch((err) => {
+        if (err instanceof ApiError && err.status === 404) return athlete.createProfile(profile);
+        throw err;
+      });
+      await refreshCurrentUser();
     } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        await api("/athlete/profile", { method: "PATCH", body: JSON.stringify(profile) }).catch(() => {});
-      } else if (err instanceof ApiError && err.status >= 400 && err.status < 500 && err.status !== 401) {
+      if (err instanceof ApiError && err.status >= 400 && err.status < 500 && err.status !== 401) {
         // Validation errors stop here; signed-out users and an unreachable server continue in demo mode.
         setSaving(false);
         return setError(err instanceof Error ? err.message : "Could not save profile");
@@ -194,7 +211,7 @@ export default function OnboardingDetails() {
                   <span className="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px] pointer-events-none">
                     person
                   </span>
-                  <input className="w-full bg-surface-container-lowest text-on-surface rounded-xl py-3 pl-11 pr-space-md font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="fullName" placeholder="Enter athlete name" type="text" required value={name} onChange={(e) => setName(e.target.value)} />
+                  <input className="w-full bg-surface-container-lowest text-on-surface rounded-xl py-3 pl-11 pr-space-md font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="fullName" placeholder="Alex Carter" type="text" required value={name} onChange={(e) => setName(e.target.value)} />
                   <span className="material-symbols-outlined absolute right-space-md text-primary text-[18px]">
                     verified
                   </span>
@@ -211,7 +228,7 @@ export default function OnboardingDetails() {
                     <span className="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[18px] pointer-events-none">
                       event_available
                     </span>
-                    <input className="w-full bg-surface-container-lowest text-on-surface rounded-xl py-3 pl-10 pr-space-md font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="athleteAge" type="number" min={10} max={100} value={age} onChange={(e) => setAge(e.target.value)} />
+                    <input className="w-full bg-surface-container-lowest text-on-surface rounded-xl py-3 pl-10 pr-space-md font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="athleteAge" placeholder="24" type="number" min={10} max={100} value={age} onChange={(e) => setAge(e.target.value)} />
                   </div>
                 </div>
                 {/* Weight Input */}
@@ -228,7 +245,7 @@ export default function OnboardingDetails() {
                     <span className="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[18px] pointer-events-none">
                       monitor_weight
                     </span>
-                    <input className="w-full bg-surface-container-lowest text-on-surface rounded-xl py-3 pl-10 pr-space-md font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="athleteWeight" type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} />
+                    <input className="w-full bg-surface-container-lowest text-on-surface rounded-xl py-3 pl-10 pr-space-md font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="athleteWeight" placeholder={unit === "metric" ? "78" : "172"} type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} />
                   </div>
                 </div>
               </div>

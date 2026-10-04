@@ -22,6 +22,8 @@ class SessionAnalysisResponse(BaseModel):
     summary: str | None
     strongest_metric: str | None
     weakest_metric: str | None
+    # Full analyzer output (cricket stores it here; tennis keeps it as JSON in `summary`).
+    analysis_data: dict | None = None
     status: str
     created_at: datetime
 

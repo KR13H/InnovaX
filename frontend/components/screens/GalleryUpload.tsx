@@ -52,7 +52,9 @@ export default function GalleryUpload() {
     const result = await submitClip(file, sport);
     setNote(result.ok ? null : result.reason);
     setStatus("done");
-    setTimeout(() => router.push("/onboarding/analyzing"), result.ok ? 900 : 2200);
+    // With a stored session the analysis screen runs the real analyzer; otherwise it plays the demo.
+    const next = result.ok ? `/onboarding/analyzing?session=${result.sessionId}&sport=${sport}` : "/onboarding/analyzing";
+    setTimeout(() => router.push(next), result.ok ? 900 : 2200);
   }
 
   return (

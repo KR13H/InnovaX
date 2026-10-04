@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import joblib
 import numpy as np
 
@@ -9,8 +11,11 @@ from app.vision.landmark_utils import get_landmark, calculate_angle
 class BasketballAnalyzer(BaseAnalyzer):
 
     def __init__(self):
+        # Resolved from this file so it loads regardless of the working directory.
         self.model = joblib.load(
-            "models/basketball_action_model.pkl"
+            Path(__file__).resolve().parents[2]
+            / "models"
+            / "basketball_action_model.pkl"
         )
 
         self.actions = {

@@ -175,3 +175,6 @@ artifacts/
 *.bak
 # Local dev QR code (contains this machine's LAN IP)
 frontend/phone-qr.png
+
+# MediaPipe WASM runtime, copied from node_modules on npm install (frontend/scripts/copy-mediapipe.mjs)
+frontend/public/mediapipe/

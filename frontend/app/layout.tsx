@@ -21,7 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <body>
         <div className="app-frame" id="app-frame">
-          {children}
+          <div className="app-scroll" id="app-scroll">
+            {children}
+          </div>
         </div>
       </body>
     </html>

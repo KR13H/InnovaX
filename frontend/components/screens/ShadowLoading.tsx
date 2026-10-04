@@ -2,6 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { DRILL_LABEL, type Sport, sportFromQuery } from "@/lib/clip";
+import { SPORT_ICON } from "@/lib/data";
+import { analyzeSession } from "@/lib/analysis";
 
 // Ghost-alignment steps, as defined by the Stitch prototype's script.
 const STEPS = {
@@ -20,9 +24,45 @@ export default function ShadowLoading() {
   const [staticMode, setStaticMode] = useState(false);
   const [ready, setReady] = useState(false);
   const s = step ? STEPS[step] : null;
+  // Live mode: a real uploaded session (?session=ID&sport=…) is analyzed by the backend.
+  const [live, setLive] = useState<{ id: number; sport: Sport } | null>(null);
+  const [analysis, setAnalysis] = useState<"running" | "done" | "failed">("running");
+  const [resultText, setResultText] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+
+  // Elapsed timer while the real analysis runs, so long clips don't look frozen.
+  useEffect(() => {
+    if (!live || analysis !== "running") return;
+    const t = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => clearInterval(t);
+  }, [live, analysis]);
+
+  useEffect(() => {
+    const id = Number(new URLSearchParams(window.location.search).get("session"));
+    if (!id) return;
+    const sport = sportFromQuery();
+    setLive({ id, sport });
+    setStep(2);
+    analyzeSession(sport, id).then(
+      (text) => {
+        setAnalysis("done");
+        setResultText(text);
+        setStep(3);
+        setReady(true);
+        // Seamless hand-off to the results once the "complete" state has registered.
+        setTimeout(() => router.replace(`/sessions/${id}`), 1800);
+      },
+      (err) => {
+        setAnalysis("failed");
+        setResultText(err instanceof Error ? err.message : "Analysis failed");
+        setReady(true);
+      },
+    );
+  }, []);
 
   // Simulated pipeline: the ghost locks on and the ready card appears after a few seconds.
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("session")) return; // live mode drives the steps
     const t1 = setTimeout(() => setStep((cur) => cur ?? 2), 1200);
     const t2 = setTimeout(() => {
       setStep(3);
@@ -33,6 +73,14 @@ export default function ShadowLoading() {
       clearTimeout(t2);
     };
   }, []);
+
+  const stageDone = live ? analysis === "done" : ready;
+  const stageFailed = live && analysis === "failed";
+
+  // Bring the result card into view when it appears; it sits above the pipeline list.
+  useEffect(() => {
+    if (ready) document.getElementById("ready-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [ready]);
 
   function toggleReady() {
     setReady((r) => !r);
@@ -94,15 +142,15 @@ export default function ShadowLoading() {
             <div className="bg-surface-container-low px-space-sm py-2 rounded-xl flex items-center justify-between mt-space-xs">
               <div className="flex items-center gap-space-xs min-w-0">
                 <span className="material-symbols-outlined text-[18px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  sports_tennis
+                  {live ? SPORT_ICON[live.sport] : "sports_tennis"}
                 </span>
                 <span className="font-label-badge text-label-badge text-on-surface truncate">
-                  TENNIS: FOREHAND DRIVE
+                  {live ? DRILL_LABEL[live.sport].toUpperCase() : "TENNIS: FOREHAND DRIVE"}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0 bg-surface-container px-2 py-0.5 rounded-md">
                 <span className="font-label-caps text-label-caps text-on-surface-variant">
-                  CLIP #04
+                  {live ? `SESSION #${live.id}` : "CLIP #04"}
                 </span>
                 <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
                 <span className="font-label-caps text-label-caps text-secondary font-bold">
@@ -268,20 +316,20 @@ export default function ShadowLoading() {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="font-label-caps text-label-caps text-primary tracking-widest uppercase font-bold">
-                  CALIBRATION COMPLETE
+                <span className={`font-label-caps text-label-caps ${analysis === "failed" ? "text-tertiary" : "text-primary"} tracking-widest uppercase font-bold`}>
+                  {analysis === "failed" ? "ANALYSIS INCOMPLETE" : "CALIBRATION COMPLETE"}
                 </span>
                 <h3 className="font-headline-md text-headline-md text-on-surface">
-                  YOUR SHADOW IS READY
+                  {analysis === "failed" ? "SESSION SAVED" : "YOUR SHADOW IS READY"}
                 </h3>
               </div>
             </div>
             {" "}
             <p className="font-body-md text-body-md text-on-surface-variant mb-space-md">
-              Twin neural weights matched. Biomechanical sync achieved at 98.4% fidelity.
+              {resultText ?? "Twin neural weights matched. Biomechanical sync achieved at 98.4% fidelity."}
             </p>
             {" "}
-            <button className="w-full h-12 bg-primary-container hover:bg-primary text-on-primary-container font-headline-md text-body-md font-bold rounded-lg flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(75,226,119,0.4)] transition-all" onClick={() => router.push("/onboarding/reveal")}>
+            <button className="w-full h-12 bg-primary-container hover:bg-primary text-on-primary-container font-headline-md text-body-md font-bold rounded-lg flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(75,226,119,0.4)] transition-all" onClick={() => router.push(live ? `/sessions/${live.id}` : "/onboarding/reveal")}>
               <span>
                 View Results
               </span>
@@ -339,33 +387,41 @@ export default function ShadowLoading() {
               <div className="flex flex-col bg-surface-container-high px-space-sm py-2.5 rounded-lg gap-1.5 shadow-[inset_0_0_12px_rgba(0,238,252,0.06)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="material-symbols-outlined text-[18px] text-secondary animate-spin" style={{ animationDuration: "3s" }}>
-                      sync
-                    </span>
+                    {stageDone ? (
+                      <span className="material-symbols-outlined text-[18px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                        check_circle
+                      </span>
+                    ) : stageFailed ? (
+                      <span className="material-symbols-outlined text-[18px] text-tertiary">error</span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[18px] text-secondary animate-spin" style={{ animationDuration: "3s" }}>
+                        sync
+                      </span>
+                    )}
                     <span className="font-body-sm text-body-sm text-on-surface font-semibold truncate">
                       3. Analyzing Kinetic Technique
                     </span>
                   </div>
-                  <span className="font-label-badge text-label-badge text-secondary shrink-0">
-                    In Progress
+                  <span className={`font-label-badge text-label-badge ${stageDone ? "text-primary" : stageFailed ? "text-tertiary" : "text-secondary"} shrink-0`}>
+                    {stageDone ? "Completed" : stageFailed ? "Stopped" : "In Progress"}
                   </span>
                 </div>
                 <p className="font-label-caps text-[10px] text-on-surface-variant pl-6">
-                  Synthesizing angular velocity &amp; shoulder-to-wrist kinematic vector chain...
+                  {resultText ?? (stageDone ? "Kinematic vector chain synthesized." : live ? `Running the ${live.sport} model on every frame… ${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")} elapsed. You can leave this screen — results will appear in Sessions.` : "Synthesizing angular velocity & shoulder-to-wrist kinematic vector chain...")}
                 </p>
               </div>
               {/* Stage 4 */}
-              <div className="flex items-center justify-between bg-surface-container-low/50 px-space-sm py-2 rounded-lg opacity-60">
+              <div className={`flex items-center justify-between px-space-sm py-2 rounded-lg ${stageDone ? "bg-surface-container-low" : "bg-surface-container-low/50 opacity-60"}`}>
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="material-symbols-outlined text-[18px] text-outline">
-                    hourglass_empty
+                  <span className={`material-symbols-outlined text-[18px] ${stageDone ? "text-primary" : "text-outline"}`} style={stageDone ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+                    {stageDone ? "check_circle" : "hourglass_empty"}
                   </span>
                   <span className="font-body-sm text-body-sm text-on-surface truncate">
                     4. Calibrating Shadow Comparison Mesh
                   </span>
                 </div>
-                <span className="font-label-badge text-label-badge text-outline shrink-0">
-                  Queued
+                <span className={`font-label-badge text-label-badge ${stageDone ? "text-primary" : "text-outline"} shrink-0`}>
+                  {stageDone ? "Completed" : "Queued"}
                 </span>
               </div>
             </div>

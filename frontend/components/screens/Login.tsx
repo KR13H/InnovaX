@@ -2,25 +2,35 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { auth } from "@/lib/api";
+import { useEffect, useState } from "react";
+import { ApiError, api, auth } from "@/lib/api";
 
 // Generated from design/stitch/log_in_shadowathlete/code.html by scripts/stitch-to-jsx.mjs.
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState("alex.carter@kinetics.io");
-  const [password, setPassword] = useState("CyberSprint#2024");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("expired")) setError("Your session expired — please sign in again.");
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
-      await auth.login(email, password);
-      router.push("/home");
+      await auth.login(email.trim(), password);
+      // Accounts that never finished onboarding have no athlete profile yet.
+      const hasProfile = await api("/athlete/profile").then(
+        () => true,
+        (e) => !(e instanceof ApiError && e.status === 404),
+      );
+      router.push(hasProfile ? "/home" : "/onboarding/details");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -100,7 +110,7 @@ export default function Login() {
               </div>
               <div className="flex-1 min-w-0 pr-space-xs">
                 <p className="font-label-badge text-label-badge text-error tracking-wide uppercase">
-                  Session Handshake Expired
+                  {error?.includes("expired") ? "Session Handshake Expired" : "Sign-in Failed"}
                 </p>
                 {" "}
                 <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-snug">
@@ -122,11 +132,11 @@ export default function Login() {
                   <label className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" htmlFor="athleteEmail">
                     Athlete Identifier / Email
                   </label>
-                  <span className="font-label-caps text-label-caps text-primary flex items-center gap-0.5">
+                  <span className={`font-label-caps text-label-caps text-primary flex items-center gap-0.5 ${emailOk ? "" : "invisible"}`}>
                     <span className="material-symbols-outlined text-[13px]">
                       verified
                     </span>
-                    {" "}FOUND
+                    {" "}VALID
                   </span>
                 </div>
                 <div className="relative flex items-center">
@@ -140,7 +150,7 @@ export default function Login() {
                         cancel
                       </span>
                     </button>
-                    <div className="w-6 h-6 flex items-center justify-center text-primary">
+                    <div className={`w-6 h-6 flex items-center justify-center text-primary ${emailOk ? "" : "invisible"}`}>
                       <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                         check_circle
                       </span>
