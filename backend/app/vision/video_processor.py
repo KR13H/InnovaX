@@ -62,12 +62,16 @@ def analyze_video(video_path):
                     sampled += 1
                     timestamp = round(frame_index * 1000 / fps)
                     landmarks = detector.detect(frame, timestamp)
-                    values = extract_features(landmarks)
+
+                    height, width = frame.shape[:2]
                     label = "unknown"
 
                     if landmarks is not None:
                         detected += 1
-                        height, width = frame.shape[:2]
+                        values = extract_features(
+                            landmarks, width, height
+                        )
+
                         for name, indices in joints.items():
                             angle = landmark_angle(
                                 landmarks, indices, width, height
@@ -75,11 +79,17 @@ def analyze_video(video_path):
                             if angle is not None:
                                 angles[name].append(angle)
 
-                    if values is not None and np.isfinite(values).all():
-                        probabilities = model.predict_proba([values])[0]
-                        best = int(np.argmax(probabilities))
-                        if probabilities[best] >= 0.6:
-                            label = str(model.classes_[best])
+                        if (
+                            values is not None
+                            and np.isfinite(values).all()
+                        ):
+                            probabilities = model.predict_proba(
+                                [values]
+                            )[0]
+                            best = int(np.argmax(probabilities))
+
+                            if probabilities[best] >= 0.6:
+                                label = str(model.classes_[best])
 
                     counts[label] += 1
 
@@ -94,14 +104,17 @@ def analyze_video(video_path):
         "sport": "tennis",
         "duration_seconds": round(frame_index / fps, 2),
         "sampled_frames": sampled,
-        "pose_detection_percent": round(100 * detected / sampled, 1),
+        "pose_detection_percent": round(
+            100 * detected / sampled, 1
+        ),
         "pose_frame_counts": counts,
         "pose_frame_percentages": {
             label: round(100 * count / sampled, 1)
             for label, count in counts.items()
         },
         "mean_joint_angles_degrees": {
-            name: round(float(np.mean(values)), 1) if values else None
+            name: round(float(np.mean(values)), 1)
+            if values else None
             for name, values in angles.items()
         },
     }

@@ -1,3 +1,7 @@
+import json
+from pathlib import Path
+
+from app.analyzers.tennis import analyze_tennis
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -753,3 +757,80 @@ def get_reference_comparison(
         })
 
     return results
+
+@router.post("/{session_id}/analyze-tennis")
+def analyze_tennis_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    athlete = db.scalar(
+        select(AthleteProfile).where(
+            AthleteProfile.user_id == current_user.id
+        )
+    )
+    if not athlete:
+        raise HTTPException(404, "Athlete profile not found")
+
+    video_session = db.scalar(
+        select(VideoSession).where(
+            VideoSession.id == session_id,
+            VideoSession.athlete_id == athlete.id,
+        )
+    )
+    if not video_session:
+        raise HTTPException(404, "Session not found")
+
+    if not video_session.video_url:
+        raise HTTPException(400, "Session has no video path")
+
+    backend_dir = Path(__file__).resolve().parents[2]
+    video_path = Path(video_session.video_url).expanduser()
+    if not video_path.is_absolute():
+        video_path = backend_dir / video_path
+    video_path = video_path.resolve()
+
+    allowed_dirs = [
+        (backend_dir / "data").resolve(),
+        (backend_dir / "uploads").resolve(),
+    ]
+    if not any(
+        video_path.is_relative_to(directory)
+        for directory in allowed_dirs
+    ):
+        raise HTTPException(
+            400,
+            "Video must be inside backend/data or backend/uploads",
+        )
+
+    existing = db.scalar(
+        select(SessionAnalysis).where(
+            SessionAnalysis.session_id == session_id
+        )
+    )
+    if existing:
+        raise HTTPException(409, "Analysis already exists")
+
+    try:
+        result = analyze_tennis(video_path)
+    except FileNotFoundError:
+        raise HTTPException(404, "Video or model file not found")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+
+    analysis = SessionAnalysis(
+        session_id=session_id,
+        summary=json.dumps(result),
+        status="completed",
+    )
+    video_session.status = "completed"
+
+    db.add(analysis)
+    db.commit()
+    db.refresh(analysis)
+
+    return {
+        "session_id": session_id,
+        "analysis_id": analysis.id,
+        "results": result,
+    }
