@@ -8,3 +8,13 @@ torchvision
 ultralytics
 rtmlib
 onnxruntime
+-r requirements.txt
+
+numpy==1.26.4
+opencv-python==4.11.0.86
+opencv-contrib-python==4.11.0.86
+mediapipe==0.10.21
+joblib==1.6.0
+scikit-learn==1.9.1
+pandas==3.0.6
+ultralytics==8.4.172
