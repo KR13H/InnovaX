@@ -1,0 +1,25 @@
+{
+  "name": "shadowathlete-demo-video",
+  "private": true,
+  "version": "1.0.0",
+  "description": "45–60 s motion-graphics demo of ShadowAthlete, built with Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render ShadowAthleteDemo out/shadowathlete-demo.mp4",
+    "thumbnail": "remotion still Thumbnail out/thumbnail.png",
+    "capture": "node scripts/capture-screens.mjs",
+    "build": "npm run render && npm run thumbnail"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.533",
+    "@remotion/google-fonts": "^4.0.533",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.533"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "puppeteer-core": "^25.12.0",
+    "typescript": "^7.0.2"
+  }
+}

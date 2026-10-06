@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "/Users/naman/Desktop/InnovaXfinal/InnovaX/.venv/bin/uvicorn",
+      "runtimeArgs": ["app.main:app", "--app-dir", "/Users/naman/Desktop/InnovaXfinal/InnovaX/backend", "--host", "0.0.0.0", "--port", "8000"],
+      "cwd": "/Users/naman/Desktop/InnovaXfinal/InnovaX/backend",
+      "port": 8000
+    }
+  ]
+}
