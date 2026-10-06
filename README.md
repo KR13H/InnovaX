@@ -1,17 +1,3 @@
-<div align="center">
-
-# ShadowAthlete
-
-**Your next opponent is you.**
-
-[![ShadowAthlete demo: click to watch the full video](demo-video/media/preview.gif)](demo-video/media/shadowathlete-demo.mp4)
-
-▶ **[Watch the full 57-second demo (MP4)](demo-video/media/shadowathlete-demo.mp4)**
-
-</div>
-
----
-
 # InnovaX
 
 Build a polished, modern, production-style full-stack application for a hackathon called **ShadowAthlete**.

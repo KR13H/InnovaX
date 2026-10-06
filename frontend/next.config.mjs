@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   // Let phones on the same Wi-Fi load dev assets (e.g. http://192.168.x.x:3000).
-  allowedDevOrigins: ["127.0.0.1", "192.168.*.*", "10.*.*.*", "172.16.*.*", "172.17.*.*", "*.local", "*.trycloudflare.com"],
+  allowedDevOrigins: ["127.0.0.1", "192.168.*.*", "10.*.*.*", "172.16.*.*", "172.17.*.*", "*.local"],
   images: { unoptimized: true },
   experimental: {
     // Session videos are uploaded through the /api proxy below; the default 10MB cap truncated

@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "@/lib/api";
-import type { Sport } from "@/lib/clip";
-import { SPORT_GOALS, defaultGoals, saveAllGoals } from "@/lib/goals";
 import { saveDraft } from "@/lib/onboarding";
 
 type Role = "primary" | "secondary" | "active";
@@ -38,17 +36,19 @@ const CARD: Record<Role, { card: string; icon: string; badge: string; check: str
   },
 };
 
-const SPORT_LABEL: Record<Sport, string> = { tennis: "Tennis", cricket: "Cricket", basketball: "Basketball", running: "Running" };
+const GOALS = [
+  "Improve technique & consistency",
+  "Match previous personal bests",
+  "Injury prevention & joint load",
+  "Increase stroke / release speed",
+];
 
 // Generated from design/stitch/onboarding_sports_goals/code.html by scripts/stitch-to-jsx.mjs.
 export default function OnboardingSports() {
   const router = useRouter();
   // Ordered by priority: first is primary, second is secondary, the rest are active.
   const [selected, setSelected] = useState(["tennis", "cricket", "basketball", "running"]);
-  // Goal ids per sport (lib/goals.ts), starting from each sport's main goals.
-  const [goals, setGoals] = useState<Record<string, string[]>>(() =>
-    Object.fromEntries((Object.keys(SPORT_GOALS) as Sport[]).map((sp) => [sp, defaultGoals(sp)])),
-  );
+  const [goals, setGoals] = useState([GOALS[0], GOALS[1], GOALS[3]]);
   const [sessions, setSessions] = useState(5);
   const [building, setBuilding] = useState(false);
 
@@ -58,17 +58,11 @@ export default function OnboardingSports() {
   };
   const toggleSport = (slug: string) =>
     setSelected((s) => (s.includes(slug) ? (s.length > 1 ? s.filter((x) => x !== slug) : s) : [...s, slug]));
-  const toggleGoal = (sport: string, id: string) =>
-    setGoals((all) => {
-      const cur = all[sport] ?? [];
-      return { ...all, [sport]: cur.includes(id) ? (cur.length > 1 ? cur.filter((x) => x !== id) : cur) : [...cur, id] };
-    });
-  const chosenGoals = Object.fromEntries(selected.map((sp) => [sp, goals[sp] ?? []]));
-  const goalCount = Object.values(chosenGoals).reduce((a, g) => a + g.length, 0);
+  const toggleGoal = (g: string) => setGoals((s) => (s.includes(g) ? s.filter((x) => x !== g) : [...s, g]));
 
   async function build() {
     setBuilding(true);
-    saveDraft({ sports: selected, goals: Object.values(chosenGoals).flat(), sessions_per_week: sessions });
+    saveDraft({ sports: selected, goals, sessions_per_week: sessions });
     try {
       // Link chosen sports to the athlete; skipped silently in demo mode (no session).
       const all = await api<{ id: number; slug: string }[]>("/sports");
@@ -80,7 +74,6 @@ export default function OnboardingSports() {
             : null;
         }),
       );
-      await saveAllGoals(chosenGoals).catch(() => {});
     } catch {
       // Backend unreachable: continue the demo flow.
     }
@@ -225,28 +218,23 @@ export default function OnboardingSports() {
                   Primary Training Goals
                 </h3>
                 <span className="font-label-badge text-label-badge text-primary">
-                  {goalCount} Selected
+                  {goals.length} Selected
                 </span>
               </div>
-              <div className="flex flex-col gap-space-sm" id="goals-container">
-                {selected.map((sp) => (
-                  <div key={sp} className="flex flex-col gap-2">
-                    <span className="font-label-caps text-[11px] uppercase text-outline">{SPORT_LABEL[sp as Sport]}</span>
-                    <div className="flex flex-wrap gap-2">
-                      {SPORT_GOALS[sp as Sport].map((g) => {
-                        const on = (goals[sp] ?? []).includes(g.id);
-                        return (
-                          <button key={g.id} onClick={() => toggleGoal(sp, g.id)} aria-pressed={on} className={`goal-pill px-space-md py-2.5 rounded-full ${on ? "bg-surface-container-highest text-primary" : "bg-surface-container-low text-on-surface-variant"} flex items-center gap-2 active:scale-95 transition-transform`} type="button">
-                            <span className={`material-symbols-outlined text-[18px] ${on ? "text-primary" : "text-outline"}`} style={{ fontVariationSettings: on ? "'FILL' 1" : "'FILL' 0" }}>
-                              {g.icon}
-                            </span>
-                            <span className={`font-body-sm text-[13px] ${on ? "font-semibold text-on-surface" : "font-normal text-on-surface-variant"}`}>{g.title}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
+              <div className="flex flex-wrap gap-2" id="goals-container">
+                {GOALS.map((g) => {
+                  const on = goals.includes(g);
+                  return (
+                    <button key={g} onClick={() => toggleGoal(g)} aria-pressed={on} className={`goal-pill px-space-md py-2.5 rounded-full ${on ? "bg-surface-container-highest text-primary" : "bg-surface-container-low text-on-surface-variant"} flex items-center gap-2 active:scale-95 transition-transform`} type="button">
+                      <span className={`material-symbols-outlined text-[18px] ${on ? "text-primary" : "text-outline"}`} style={{ fontVariationSettings: on ? "'FILL' 1" : "'FILL' 0" }}>
+                        {on ? "check_circle" : "radio_button_unchecked"}
+                      </span>
+                      <span className={`font-body-sm text-[13px] ${on ? "font-semibold text-on-surface" : "font-normal text-on-surface-variant"}`}>
+                        {g}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </section>
             {/* Section 3: Training Availability */}

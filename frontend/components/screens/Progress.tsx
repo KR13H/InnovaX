@@ -1,12 +1,11 @@
 "use client";
 
-// Progress tracker: the metrics behind the athlete's goals for a sport, across their analyzed
-// sessions, plus a projection of where they're heading ("future you", see lib/progress.ts) and
-// a weekly shadow test that seals a one-week prediction and checks it (lib/shadowTest.ts).
+// Progress tracker: each key metric across the athlete's analyzed sessions, plus a
+// projection of where they're heading ("future you"). See lib/progress.ts for the model.
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BottomNav from "@/components/BottomNav";
 import ProgressChart from "@/components/ProgressChart";
 import SessionsTabs from "@/components/SessionsTabs";
@@ -14,10 +13,7 @@ import { getToken } from "@/lib/api";
 import { type Sport, sportFromQuery } from "@/lib/clip";
 import { SPORT_ICON, SPORT_NAME } from "@/lib/data";
 import { readDraft } from "@/lib/onboarding";
-import { SPORT_GOALS, goalMetrics, goalsFor, saveGoals } from "@/lib/goals";
-import { type MetricDef, type SessionPoint, SPORT_METRICS, fmtValue, improvement, loadSportHistory, project } from "@/lib/progress";
-import { type ShadowTest, calibrationFrom, loadTests, resolveTest, sessionAfter, startTest } from "@/lib/shadowTest";
-import { useCurrentUser } from "@/lib/useAthlete";
+import { type SessionPoint, SPORT_METRICS, fmtValue, improvement, loadSportHistory, project } from "@/lib/progress";
 
 const SPORTS: Sport[] = ["tennis", "cricket", "basketball", "running"];
 const HORIZON_WEEKS = 8;
@@ -36,162 +32,11 @@ function Trend({ delta }: { delta: number | null }) {
   );
 }
 
-function GoalChips({ sport, selected, onChange }: { sport: Sport; selected: string[]; onChange: (ids: string[]) => void }) {
-  return (
-    <section className="flex flex-col gap-2">
-      <div className="flex items-center justify-between px-1">
-        <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Your {SPORT_NAME[sport].toLowerCase()} goals</span>
-        <span className="font-body-sm text-[11px] text-outline">Tap to change</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {SPORT_GOALS[sport].map((g) => {
-          const on = selected.includes(g.id);
-          return (
-            <button
-              key={g.id}
-              type="button"
-              aria-pressed={on}
-              onClick={() => onChange(on ? (selected.length > 1 ? selected.filter((x) => x !== g.id) : selected) : [...selected, g.id])}
-              className={`flex items-center gap-1.5 pl-2.5 pr-3 py-2 rounded-full transition-colors active:scale-95 ${on ? "bg-primary/15 text-primary" : "bg-surface-container text-on-surface-variant"}`}
-            >
-              <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: on ? "'FILL' 1" : "'FILL' 0" }}>
-                {g.icon}
-              </span>
-              <span className={`font-body-sm text-[13px] ${on ? "font-semibold" : ""}`}>{g.title}</span>
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-const DAY = 86_400_000;
-const fmtPlain = (v: number, unit: string) => `${Math.round(v)}${unit}`;
-
-function ShadowTestCard({
-  sport,
-  test,
-  canStart,
-  busy,
-  error,
-  onStart,
-}: {
-  sport: Sport;
-  test: ShadowTest | null | undefined;
-  canStart: boolean;
-  busy: boolean;
-  error: string | null;
-  onStart: () => void;
-}) {
-  if (test === undefined) return null; // still loading
-
-  const header = (kicker: string, title: string, icon: string, tone = "text-secondary-container") => (
-    <div className="flex items-start justify-between gap-2">
-      <div className="flex flex-col">
-        <span className={`font-label-caps text-label-caps uppercase tracking-widest ${tone}`}>{kicker}</span>
-        <span className="font-headline-md text-body-lg text-on-surface leading-tight">{title}</span>
-      </div>
-      <span className={`material-symbols-outlined text-[28px] ${tone}`}>{icon}</span>
-    </div>
-  );
-
-  const startButton = (label: string) => (
-    <button type="button" onClick={onStart} disabled={busy || !canStart} className="py-3 rounded-xl bg-secondary-container text-on-secondary-container font-headline-md text-body-md font-bold flex items-center justify-center gap-1.5 disabled:opacity-60">
-      <span className={`material-symbols-outlined text-[20px] ${busy ? "animate-spin" : ""}`}>{busy ? "progress_activity" : "lock"}</span>
-      {label}
-    </button>
-  );
-
-  const card = "rounded-xl bg-surface-container p-space-md flex flex-col gap-space-sm shadow-[0_0_24px_-8px_rgba(14,165,198,0.35)]";
-
-  // No test yet: explain it.
-  if (!test) {
-    return (
-      <section className={card}>
-        {header("Weekly shadow test", "Can you beat your prediction?", "sports_score")}
-        <p className="font-body-sm text-body-sm text-on-surface-variant leading-snug">
-          We&apos;ll seal where your shadow predicts you&apos;ll be in a week and hide it. Train, record your next session, and see if you met or beat it. Your projections adjust to the result.
-        </p>
-        {canStart ? startButton("Seal this week's prediction") : <p className="font-body-sm text-[12px] text-outline">Record two sessions that measure your goals to unlock it.</p>}
-        {error && <p className="font-body-sm text-body-sm text-tertiary">{error}</p>}
-      </section>
-    );
-  }
-
-  // Sealed: show what's being tested, not the numbers.
-  if (test.status === "open") {
-    const due = Date.parse(test.due_at.endsWith("Z") || /[+-]\d\d:\d\d$/.test(test.due_at) ? test.due_at : `${test.due_at}Z`);
-    const days = Math.ceil((due - Date.now()) / DAY);
-    return (
-      <section className={card}>
-        {header("Shadow test · sealed", days > 0 ? `${days} day${days === 1 ? "" : "s"} to beat your shadow` : "Week's up: reveal your result", "lock")}
-        <div className="flex flex-col gap-1.5">
-          {test.metrics.map((m) => (
-            <div key={m.key} className="flex items-center justify-between rounded-lg bg-surface-container-low px-space-sm py-2">
-              <span className="font-body-sm text-body-sm text-on-surface">{m.label}</span>
-              <span className="flex items-center gap-1 font-label-caps text-[11px] uppercase text-outline">
-                <span className="material-symbols-outlined text-[16px]">lock</span>
-                Hidden
-              </span>
-            </div>
-          ))}
-        </div>
-        <p className="font-body-sm text-[12px] text-on-surface-variant">Your next analyzed {SPORT_NAME[sport].toLowerCase()} session reveals the result.</p>
-        <Link href={`/capture/upload?sport=${sport}`} className="py-3 rounded-xl bg-secondary-container text-on-secondary-container font-headline-md text-body-md font-bold flex items-center justify-center gap-1.5">
-          <span className="material-symbols-outlined text-[20px]">videocam</span>
-          Record a session
-        </Link>
-      </section>
-    );
-  }
-
-  // Resolved: the reveal.
-  const r = test.result!;
-  return (
-    <section className={card}>
-      {header(
-        `Shadow test · ${r.beaten}/${r.total} beaten`,
-        r.passed ? "You beat your shadow!" : "Your shadow won this week",
-        r.passed ? "emoji_events" : "sports_score",
-        r.passed ? "text-primary" : "text-secondary-container",
-      )}
-      <div className="flex flex-col gap-1.5">
-        {Object.entries(r.metrics).map(([key, m]) => (
-          <div key={key} className="flex items-center gap-space-sm rounded-lg bg-surface-container-low px-space-sm py-2">
-            <span className={`material-symbols-outlined text-[20px] ${m.beaten ? "text-primary" : "text-tertiary"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-              {m.beaten ? "check_circle" : "cancel"}
-            </span>
-            <span className="flex-1 font-body-sm text-body-sm text-on-surface">{m.label}</span>
-            <span className="flex flex-col items-end">
-              <span className="font-headline-md text-body-md text-on-surface tabular-nums">{fmtPlain(m.actual, m.unit)}</span>
-              <span className="font-body-sm text-[11px] text-outline tabular-nums">predicted {fmtPlain(m.predicted, m.unit)}</span>
-            </span>
-          </div>
-        ))}
-      </div>
-      <p className="font-body-sm text-[12px] text-on-surface-variant leading-snug">
-        {r.passed ? "You met or beat the prediction on most goals" : "You fell short of the prediction on most goals"}, so your projections have been
-        {r.passed ? " kept on pace or raised" : " recalibrated to your real rate of progress"}. +{r.xp_awarded} XP
-      </p>
-      {startButton("Seal next week's prediction")}
-      {error && <p className="font-body-sm text-body-sm text-tertiary">{error}</p>}
-    </section>
-  );
-}
-
 export default function Progress() {
   const router = useRouter();
   const [sport, setSport] = useState<Sport>("tennis");
   const [history, setHistory] = useState<SessionPoint[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tests, setTests] = useState<ShadowTest[] | null>(null);
-  const [testBusy, setTestBusy] = useState(false);
-  const [testError, setTestError] = useState<string | null>(null);
-  const resolving = useRef<number | null>(null);
-  const user = useCurrentUser();
-  const profile = user.status === "signed-in" ? user.profile : null;
-  const [goalIds, setGoalIds] = useState<string[]>([]);
   const perWeek = Math.max(1, readDraft().sessions_per_week ?? 3);
   const horizon = HORIZON_WEEKS * perWeek;
 
@@ -200,74 +45,15 @@ export default function Progress() {
   useEffect(() => {
     if (!getToken()) return setError("Sign in to track your progress.");
     setHistory(null);
-    setTests(null);
-    setTestError(null);
-    // Ignore responses for a sport the user has already switched away from.
-    let current = true;
-    loadSportHistory(sport).then(
-      (h) => current && setHistory(h),
-      (e) => current && setError(e instanceof Error ? e.message : "Couldn't load sessions"),
-    );
-    loadTests(sport).then(
-      (t) => current && setTests(t),
-      () => current && setTests([]),
-    );
-    return () => {
-      current = false;
-    };
+    loadSportHistory(sport).then(setHistory, (e) => setError(e instanceof Error ? e.message : "Couldn't load sessions"));
   }, [sport]);
-
-  useEffect(() => setGoalIds(goalsFor(profile, sport)), [profile, sport]);
-
-  function changeGoals(ids: string[]) {
-    setGoalIds(ids);
-    saveGoals(profile, sport, ids).catch(() => {});
-  }
-
-  const latestTest = tests ? (tests[0] ?? null) : undefined;
-  const calibration = useMemo(() => calibrationFrom(tests), [tests]);
-  const goalDefs: MetricDef[] = useMemo(() => {
-    const keys = goalMetrics(sport, goalIds);
-    return keys.map((k) => SPORT_METRICS[sport].find((d) => d.key === k)).filter((d): d is MetricDef => !!d);
-  }, [sport, goalIds]);
-
-  // Reveal: once a session lands after the test started, compare it with the sealed prediction.
-  const resolve = useCallback(async (test: ShadowTest, hist: SessionPoint[]) => {
-    const point = sessionAfter(test, hist);
-    if (!point || resolving.current === test.id) return;
-    resolving.current = test.id;
-    try {
-      const done = await resolveTest(test, point);
-      setTests((ts) => ts?.map((t) => (t.id === done.id ? done : t)) ?? null);
-    } catch (e) {
-      setTestError(e instanceof Error ? e.message : "Couldn't check your test");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (latestTest?.status === "open" && history) resolve(latestTest, history);
-  }, [latestTest, history, resolve]);
-
-  async function beginTest() {
-    if (!history) return;
-    setTestBusy(true);
-    setTestError(null);
-    try {
-      const t = await startTest(sport, goalDefs, history, perWeek, calibration);
-      setTests((ts) => [t, ...(ts ?? [])]);
-    } catch (e) {
-      setTestError(e instanceof Error ? e.message : "Couldn't start the test");
-    } finally {
-      setTestBusy(false);
-    }
-  }
 
   const metrics = useMemo(() => {
     if (!history) return [];
-    return goalDefs.map((def) => {
+    return SPORT_METRICS[sport].map((def) => {
       const pts = history.filter((h) => h.values[def.key] != null);
       const values = pts.map((h) => h.values[def.key] as number);
-      const proj = project(def, values, horizon, calibration[def.key] ?? 1);
+      const proj = project(def, values, horizon);
       return {
         def,
         pts,
@@ -278,8 +64,7 @@ export default function Progress() {
         future: proj?.points[proj.points.length - 1] ?? null,
       };
     });
-  }, [history, goalDefs, horizon, calibration]);
-  const canStartTest = metrics.some((m) => m.values.length >= 2);
+  }, [history, sport, horizon]);
 
   const analyzed = history?.length ?? 0;
   const latestId = history?.[history.length - 1]?.session.id;
@@ -317,8 +102,6 @@ export default function Progress() {
           ))}
         </div>
 
-        {profile && <GoalChips sport={sport} selected={goalIds} onChange={changeGoals} />}
-
         {error && <p className="font-body-sm text-body-sm text-tertiary">{error}</p>}
 
         {!history && !error && (
@@ -341,8 +124,6 @@ export default function Progress() {
 
         {history && analyzed > 0 && (
           <>
-            <ShadowTestCard sport={sport} test={latestTest} canStart={canStartTest} busy={testBusy} error={testError} onStart={beginTest} />
-
             {/* Future you */}
             <section className="rounded-xl bg-surface-container p-space-md flex flex-col gap-space-sm shadow-[0_0_24px_-8px_rgba(14,165,198,0.35)]">
               <div className="flex items-center justify-between">
