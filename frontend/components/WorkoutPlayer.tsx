@@ -27,6 +27,19 @@ function stepsFor(mods: Module[]): Step[] {
   return mods.flatMap((m, module) => Array.from({ length: m.kind === "exercise" ? m.sets : 1 }, (_, set) => ({ module, set })));
 }
 
+// Rest between sets: off, 5 s or 10 s. A per-device preference.
+const REST_OPTIONS = [0, 5, 10];
+const REST_KEY = "sa_rest_secs";
+
+function readRest() {
+  try {
+    const v = Number(localStorage.getItem(REST_KEY));
+    return REST_OPTIONS.includes(v) && localStorage.getItem(REST_KEY) !== null ? v : 10;
+  } catch {
+    return 10;
+  }
+}
+
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 function Timer({ minutes, resetKey }: { minutes: number; resetKey: string }) {
@@ -70,6 +83,8 @@ export default function WorkoutPlayer({ workout, onClose, onCompleted }: { worko
   const [mods] = useState(() => modulesFor(workout));
   const [steps] = useState(() => stepsFor(mods));
   const [i, setI] = useState(0);
+  const [restSecs, setRestSecs] = useState(10);
+  const [resting, setResting] = useState<number | null>(null);
   const [result, setResult] = useState<StatusResult | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +93,26 @@ export default function WorkoutPlayer({ workout, onClose, onCompleted }: { worko
   const last = i === steps.length - 1;
   const lastOfModule = steps[i + 1]?.module !== step.module;
   const exercises = mods.filter((m) => m.kind === "exercise").length;
+
+  useEffect(() => setRestSecs(readRest()), []);
+
+  useEffect(() => {
+    if (resting == null) return;
+    if (resting <= 0) return setResting(null);
+    const id = setTimeout(() => setResting((r) => (r == null ? null : r - 1)), 1000);
+    return () => clearTimeout(id);
+  }, [resting]);
+
+  function cycleRest() {
+    const v = REST_OPTIONS[(REST_OPTIONS.indexOf(restSecs) + 1) % REST_OPTIONS.length];
+    setRestSecs(v);
+    try {
+      localStorage.setItem(REST_KEY, String(v));
+    } catch {
+      // Preference just won't persist.
+    }
+    if (v === 0) setResting(null);
+  }
 
   // Keep the page behind the player from scrolling.
   useEffect(() => {
@@ -102,7 +137,17 @@ export default function WorkoutPlayer({ workout, onClose, onCompleted }: { worko
     }
   }
 
-  const next = () => (last ? finish() : setI(i + 1));
+  function next() {
+    if (last) return finish();
+    setI(i + 1);
+    // Rest after every set of an exercise (not after warm-up / cool-down).
+    if (mod.kind === "exercise" && restSecs > 0) setResting(restSecs);
+  }
+
+  function back() {
+    setResting(null);
+    setI(Math.max(0, i - 1));
+  }
   const nextLabel = last ? `Finish · +${workoutXp(workout)} XP` : !lastOfModule ? `Next · Set ${step.set + 2}` : mods[step.module + 1]?.kind === "exercise" ? "Next exercise" : "Next";
 
   if (result) {
@@ -153,9 +198,15 @@ export default function WorkoutPlayer({ workout, onClose, onCompleted }: { worko
               );
             })}
           </div>
-          <span className="font-label-caps text-[11px] text-on-surface-variant tabular-nums">
-            {step.module + 1}/{mods.length}
-          </span>
+          <button
+            type="button"
+            onClick={cycleRest}
+            aria-label={`Rest between sets: ${restSecs ? `${restSecs} seconds` : "off"}. Tap to change.`}
+            className={`flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full font-label-caps text-[11px] uppercase tabular-nums ${restSecs ? "bg-primary/15 text-primary" : "bg-surface-container-high text-on-surface-variant"}`}
+          >
+            <span className="material-symbols-outlined text-[16px]">{restSecs ? "timer" : "timer_off"}</span>
+            {restSecs ? `Rest ${restSecs}s` : "No rest"}
+          </button>
         </div>
       </div>
 
@@ -226,8 +277,28 @@ export default function WorkoutPlayer({ workout, onClose, onCompleted }: { worko
         {error && <p className="font-body-sm text-body-sm text-tertiary">{error}</p>}
       </div>
 
+      {resting != null && (
+        <div className="absolute inset-0 z-10 bg-surface/95 backdrop-blur-sm flex flex-col items-center justify-center gap-space-md px-margin-mobile text-center" role="timer" aria-live="polite">
+          <span className="font-label-caps text-label-caps text-secondary-container uppercase tracking-widest">Rest</span>
+          <div className="relative w-40 h-40">
+            <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+              <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeWidth="2" className="text-surface-container-highest" />
+              <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-secondary-container transition-all duration-1000 ease-linear" strokeDasharray={`${(resting / restSecs) * 100.5} 100.5`} />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center font-metric-large text-[56px] leading-none text-on-surface tabular-nums">{resting}</span>
+          </div>
+          <span className="font-body-md text-body-md text-on-surface-variant">
+            Up next: {mod.kind === "exercise" ? `${mod.drill.name} · Set ${step.set + 1}` : mod.label}
+          </span>
+          <button type="button" onClick={() => setResting(null)} className="px-space-lg py-3 rounded-xl bg-surface-container-high text-on-surface font-headline-md text-body-md flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[20px]">skip_next</span>
+            Skip rest
+          </button>
+        </div>
+      )}
+
       <div className="px-margin-mobile pt-space-sm grid grid-cols-[auto_1fr] gap-2 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <button type="button" onClick={() => setI(Math.max(0, i - 1))} disabled={i === 0} aria-label="Previous step" className="w-14 py-3.5 rounded-xl bg-surface-container-high text-on-surface flex items-center justify-center disabled:opacity-40">
+        <button type="button" onClick={back} disabled={i === 0} aria-label="Previous step" className="w-14 py-3.5 rounded-xl bg-surface-container-high text-on-surface flex items-center justify-center disabled:opacity-40">
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <button type="button" onClick={next} disabled={saving} className="py-3.5 rounded-xl bg-primary text-on-primary font-headline-md text-body-md font-bold flex items-center justify-center gap-2 disabled:opacity-70">
