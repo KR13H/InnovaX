@@ -1,116 +1,200 @@
-# ShadowAthlete — demo video
+<div align="center">
 
-A 57-second, 1920×1080 / 30 fps motion-graphics demo of ShadowAthlete, built with
-[Remotion](https://www.remotion.dev) (React → MP4). It's separate from the app: nothing in
-`frontend/` or `backend/` depends on it.
+# ShadowAthlete
 
-- Final video: `media/shadowathlete-demo.mp4` (embedded at the top of the repo README)
-- README preview: `media/preview.gif` (a 7 s loop of the model-output scene)
-- Thumbnail: `media/thumbnail.png` (1920×1080)
+**Your next opponent is you.**
 
-Renders go to `out/` (gitignored). Copy them into `media/` to publish them, as shown below.
+[![ShadowAthlete demo: click to watch the full video](demo-video/media/preview.gif)](demo-video/out/shadowathlete-demo.mp4)
 
-## Quick start
+▶ **[Watch the full 57-second demo (MP4)](demo-video/out/shadowathlete-demo.mp4)**
 
-```bash
-cd demo-video
-npm install
-npm run studio      # live preview + timeline scrubbing in the browser
-npm run render      # → out/shadowathlete-demo.mp4
-npm run thumbnail   # → out/thumbnail.png
-```
+</div>
 
-The first render downloads Remotion's headless Chrome (~90 MB). Fonts (Space Grotesk, Inter)
-are fetched from Google Fonts at render time, so stay online.
+---
+## About ShadowAthlete
 
-### Publishing a new render to the repo README
+### Your only opponent is you.
 
-```bash
-cp out/shadowathlete-demo.mp4 out/thumbnail.png media/
-npx remotion ffmpeg -y -ss 16.4 -t 7.4 -i out/shadowathlete-demo.mp4 -vf "scale=960:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" -r 12 media/preview.gif
-```
+An AI-powered athlete digital twin platform that turns movement into insight and progress into a challenge against your past self.
 
-GitHub doesn't play a repo-hosted MP4 inline in a README, so the README shows the GIF and
-links it to the MP4. For an inline player, edit the README on github.com and drag the MP4 into
-the editor. GitHub uploads it and inserts a `user-attachments` link that plays in place.
+**One athlete. One avatar. Multiple sports.**
 
-## Editing
+---
 
-Everything you'd normally change is in **`src/config.ts`**:
+## Overview
 
-| What | Where |
+ShadowAthlete brings video analysis, athletic progression, and personalized coaching into one experience.
+
+The idea is simple: record your performance, understand your movement, and use what you learn to beat your own best.
+
+Instead of treating every sport as a separate profile, ShadowAthlete connects them through a persistent digital twin. Attributes such as speed, power, coordination, endurance, and technique reflect how an athlete develops over time.
+
+**Meet the athlete you're chasing: you.**
+
+## Inspiration
+
+Athletes can record their training, but footage alone does not explain what changed or what to work on next. Personal records capture an outcome, while often missing the movement behind it.
+
+We wanted to make improvement visible and personal. ShadowAthlete connects movement analysis with an evolving athlete identity and a simple challenge: outperform your previous self.
+
+## How it works
+
+1. **Capture** — Upload or record a sport session.
+2. **Analyze** — Extract movement information using computer vision and sport-specific analysis.
+3. **Build** — Use session results to develop the athlete's digital twin.
+4. **Compare** — Measure progress against previous performances in Shadow Mode.
+5. **Improve** — Turn insights into focused practice and track the next improvement.
+
+## Product experience
+
+ShadowAthlete is a hackathon prototype. The features below describe the product vision; availability depends on the current implementation. Some demo metrics may be simulated.
+
+### Athlete digital twin
+
+One athlete profile connects an avatar, performance history, sport skills, and universal attributes:
+
+- Speed
+- Power
+- Endurance
+- Agility
+- Coordination
+- Balance
+- Mobility
+- Reaction
+- Technique
+- Recovery
+
+The twin brings together three perspectives:
+
+| Perspective | Purpose |
 | --- | --- |
-| Project name and tagline | `PROJECT` |
-| Every on-screen caption | `CAPTIONS` |
-| Scene lengths (seconds; total must stay 45–60) | `SCENES` |
+| **Current You** | Understand your present performance. |
+| **Peak You** | Compare against your personal bests. |
+| **Target You** | Set goals for your future performance. |
 
-Colours and fonts follow the app's design tokens in `src/theme.ts`.
+### Video and movement analysis
 
-## Scenes
+The analysis experience is designed to combine:
 
-| Time | Scene | File | What it shows |
-| --- | --- | --- | --- |
-| 0–5 s | Hook | `scenes/Hook.tsx` | Tagline, an athlete silhouette and its shadow (drawn from real pose output), logo |
-| 5–12 s | App intro | `scenes/Intro.tsx` | Real screens: Home → Train → guided workout |
-| 12–15 s | Upload | `scenes/Upload.tsx` | Real Upload screen (drop zone only) |
-| 15–24 s | Model output | `scenes/Model.tsx` | Per-frame YOLOv8 + ByteTrack box, MediaPipe skeleton, Random Forest probabilities, joint angles, action timeline |
-| 24–30 s | Results | `scenes/Results.tsx` | Real in-app results screen + the pipeline's JSON stats and estimated swings |
-| 30–42 s | Progress | `scenes/Progress.tsx` | Real Progress charts, Compare ghost overlay, "future you" + weekly shadow test |
-| 42–52 s | Tech | `scenes/Tech.tsx` | Pipeline and stack |
-| 52–57 s | Closing | `scenes/Closing.tsx` | Logo and tagline |
+- Athlete tracking and pose estimation
+- Skeleton overlays
+- Movement timing and joint angles
+- Sport-specific movement classification
+- Session summaries and technique feedback
 
-## Where the content comes from (accuracy notes)
+The goal is to connect performance metrics to the movement behind them.
 
-- **Model output** (`src/data/tennis-output.json`) is real output of the tennis pipeline on the
-  sample tennis clip in the dev database. It was produced by
-  `scripts/export_tennis_output.py`, which mirrors `backend/analyze_tennis_yolo.py`:
-  YOLOv8n + ByteTrack → MediaPipe Pose Landmarker on the player crop → Random Forest
-  (`backend/ml_models/tennis_classifier.joblib`, classes: backhand, forehand, ready_position,
-  serve) → shot grouping and joint angles. It uses the MediaPipe estimator from
-  `app/vision/tennis_pose_estimator.py`, because `app/vision/pose_estimator.py` is now the
-  cricket (RTMPose) estimator. It also picks the most prominent track, which is id 1, the same
-  id the original script hard-codes.
-- **The footage is never shown.** The sample clip is third-party broadcast footage, so only
-  derived data (boxes, landmarks, labels) is drawn, and the scene says so on screen.
-- **App screens** (`public/screens/`) are real captures of the running app
-  (`scripts/capture-screens.mjs`), with every `<video>` hidden for the same reason. The test
-  account's name was temporarily set to "Jordan" for capture and restored afterwards.
-- **Tracking vs. the in-app endpoint.** YOLOv8 + ByteTrack runs in the offline tennis script.
-  The app's `/sessions/{id}/analyze-tennis` endpoint uses MediaPipe + Random Forest without the
-  tracking stage. The Tech scene states this.
-- **Left out on purpose:**
-  - the Welcome screen and the lower part of the Upload screen, which still contain
-    placeholder design copy (e.g. "GHOST SYNC 99.4%", a sample `morning_forehand_rally.mov`);
-  - the running "shadow race" (current vs. previous vs. predicted run), which isn't
-    implemented. The Progress scene uses the implemented Compare, Progress and weekly
-    shadow-test features instead.
-- **Logo.** The app's logo is a remote image that didn't load headless, so the video uses a
-  vector recreation: an athlete figure with an offset cyan shadow, in the app's colours.
-- **Music.** None. No royalty-free track ships with the repo, and the video is designed to
-  work without sound. To add one, put the file in `public/` and add
-  `<Audio src={staticFile("music.mp3")} />` inside `Demo` in `src/Root.tsx`. Record its
-  source and licence here.
+### Shadow Mode
 
-## Refreshing the assets
+Your previous performance becomes your next challenge.
 
-**Screens** need the app running (frontend :3000, backend :8000) and a valid access token:
+Compare sessions, identify where you improved, and discover which parts of your technique still need work.
 
-```bash
-SA_TOKEN=<jwt> APP_URL=http://127.0.0.1:3000 npm run capture
-```
+The longer-term vision includes synchronized ghost overlays that show current and previous movement together.
 
-**Model output**, from the repo root, using the backend's virtualenv:
+### AI coaching
 
-```bash
-.venv/bin/python demo-video/scripts/export_tennis_output.py "$PWD/backend/uploads/<user>/<id>.mp4" /tmp/tennis-output.json
-python3 demo-video/scripts/slim-tennis-output.py /tmp/tennis-output.json
-```
+The coaching experience is intended to use session history and athlete goals to:
 
-The first run downloads `yolov8n.pt` (~6 MB) from Ultralytics into `demo-video/scripts/`
-(gitignored). Ultralytics also installs `lap` into the venv for ByteTrack.
+- Explain changes in performance
+- Identify areas to practice
+- Recommend focused drills
+- Suggest training priorities
+- Summarize progress over time
 
-### Better footage (optional)
+Feedback should distinguish observed results from estimates and recommendations.
 
-To show real footage instead of a dark canvas, record your own clip with the right to publish
-it: one player, side-on, full body in frame, 5–15 s, 30 fps or more. Re-run the export on it,
-and optionally add the clip behind the overlay in `scenes/Model.tsx` with `<OffthreadVideo>`.
+### Athlete progression
+
+Levels, XP, achievements, and personal records make improvement visible.
+
+The progression system is designed to reward consistency, technique, and recovery alongside performance.
+
+## Multi-sport vision
+
+Every sport contributes to one connected athlete profile.
+
+| Sport | Intended analysis areas |
+| --- | --- |
+| **Running** | Cadence, stride consistency, posture, symmetry, and movement efficiency |
+| **Basketball** | Shooting mechanics, release consistency, balance, and jumping movement |
+| **Tennis** | Stroke classification, forehand and backhand mechanics, positioning, and footwork |
+| **Cricket fast bowling** | Run-up consistency, delivery mechanics, release consistency, and follow-through |
+
+Sport-specific measurements require appropriate models and validation. Physical measurements such as ball speed, stride length, and jump height may require camera calibration or additional inputs.
+
+## What makes ShadowAthlete different
+
+- **One connected identity:** Multiple sports contribute to the same athlete digital twin.
+- **Personal competition:** Your own performance history becomes the benchmark.
+- **Movement with context:** Video analysis helps explain what a metric means.
+- **Cross-sport development:** Shared attributes connect improvement across activities.
+- **Visible progression:** Your athlete profile evolves with your training history.
+
+## Technical direction
+
+The original project brief proposes the following stack. Check the repository's dependency manifests for the technologies currently implemented.
+
+| Layer | Proposed technologies |
+| --- | --- |
+| Frontend | Next.js, React, TypeScript, Tailwind CSS, Framer Motion |
+| Avatar and graphics | Three.js, React Three Fiber |
+| Backend | Python, FastAPI |
+| Computer vision and ML | OpenCV, MediaPipe, PyTorch, YOLO where appropriate |
+| Database | PostgreSQL with an ORM |
+| Background processing | Redis and a task queue such as Celery |
+| Video storage | Object storage such as Amazon S3 |
+
+### Intended architecture
+
+Video analysis runs separately from the interface:
+
+1. The athlete submits a video session.
+2. The API creates a processing request.
+3. A computer vision worker tracks movement and extracts features.
+4. Sport-specific models produce analysis results.
+5. The metrics layer updates the athlete profile.
+6. The interface presents the session recap and progress.
+
+This structure allows new sports and models to be added without rebuilding the core athlete experience.
+
+## Getting started
+
+Clone the repository:
+
+~~~bash
+git clone https://github.com/KR13H/InnovaX.git
+cd InnovaX
+~~~
+
+The repository name is **InnovaX**; the product name is **ShadowAthlete**.
+
+Use the dependency manifests, package scripts, and environment examples in your checkout to configure and run the frontend and backend.
+
+Exact startup commands, required environment variables, and model downloads should be documented against the current source code.
+
+Keep credentials in local environment files and out of version control.
+
+## Prototype limitations
+
+- Some interface metrics and historical data may be simulated for demonstration.
+- Tracking and pose quality depend on camera angle, visibility, lighting, occlusion, and video quality.
+- Detection coverage and model confidence do not establish classification accuracy.
+- Model validation requires labeled examples and evaluation across varied footage.
+- Athlete scores and cross-sport projections are not validated physiological measurements.
+- Recovery and workload insights are performance guidance, not medical diagnoses.
+
+## What's next
+
+- Validate sport models on larger, labeled video datasets.
+- Improve athlete tracking across different recording conditions.
+- Expand sport-specific analysis and explainable feedback.
+- Add synchronized session comparisons and ghost overlays.
+- Connect measured results to persistent avatar progression.
+- Develop coaching grounded in each athlete's actual history.
+- Explore wearable integrations and adaptive training plans.
+- Build coach dashboards for reviewing multiple athletes.
+
+---
+
+**Build your athlete. Challenge your shadow. Beat your best.**
